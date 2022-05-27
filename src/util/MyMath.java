@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
+import AlgorithmicComponents.MaxConvolution;
+
 public class MyMath {
 
     public static int getRandomNumber(int min, int max) {
@@ -114,7 +116,7 @@ public class MyMath {
             for(int j = 1; j <= W; j++) {       //increasing capacity
                 List<Job> selected_Jobs = new ArrayList<>();
                 List<Integer> selected_Profit = new ArrayList<>();
-                while(selected_Jobs.size() * i < j && !profit.isEmpty()) {
+                while(selected_Jobs.size() * i <= (j - i) && !profit.isEmpty()) {        // <= j - i because there needs to be space for at least one item of weight i
                     int maxProfit = Collections.max(profit);
                     selected_Profit.add(maxProfit);
                     selected_Jobs.add(currJobs.get(profit.indexOf(maxProfit)));
@@ -127,28 +129,12 @@ public class MyMath {
                 profit.addAll(selected_Profit);
 
             }
-            //convolute with the one from previous step.
-            ConvolutionElement[] nextSol = new ConvolutionElement[W];
-            for(int j = 0; j < W; j++) {
-                ConvolutionElement bestElement = new ConvolutionElement(0, new ArrayList<>());
-                int x = 0;
-                int y = j;
-                while(y >= 0) {
-                    if(currSol[y].getProfit() + sol[x].getProfit() > bestElement.getProfit()) {
-                        ArrayList<Job> selected_jobs = new ArrayList<>();
-                        selected_jobs.addAll(currSol[y].getJobs());
-                        selected_jobs.addAll(sol[x].getJobs());
-                        bestElement = new ConvolutionElement(sol[x].getProfit() + currSol[y].getProfit(), selected_jobs);
-                    }
-                    x++;
-                    y--;
-                }
-                nextSol[j] = bestElement;
-            }
-            sol = nextSol;
-        }
 
-        return sol[W - 1].getJobs().toArray(Job[] :: new); //TODO
+            // sol = MaxConvolution.nativeApproach(currSol, sol, W);
+            sol = MaxConvolution.linearApproach(currSol, sol);
+        }
+        sol[W - 1].getJobs().forEach(j -> j.setAllotedMachines(I.canonicalNumberMachines(j.getId(), d)));
+        return sol[W - 1].getJobs().toArray(Job[] :: new);
 
     }
     

@@ -4,7 +4,7 @@
     "jobs": [
         {
             "id": 0,
-            "processingTimes": [120, 90, 40]
+            "processingTimes": [99, 60, 40]
         },
         {
             "id": 1,
@@ -16,11 +16,7 @@
         },
         {
             "id": 3,
-            "processingTimes": [90, 46, 40]
-        },
-        {
-            "id": 4,
-            "processingTimes": [60, 49, 40]
+            "processingTimes": [90, 45, 40]
         }
     ]
 }

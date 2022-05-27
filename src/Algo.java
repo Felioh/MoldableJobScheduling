@@ -40,12 +40,12 @@ public class Algo {
 
         }
 
-        bigJobs = MyMath.dynamicKnapsack(bigJobs, weight, profit, bigJobs.length, I.getM(), I, d);
+        // bigJobs = MyMath.dynamicKnapsack(bigJobs, weight, profit, bigJobs.length, I.getM(), I, d);
         Job[] convRes = MyMath.knapsackConvolution(bigJobs, weight, profit, bigJobs.length, I.getM(), I, d);
 
         System.out.println();
+        // System.out.println(printSchedule.printTwoShelves(bigJobs, (int) d));
         System.out.println(printSchedule.printTwoShelves(bigJobs, (int) d));
-        System.out.println(printSchedule.printTwoShelves(convRes, (int) d));
 
     }
 
