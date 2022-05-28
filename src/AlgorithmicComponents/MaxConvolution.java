@@ -1,6 +1,7 @@
 package AlgorithmicComponents;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import logger.printSchedule;
 import util.ConvolutionElement;
@@ -44,27 +45,62 @@ public class MaxConvolution {
 
         ImaginaryMatrix A = new ImaginaryMatrix(seqA, seqB);
 
-        linearApproach_maxCompute(A);
-        int result = A.getElement(1, 1);
-        return null;
-        //REDUCE
-
-    }
-
-
-    private static ImaginaryMatrix linearApproach_maxCompute(ImaginaryMatrix A) {
-        System.out.println(A);
-        ImaginaryMatrix B = linearApproach_reduce(A);
-        if(B.getColumns() == 1) {
-            return null; //TODO
+        int[] max_ind = linearApproach_maxCompute(A);   //TODO column index is wrong
+        ConvolutionElement[] seqC = new ConvolutionElement[max_ind.length];
+        for(int i = 0; i < seqC.length; i++) {
+            seqC[i] = A.getConvolutionElement(i, max_ind[i]);
         }
-        B.deleteRows();
-        return linearApproach_maxCompute(B);
-        
+        return seqC;
     }
 
-    private static ImaginaryMatrix linearApproach_reduce(ImaginaryMatrix A) {        //TODO: nb. Rows as constant (n)
-        
+    /**
+     * recursive Funktion.
+     * 
+     * @param A the imaginary Matrix for one arbitrary and one concave sequence.
+     * @return an array containing the index for the max Element of each row. considering the Matrix A with  A_ij = a_j + b_{i-j}
+     */
+    private static int[] linearApproach_maxCompute(ImaginaryMatrix A) {
+        // System.out.println(A);
+        //delete rows until the matrix has shape nxn
+        List<Integer> deletedCols = linearApproach_reduce(A);
+        if(A.getColumns() == 1) {       //end of recursion
+            int[] res = {A.getRealColumn(0)};
+            return res;
+        }
+        //delete every second row.
+        List<Integer> deletedRows = A.deleteRows();
+
+        //recursive call
+        int[] prev_res = linearApproach_maxCompute(A);
+
+        A.addColumns(deletedCols);
+        A.addRows(deletedRows);
+        int[] new_res = new int[deletedRows.size() + prev_res.length];
+        for(int i = 0; i < new_res.length; i++) {
+            if(i % 2 == 0) {
+                new_res[i] = prev_res[i / 2]; //values are already known due to recursion.
+            } else {
+                int maxIndex = (i / 2) + 1 > prev_res.length - 1 ? A.getColumns() : prev_res[(i / 2) + 1];
+                for(int col = prev_res[i / 2]; col <= maxIndex; col ++) { //search max between prev_res[i] and prev_res[i + 1]
+                    if (A.getElement(i, col) > A.getElement(i, new_res[i])) {
+                        new_res[i] = col;
+                    }
+
+                }
+                //TODO search max between prev_res[i] and prev_res[i + 1]
+            }
+        }
+
+        return new_res;
+    }
+    
+    /**
+     * Delete columns of the matrix until it has shape nxn
+     * @param A the imaginary Matrix
+     * @return a List of the columns, that have been deleted.
+     */
+    private static List<Integer> linearApproach_reduce(ImaginaryMatrix A) {        //TODO: nb. Rows as constant (n)
+        List<Integer> delCols = new ArrayList<>();
         int k = 0;
         while(A.getColumns() > A.getRows()) {
             if(A.getElement(k, k) > A.getElement(k, k + 1)) {
@@ -72,16 +108,17 @@ public class MaxConvolution {
                     k++;
                 }
                 if(k == A.getRows()) {
-                    A.deleteColumn(k + 1);;      //delete the next column
+                    delCols.add(A.deleteColumn(k + 1));      //delete the next column
+
                 }
             }
             if(A.getElement(k, k) < A.getElement(k, k + 1)) {
-                A.deleteColumn(k);
+                delCols.add(A.deleteColumn(k));
                 k--;
             }
         }
 
-        return A;
+        return delCols;
     }
     
 }
@@ -92,30 +129,30 @@ class ImaginaryMatrix {
     ConvolutionElement[] seqB;
 
     ArrayList<Integer> killedCols = new ArrayList<>(); //TODO array. values are monotone
-    ArrayList<Integer> killedRows = new ArrayList<>();
+    ArrayList<Integer> killedRows = new ArrayList<>(); //TODO maybe linked list (bisection search)
 
     ImaginaryMatrix(ConvolutionElement[] seqA, ConvolutionElement[] seqB) {
         this.seqA = seqA;
         this.seqB = seqB;
     }
 
-    private int getRealRow(int i) {
-        int x = 0;
-        while (i > 0) {
-            if(!killedRows.contains(x)) {
+    int getRealRow(int i) {
+        int x = -1;
+        while (i >= 0) {
+            // x++;
+            if(!killedRows.contains(++x)) {
                 i--;
             }
-            x++;;
         }
         return x;
     }
-    private int getRealColumn(int j) {
-        int y = 0;
-        while (j > 0) {
-            if(!killedCols.contains(y)) {
+    int getRealColumn(int j) {
+        int y = -1;
+        while (j >= 0) {
+            // y++;
+            if(!killedCols.contains(++y)) {
                 j--;
             }
-            y++;;
         }
         return y;
     }
@@ -135,6 +172,13 @@ class ImaginaryMatrix {
         }
     }
 
+    ConvolutionElement getConvolutionElement(int i, int j) {
+        List<Job> jobs = new ArrayList<>();
+        jobs.addAll(seqA[getRealColumn(j)].getJobs());
+        jobs.addAll(seqB[getRealRow(i) - getRealColumn(j)].getJobs());
+        return new ConvolutionElement(getElement(i, j), jobs);
+    }
+
     int getColumns() {
         return this.seqA.length - killedCols.size();
     }
@@ -147,22 +191,34 @@ class ImaginaryMatrix {
      * Delete every 2nd row. 
      * C <- b[2, 4, ..., 2(n/2)]
      */
-    void deleteRows() {
+    List<Integer> deleteRows() {
+        List<Integer> delRows = new ArrayList<>();
         boolean kill = false;
         for(int i = 0; i < seqB.length; i++) {
             if(this.killedRows.contains(i)) {
                 continue;
             }
-            kill = !kill;
             if(kill) {
-                continue;
+                this.killedRows.add(i);
+                delRows.add(i);
             }
-            this.killedRows.add(i);
-
+            kill = !kill;
         }
+
+        return delRows;
     }
-    void deleteColumn(int j) {
-        this.killedCols.add(getRealColumn(j));
+    int deleteColumn(int j) {
+        int rCol = getRealColumn(j);
+        this.killedCols.add(rCol);
+        return rCol;
+    }
+
+    void addRows(List<Integer> rows) {
+        this.killedRows.removeAll(rows);
+    }
+
+    void addColumns(List<Integer> cols) {
+        this.killedCols.removeAll(cols);
     }
 
     @Override
