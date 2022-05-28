@@ -1,5 +1,6 @@
 
 
+import AlgorithmicComponents.KnapsackSolver;
 import logger.printSchedule;
 import util.Instance;
 import util.Job;
@@ -41,7 +42,11 @@ public class Algo {
         }
 
         // bigJobs = MyMath.dynamicKnapsack(bigJobs, weight, profit, bigJobs.length, I.getM(), I, d);
-        Job[] convRes = MyMath.knapsackConvolution(bigJobs, weight, profit, bigJobs.length, I.getM(), I, d);
+        Job[] selectedJobs = KnapsackSolver.knapsackConvolution(bigJobs, weight, profit, bigJobs.length, I.getM());
+        for(Job selectedJob : selectedJobs) {
+            selectedJob.setAllotedMachines(I.canonicalNumberMachines(selectedJob.getId(), d));
+        }
+
 
         System.out.println();
         // System.out.println(printSchedule.printTwoShelves(bigJobs, (int) d));

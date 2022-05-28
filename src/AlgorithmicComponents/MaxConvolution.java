@@ -6,9 +6,9 @@ import java.util.List;
 import logger.printSchedule;
 import util.ConvolutionElement;
 import util.Job;
+import util.MyMath;
 
 public class MaxConvolution {
-
 
     /**
      * native Approach for a max convolution on 2 seqences with equal length.
@@ -40,7 +40,13 @@ public class MaxConvolution {
         return result;
     }
 
-
+    /**
+     * TODO think about running time.
+     * a function, that computes the max-convolution using an imaginary matrix.
+     * @param seqA an arbitrary sequence of convolution Elements
+     * @param seqB a concave sequence of convolution Elements
+     * @return the max-convolution
+     */
     public static ConvolutionElement[] linearApproach(ConvolutionElement[] seqA, ConvolutionElement[] seqB) {
 
         ImaginaryMatrix A = new ImaginaryMatrix(seqA, seqB);
@@ -173,10 +179,10 @@ class ImaginaryMatrix {
     }
 
     ConvolutionElement getConvolutionElement(int i, int j) {
-        List<Job> jobs = new ArrayList<>();
-        jobs.addAll(seqA[getRealColumn(j)].getJobs());
-        jobs.addAll(seqB[getRealRow(i) - getRealColumn(j)].getJobs());
-        return new ConvolutionElement(getElement(i, j), jobs);
+        // List<Job> jobs = new ArrayList<>();
+        // jobs.addAll(seqA[getRealColumn(j)].getJobs());
+        // jobs.addAll(seqB[getRealRow(i) - getRealColumn(j)].getJobs());
+        return MyMath.addConvolutionElements(seqA[getRealColumn(j)], seqB[getRealRow(i) - getRealColumn(j)]);
     }
 
     int getColumns() {
@@ -221,6 +227,9 @@ class ImaginaryMatrix {
         this.killedCols.removeAll(cols);
     }
 
+    /**
+     * print out the imaginary matrix. can only be used for debug, since it runs in O(n^2)
+     */
     @Override
     public String toString() {
         String res = "";

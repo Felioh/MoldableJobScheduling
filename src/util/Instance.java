@@ -25,6 +25,13 @@ public class Instance {
         this.jobs = jobs;
     }
 
+    
+    /** 
+     * @param minJobs
+     * @param maxJobs
+     * @param minMachines
+     * @param maxMachines
+     */
     public void generateRandomInstance(int minJobs, int maxJobs, int minMachines, int maxMachines) {
 
         this.m = MyMath.getRandomNumber(minMachines, maxMachines);

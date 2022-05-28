@@ -20,5 +20,5 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 
 
 # TODO
-- ConvolutionElement.add() hinzufügen.
+- ConvolutionElement.add() hinzufügen. (the objects are not reued, so they can be altered.)
 - ConvolutionList -> either linkedList? HashMap?

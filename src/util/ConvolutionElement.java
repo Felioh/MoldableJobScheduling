@@ -16,9 +16,5 @@ public class ConvolutionElement {
         this.profit = profit;
         this.jobs = jobs;
     }
-
-    public void add(ConvolutionElement a) {
-        
-    }
     
 }
