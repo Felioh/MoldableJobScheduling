@@ -1,4 +1,4 @@
-package util;
+package de.ohnes.util;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

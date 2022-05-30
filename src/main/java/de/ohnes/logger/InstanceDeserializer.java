@@ -1,4 +1,4 @@
-package logger;
+package de.ohnes.logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,8 +11,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
-import util.Instance;
-import util.Job;
+import de.ohnes.util.*;
 
 public class InstanceDeserializer extends StdDeserializer<Instance> {
 

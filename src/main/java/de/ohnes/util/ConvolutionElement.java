@@ -1,4 +1,4 @@
-package util;
+package de.ohnes.util;
 
 import java.util.List;
 

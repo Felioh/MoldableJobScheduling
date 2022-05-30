@@ -1,10 +1,11 @@
+package de.ohnes;
 import java.nio.file.Paths;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import logger.InstanceDeserializer;
-import util.Instance;
+import de.ohnes.logger.InstanceDeserializer;
+import de.ohnes.util.Instance;
 
 public class App {
     public static void main(String[] args) throws Exception {
