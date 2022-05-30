@@ -1,12 +1,10 @@
-package AlgorithmicComponents;
+package de.ohnes.AlgorithmicComponents;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import util.ConvolutionElement;
-import util.Instance;
-import util.Job;
+import de.ohnes.util.*;
 
 public class KnapsackSolver {
 

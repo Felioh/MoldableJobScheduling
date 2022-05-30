@@ -1,10 +1,8 @@
+package de.ohnes;
 
-
-import AlgorithmicComponents.KnapsackSolver;
-import logger.printSchedule;
-import util.Instance;
-import util.Job;
-import util.MyMath;
+import de.ohnes.AlgorithmicComponents.KnapsackSolver;
+import de.ohnes.logger.printSchedule;
+import de.ohnes.util.*;
 
 public class Algo {
 

@@ -1,12 +1,10 @@
-package AlgorithmicComponents;
+package de.ohnes.AlgorithmicComponents;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import logger.printSchedule;
-import util.ConvolutionElement;
-import util.Job;
-import util.MyMath;
+import de.ohnes.logger.printSchedule;
+import de.ohnes.util.*;
 
 public class MaxConvolution {
 

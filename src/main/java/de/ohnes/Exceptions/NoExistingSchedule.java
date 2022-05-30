@@ -1,4 +1,4 @@
-package Exceptions;
+package de.ohnes.Exceptions;
 
 public class NoExistingSchedule extends Exception {
 
