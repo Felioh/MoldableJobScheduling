@@ -1,0 +1,38 @@
+{
+    "machines": 3,
+    "number_jobs": 4,
+    "jobs": [
+        {
+            "id": 0,
+            "processingTimes": [90, 46, 40]
+        },
+        {
+            "id": 1,
+            "processingTimes": [90, 47, 40]
+        },
+        {
+            "id": 2,
+            "processingTimes": [90, 48, 41]
+        },
+        {
+            "id": 3,
+            "processingTimes": [90, 49, 40]
+        },
+        {
+            "id": 4,
+            "processingTimes": [110, 60, 41]
+        },
+        {
+            "id": 5,
+            "processingTimes": [110, 60, 42]
+        },
+        {
+            "id": 6,
+            "processingTimes": [110, 60, 43]
+        },
+        {
+            "id": 7,
+            "processingTimes": [110, 60, 44]
+        }
+    ]
+}

@@ -15,7 +15,7 @@ public class App {
         module.addDeserializer(Instance.class, new InstanceDeserializer());
         mapper.registerModule(module);
 
-        Instance I = mapper.readValue(Paths.get("TestInstance.json").toFile(), Instance.class);
+        Instance I = mapper.readValue(Paths.get("TestInstance copy 2.json").toFile(), Instance.class);
 
         // Instance I = new Instance();
 

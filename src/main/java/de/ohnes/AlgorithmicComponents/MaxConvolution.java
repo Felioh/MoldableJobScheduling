@@ -20,14 +20,34 @@ public class MaxConvolution {
         ConvolutionElement[] result = new ConvolutionElement[len];
         for(int j = 0; j < len; j++) {
             ConvolutionElement bestElement = new ConvolutionElement(0, new ArrayList<>());
-            int x = 0;
+            int x = -1;
             int y = j;
-            while(y >= 0) {
-                if(seqA[y].getProfit() + seqB[x].getProfit() > bestElement.getProfit()) {
+            while(y >= -1) {
+                int profitA = 0;
+                int profitB = 0;
+                try {
+                    profitA = seqA[x].getProfit();
+                } catch (IndexOutOfBoundsException e) {
+
+                }
+                try {
+                    profitB = seqB[y].getProfit();
+                } catch (IndexOutOfBoundsException e) {
+
+                }
+                if(profitA + profitB > bestElement.getProfit()) {
                     ArrayList<Job> selected_jobs = new ArrayList<>();
-                    selected_jobs.addAll(seqA[y].getJobs());
-                    selected_jobs.addAll(seqB[x].getJobs());
-                    bestElement = new ConvolutionElement(seqB[x].getProfit() + seqA[y].getProfit(), selected_jobs);
+                    try {
+                        selected_jobs.addAll(seqA[x].getJobs());
+                    } catch (IndexOutOfBoundsException e) {
+                        //TODO: handle exception
+                    }
+                    try {
+                        selected_jobs.addAll(seqB[y].getJobs());
+                    } catch (IndexOutOfBoundsException e) {
+                        //TODO: handle exception
+                    }
+                    bestElement = new ConvolutionElement(profitA + profitB, selected_jobs);
                 }
                 x++;
                 y--;
@@ -47,12 +67,23 @@ public class MaxConvolution {
      */
     public static ConvolutionElement[] linearApproach(ConvolutionElement[] seqA, ConvolutionElement[] seqB) {
 
-        ImaginaryMatrix A = new ImaginaryMatrix(seqA, seqB);
+        ConvolutionElement[] seqA2 = new ConvolutionElement[seqA.length + 1];
+        seqA2[0] = new ConvolutionElement(0, new ArrayList<>());
+        for(int i = 0; i < seqA.length; i++) {
+            seqA2[i + 1] = seqA[i];
+        }
+        ConvolutionElement[] seqB2 = new ConvolutionElement[seqB.length + 1];
+        seqB2[0] = new ConvolutionElement(0, new ArrayList<>());
+        for(int i = 0; i < seqB.length; i++) {
+            seqB2[i + 1] = seqB[i];
+        }
+
+        ImaginaryMatrix A = new ImaginaryMatrix(seqA2, seqB2);
 
         int[] max_ind = linearApproach_maxCompute(A);   //TODO column index is wrong
-        ConvolutionElement[] seqC = new ConvolutionElement[max_ind.length];
+        ConvolutionElement[] seqC = new ConvolutionElement[max_ind.length - 1];
         for(int i = 0; i < seqC.length; i++) {
-            seqC[i] = A.getConvolutionElement(i, max_ind[i]);
+            seqC[i] = A.getConvolutionElement(i + 1, max_ind[i + 1]);
         }
         return seqC;
     }
@@ -107,7 +138,7 @@ public class MaxConvolution {
         List<Integer> delCols = new ArrayList<>();
         int k = 0;
         while(A.getColumns() > A.getRows()) {
-            if(A.getElement(k, k) > A.getElement(k, k + 1)) {
+            if(A.getElement(k, k) >= A.getElement(k, k + 1)) {
                 if(k < A.getRows()) {
                     k++;
                 }
@@ -180,7 +211,7 @@ class ImaginaryMatrix {
         // List<Job> jobs = new ArrayList<>();
         // jobs.addAll(seqA[getRealColumn(j)].getJobs());
         // jobs.addAll(seqB[getRealRow(i) - getRealColumn(j)].getJobs());
-        return MyMath.addConvolutionElements(seqA[getRealColumn(j)], seqB[getRealRow(i) - getRealColumn(j)]);
+        return MyMath.addConvolutionElements(seqA[getRealColumn(j)], seqB[getRealRow(i - j)]);
     }
 
     int getColumns() {
