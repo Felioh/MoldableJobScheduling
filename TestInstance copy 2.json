@@ -1,6 +1,6 @@
 {
     "machines": 3,
-    "number_jobs": 4,
+    "number_jobs": 8,
     "jobs": [
         {
             "id": 0,

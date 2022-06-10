@@ -23,5 +23,6 @@ public class App {
         
         System.out.println(I);
         Algo.findTwoShelves(I, 100);
+        Algo.findThreeShelvesSchedule(I, 100);
     }
 }

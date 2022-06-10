@@ -1,0 +1,22 @@
+{
+    "machines": 3,
+    "number_jobs": 4,
+    "jobs": [
+        {
+            "id": 0,
+            "processingTimes": [51, 49, 48]
+        },
+        {
+            "id": 1,
+            "processingTimes": [51, 49, 48]
+        },
+        {
+            "id": 2,
+            "processingTimes": [100, 70, 61]
+        },
+        {
+            "id": 3,
+            "processingTimes": [60, 31, 29]
+        }
+    ]
+}

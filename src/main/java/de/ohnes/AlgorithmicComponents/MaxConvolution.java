@@ -3,7 +3,6 @@ package de.ohnes.AlgorithmicComponents;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.ohnes.logger.printSchedule;
 import de.ohnes.util.*;
 
 public class MaxConvolution {

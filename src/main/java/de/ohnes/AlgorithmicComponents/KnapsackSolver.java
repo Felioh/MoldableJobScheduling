@@ -41,7 +41,7 @@ public class KnapsackSolver {
             for(int j = 1; j <= W; j++) {       //increasing capacity
                 List<Job> selected_Jobs = new ArrayList<>();
                 List<Integer> selected_Profit = new ArrayList<>();
-                while(selected_Jobs.size() * i <= (j - i) && !profit.isEmpty()) {        // <= j - i because there needs to be space for at least one item of weight i
+                while(selected_Jobs.size() * i <= (W - i) && !profit.isEmpty()) {        // <= W - i because there needs to be space for at least one item of weight i
                     int maxProfit = Collections.max(profit);
                     selected_Profit.add(maxProfit);
                     selected_Jobs.add(currJobs.get(profit.indexOf(maxProfit)));
