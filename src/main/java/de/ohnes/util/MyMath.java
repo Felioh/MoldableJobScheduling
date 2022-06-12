@@ -28,6 +28,39 @@ public class MyMath {
     }
 
     /**
+     * 
+     * @param I the instance object including all jobs
+     * @param d the deadline
+     * @return all Jobs that have a sequential processing time <= d/2 
+     */
+    public static Job[] findSmallJobs(Instance I, double d) {
+        Stream<Job> jobs = Arrays.stream(I.getJobs());
+        return jobs.filter(j -> j.getProcessingTimes()[0] <= d / 2).toArray(Job[] :: new);
+    }
+
+    /**
+     * 
+     * @param I the instance object including all jobs
+     * @param d the deadline
+     * @return all Jobs that have a processing Time > d/2
+     */
+    public static Job[] findShelf1(Instance I, double d) {
+        Stream<Job> jobs = Arrays.stream(I.getJobs());
+        return jobs.filter(j ->j.getAllotedMachines() != 0 && j.getProcessingTime(j.getAllotedMachines()) > d / 2).toArray(Job[] :: new);
+    }
+
+    /**
+     * 
+     * @param I the instance object including all jobs
+     * @param d the deadline
+     * @return all Jobs that have a processing Time > d/2
+     */
+    public static Job[] findShelf2(Instance I, double d) {
+        Stream<Job> jobs = Arrays.stream(I.getJobs());
+        return jobs.filter(j ->j.getAllotedMachines() != 0 && j.getProcessingTime(j.getAllotedMachines()) <= d / 2).toArray(Job[] :: new);
+    }
+
+    /**
      * addition of two convolution Elements used in the knapsackSolver.
      * @param a first Convolution Element
      * @param b second convolution Element

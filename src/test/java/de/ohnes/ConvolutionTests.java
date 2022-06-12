@@ -1,13 +1,11 @@
 package de.ohnes;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -36,7 +34,7 @@ public class ConvolutionTests {
     // }
 
     @Parameterized.Parameters
-    public static Collection input() {
+    public static List<Object[]> input() {
         ConvolutionElement[] seqA1 = new ConvolutionElement[] {new ConvolutionElement(1, new ArrayList<>()), 
                                                                new ConvolutionElement(2, new ArrayList<>())};
         ConvolutionElement[] seqB1 = new ConvolutionElement[] {new ConvolutionElement(3, new ArrayList<>()), 
@@ -62,11 +60,20 @@ public class ConvolutionTests {
     }
 
     @Test
-    public void testConvolutions() {
+    public void testLinearConvolutions() {
         ConvolutionElement[] linearResult = MaxConvolution.linearApproach(seqA, seqB);
         // ConvolutionElement[] linearResult = MaxConvolution.nativeApproach(seqA, seqB, seqA.length);
         for(int i = 0; i < linearResult.length; i++) {
             assertEquals(linearResult[i].getProfit(), seqC[i].getProfit());
+        }
+        // assertArrayEquals(MaxConvolution.linearApproach(seqA, seqB), MaxConvolution.linearApproach(seqA, seqB));
+    }
+
+    @Test
+    public void testNativeConvolutions() {
+        ConvolutionElement[] nativeResult = MaxConvolution.nativeApproach(seqA, seqB, seqA.length);
+        for(int i = 0; i < nativeResult.length; i++) {
+            assertEquals(nativeResult[i].getProfit(), seqC[i].getProfit());
         }
         // assertArrayEquals(MaxConvolution.linearApproach(seqA, seqB), MaxConvolution.linearApproach(seqA, seqB));
     }

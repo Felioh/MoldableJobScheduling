@@ -57,15 +57,18 @@ public class Instance {
      */
     public int canonicalNumberMachines(long i, double h) {
         int[] processingTimes = this.jobs[(int) i].getProcessingTimes();
+        if(processingTimes[this.m - 1] > h) {
+            return -1;
+        }
         int r = processingTimes.length - 1;
         int l = 0;
         while (r >= l) {
             int mid = l + (r - l) / 2;
-            if (processingTimes[mid] == h) return mid;
+            if (processingTimes[mid] == h) break;
             if (processingTimes[mid] < h) r = mid - 1;
             if (processingTimes[mid] > h) l = mid + 1;
         }
-        return processingTimes[this.m - 1] > h ? this.m + 1 : l + 1; //TODO: wrong if processing time is exactly h!!
+        return l + (r - l) / 2 + 1;
     }
 
     @Override
