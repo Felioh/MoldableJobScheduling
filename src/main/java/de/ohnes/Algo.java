@@ -3,7 +3,8 @@ package de.ohnes;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.ohnes.AlgorithmicComponents.KnapsackSolver;
+import de.ohnes.AlgorithmicComponents.Knapsack.ConvolutionKnapsack;
+import de.ohnes.AlgorithmicComponents.Knapsack.KnapsackSolver;
 import de.ohnes.logger.printSchedule;
 import de.ohnes.util.*;
 
@@ -64,7 +65,8 @@ public class Algo {
         
 
         // bigJobs = MyMath.dynamicKnapsack(bigJobs, weight, profit, bigJobs.length, I.getM(), I, d);
-        Job[] shelf1 = KnapsackSolver.knapsackConvolution(bigJobs, weight, profit, bigJobs.length, I.getM());
+        KnapsackSolver kS = new ConvolutionKnapsack();
+        Job[] shelf1 = kS.solve(bigJobs, weight, profit, bigJobs.length, I.getM());
         for(Job selectedJob : shelf1) {
             selectedJob.setAllotedMachines(I.canonicalNumberMachines(selectedJob.getId(), d));
 
@@ -126,6 +128,7 @@ public class Algo {
             int q = I.getM() - (p1 + p0);
             if(q > 0 && job.getProcessingTime(q) <= 3/2 * d) {
                 int p = I.canonicalNumberMachines(job.getId(), 3/2 * d);
+                //TODO: if moved to shelf1: apply rules 1 and 2!!!
                 job.setAllotedMachines(p);      //either S0 or S1. TODO S0 wenn y(i, p) > d. wenn y(i, d) <= d S1
                 if(job.getProcessingTime(p) > d) {
                     p0 += p;

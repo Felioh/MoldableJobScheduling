@@ -11,7 +11,9 @@ import javax.xml.crypto.dsig.spec.HMACParameterSpec;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.ohnes.AlgorithmicComponents.KnapsackSolver;
+import de.ohnes.AlgorithmicComponents.Knapsack.ConvolutionKnapsack;
+import de.ohnes.AlgorithmicComponents.Knapsack.DynamicKnapsack;
+import de.ohnes.AlgorithmicComponents.Knapsack.KnapsackSolver;
 import de.ohnes.util.*;
 
 
@@ -40,8 +42,17 @@ public class KnapsackTests {
     }
 
     @Test
-    public void KnapsackTest1() {
-        Job[] selectedJobs = KnapsackSolver.knapsackConvolution(this.instance.getJobs(), wt, val, n, W);
+    public void KnapsackTestConvolutionOutputSize() {
+        KnapsackSolver kS = new ConvolutionKnapsack();
+        Job[] selectedJobs = kS.solve(this.instance.getJobs(), wt, val, n, W);
+        assertTrue("The number of selected Jobs should be <= to the capacity", selectedJobs.length <= W); //length should be leq than capacity
+        // assertThat(selectedJobs, );
+    }
+
+    @Test
+    public void KnapsackTestDynamicOutputSize() {
+        KnapsackSolver kS = new DynamicKnapsack();
+        Job[] selectedJobs = kS.solve(this.instance.getJobs(), wt, val, n, W);
         assertTrue("The number of selected Jobs should be <= to the capacity", selectedJobs.length <= W); //length should be leq than capacity
         // assertThat(selectedJobs, );
     }
