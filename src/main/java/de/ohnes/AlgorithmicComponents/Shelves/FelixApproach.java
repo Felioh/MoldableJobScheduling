@@ -10,9 +10,17 @@ import de.ohnes.AlgorithmicComponents.Knapsack.KnapsackSolver;
 import de.ohnes.logger.printSchedule;
 import de.ohnes.util.*;
 
-public class FelixApproach implements Algorithm {
+public class FelixApproach extends FrenchApproach {
 
-    public boolean solve(Instance I, double d, double epsilon) {
+    private Instance I;
+
+    public FelixApproach(Instance I) {
+        super(I);
+        this.I = I;
+    }
+
+    @Override
+    public boolean solve(double d, double epsilon) {
 
         //parameters
         double delta = (1 / 5.0) * epsilon;
@@ -110,53 +118,14 @@ public class FelixApproach implements Algorithm {
         // System.out.println(printSchedule.printTwoShelves(bigJobs, (int) d));
         System.out.println(printSchedule.printTwoShelves(bigJobs, (int) d));
 // ############################################## DEBUG ##################################################################################################################
+        
+        applyTransformationRules(d, bigJobs, shelf1, p1);
 
-        //three shelves
-        Job[] shelf2 =  MyMath.findShelf2(I, d);
-        int p0 = 0;     //processors required by S0.
-
-        //Note: below transformations dont increase the total work, so WShelf1 < I.getM() * d - Ws still holds.
-
-        Job singleSmallJob = null;
-        for(Job job : shelf1) {
-            int allotedMachines = job.getAllotedMachines();
-            int pTime = job.getProcessingTime(allotedMachines);
-            
-            if (pTime <= 3/4 * d && allotedMachines > 1) {
-                p1 -= job.getAllotedMachines();
-                job.setAllotedMachines(allotedMachines - 1);        //assign to shelf 0.
-                p0 += job.getAllotedMachines();
-            } else if(pTime <= 3/4 * d && allotedMachines == 1) {
-                if(singleSmallJob == null) {
-                    singleSmallJob = job;
-                } else {
-                    p1 -= job.getAllotedMachines();     // == 1
-                    p1 -= singleSmallJob.getAllotedMachines();
-                    p0 += job.getAllotedMachines();
-                    singleSmallJob.setStartingTime(pTime);         //assign both to shelf 0.
-                    singleSmallJob = null;
-                }
-            }
-        }
-
-        for(Job job : shelf2) {
-            int q = I.getM() - (p1 + p0);
-            if(q > 0 && job.getProcessingTime(q) <= 3/2 * d) {
-                int p = I.canonicalNumberMachines(job.getId(), 3/2 * d);
-                //TODO: if moved to shelf1: apply rules 1 and 2!!!
-                job.setAllotedMachines(p);      //either S0 or S1. TODO S0 wenn y(i, p) > d. wenn y(i, d) <= d S1
-                if(job.getProcessingTime(p) > d) {
-                    p0 += p;
-                } else {
-                    p1 += p;
-                }
-            }
-        }
 
 // ############################################## DEBUG ##################################################################################################################
         System.out.println();
         // System.out.println(printSchedule.printTwoShelves(bigJobs, (int) d));
-        System.out.println(printSchedule.printTwoShelves(bigJobs, (int) d));
+        System.out.println(printSchedule.printThreeShelves(bigJobs, (int) d));
 // ############################################## DEBUG ##################################################################################################################
         return true;
     }

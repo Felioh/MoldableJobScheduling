@@ -6,6 +6,12 @@ import de.ohnes.util.Job;
 
 public class CompressionApproach implements Algorithm {
 
+    private Instance I;
+
+    public CompressionApproach(Instance I) {
+        this.I = I;
+    }
+
     /**
      * Schedule Jobs to respect d threshold and then compress big jobs.
      * @param I
@@ -14,7 +20,7 @@ public class CompressionApproach implements Algorithm {
      * @return
      */
     @Override
-    public boolean solve(Instance I, double d, double epsilon) {
+    public boolean solve(double d, double epsilon) {
         int allotedMachines = 0;
         for(Job job : I.getJobs()) {
             int neededMachines = I.canonicalNumberMachines(job.getId(), d);

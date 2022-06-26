@@ -38,7 +38,7 @@ public class DualApproximationFramework {
         double mid = l + (r - l) / 2;
 
         //note: here the same Instance Object can be used, because the jobs are all reassigned every time.
-        if(this.fptas.solve(I, mid, epsilon)) { //a schedule of length "mid" exists
+        if(this.fptas.solve(mid, epsilon)) { //a schedule of length "mid" exists
 
             if(r - mid < epsilon) {     //TODO think about minimal steplength
                 return mid;

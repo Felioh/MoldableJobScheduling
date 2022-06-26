@@ -1,5 +1,6 @@
 package de.ohnes.logger;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,9 +53,24 @@ public class printSchedule {
         return result;
     }
 
-    public static String printThreeShelves(Job[] shelf0, Job[] shelf1, Job[] shelf2, int d) {
+    public static String printThreeShelves(Job[] jobs, int d) {
         String result = "";
         boolean flipper = false;
+        List<Job> shelf1 = new ArrayList<>();
+        List<Job> shelf0 = new ArrayList<>();
+        List<Job> shelf2 = new ArrayList<>();
+
+        for(Job job : jobs) {
+            if(job.getProcessingTime(job.getAllotedMachines()) <= (d / 2)) {
+                shelf1.add(job);
+                continue;
+            }
+            if(job.getProcessingTime(job.getAllotedMachines()) <= (d)) {
+                shelf2.add(job);
+                continue;
+            }
+            shelf0.add(job);
+        }
 
         result += "Shelf 1:\n";
         for(Job job : shelf1) {

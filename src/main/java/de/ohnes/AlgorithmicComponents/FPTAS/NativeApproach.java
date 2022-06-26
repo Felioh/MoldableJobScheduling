@@ -6,6 +6,12 @@ import de.ohnes.util.Job;
 
 public class NativeApproach implements Algorithm {
 
+    private Instance I;
+
+    public NativeApproach(Instance I) {
+        this.I = I;
+    }
+
     /**
      * Schedule all Jobs in parallel
      * Time: O(n log(m)) -> cannonicalNumerMachines takes O(log(m))
@@ -15,7 +21,7 @@ public class NativeApproach implements Algorithm {
      * @return
      */
     @Override
-    public boolean solve(Instance I, double d, double epsilon) {
+    public boolean solve(double d, double epsilon) {
         int allotedMachines = 0;
         for(Job job : I.getJobs()) {
             int neededMachines = I.canonicalNumberMachines(job.getId(), (1 + epsilon) * d);

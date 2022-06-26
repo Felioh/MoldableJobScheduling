@@ -24,7 +24,7 @@ public class App {
         // I.generateRandomInstance(8, 10, 2, 5);
         
         System.out.println(I);
-        Algorithm Algo = new FelixApproach();
-        Algo.solve(I, 100, 0.5);
+        Algorithm Algo = new FelixApproach(I);
+        Algo.solve(100, 0.5);
     }
 }
