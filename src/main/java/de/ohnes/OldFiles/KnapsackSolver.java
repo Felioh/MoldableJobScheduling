@@ -1,9 +1,10 @@
-package de.ohnes.AlgorithmicComponents;
+package de.ohnes.OldFiles;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import de.ohnes.AlgorithmicComponents.MaxConvolution;
 import de.ohnes.util.*;
 
 public class KnapsackSolver {
@@ -73,7 +74,8 @@ public class KnapsackSolver {
      * @param W maximal capacity
      * @return an array of all selected jobs.
      */
-    public static Job[] dynamicKnapsack(Job[] jobs, int[] wt, int[] val, int n, int W, Instance I, double d) {
+    public static Job[] dynamicKnapsack(Job[] jobs, int[] wt, int[] val, int n, int W) {
+        List<Job> selectedJobs = new ArrayList<>();
         int i, w;
         int K[][] = new int[n + 1][W + 1];
  
@@ -106,7 +108,8 @@ public class KnapsackSolver {
             else {
  
                 // This item is included.
-                jobs[i - 1].setAllotedMachines(I.canonicalNumberMachines(jobs[i - 1].getId(), d));    //allot job to machines respecting d as a threshold
+                selectedJobs.add(jobs[i - 1]);
+                // jobs[i - 1].setAllotedMachines(I.canonicalNumberMachines(jobs[i - 1].getId(), d));    //allot job to machines respecting d as a threshold
  
                 // Since this weight is included its
                 // value is deducted
@@ -114,7 +117,7 @@ public class KnapsackSolver {
                 w = w - wt[i - 1];
             }
         }
-        return jobs;
+        return selectedJobs.toArray(Job[] :: new);
     }
 
 

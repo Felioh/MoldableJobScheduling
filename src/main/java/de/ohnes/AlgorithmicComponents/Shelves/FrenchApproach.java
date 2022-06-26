@@ -1,21 +1,28 @@
-package de.ohnes;
+package de.ohnes.AlgorithmicComponents.Shelves;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import de.ohnes.AlgorithmicComponents.KnapsackSolver;
+import de.ohnes.AlgorithmicComponents.Algorithm;
+import de.ohnes.AlgorithmicComponents.Knapsack.ConvolutionKnapsack;
+import de.ohnes.AlgorithmicComponents.Knapsack.KnapsackSolver;
 import de.ohnes.logger.printSchedule;
-import de.ohnes.util.*;
+import de.ohnes.util.Instance;
+import de.ohnes.util.Job;
+import de.ohnes.util.MyMath;
 
-public class Algo {
+public class FrenchApproach implements Algorithm {
+
+    private Instance I;
+
+    public FrenchApproach(Instance I) {
+        this.I = I;
+    }
 
     /**
      * finds a two shelf shedule for the instance I with deadline d, if a schedule of length d exists.
-     * @param I The instance I. Objects will be altered, so there is no instance returned.
-     * @param d the deadline
+     * @param d the deadline (makespan guess)
+     * @param epsilon the "the small error"
      * @return true if a schedule of length d exists, false if none exists.
      */
-    public static boolean findTwoShelves(Instance I, double d) {
+    public boolean solve(double d, double epsilon) {
         //"forget about small jobs"
         Job[] bigJobs = MyMath.findBigJobs(I, d);
 
@@ -64,9 +71,12 @@ public class Algo {
         
 
         // bigJobs = MyMath.dynamicKnapsack(bigJobs, weight, profit, bigJobs.length, I.getM(), I, d);
-        Job[] shelf1 = KnapsackSolver.knapsackConvolution(bigJobs, weight, profit, bigJobs.length, I.getM());
+        KnapsackSolver kS = new ConvolutionKnapsack();
+        int p1 = 0;
+        Job[] shelf1 = kS.solve(bigJobs, weight, profit, bigJobs.length, I.getM());
         for(Job selectedJob : shelf1) {
             selectedJob.setAllotedMachines(I.canonicalNumberMachines(selectedJob.getId(), d));
+            p1 += I.canonicalNumberMachines(selectedJob.getId(), d); //keep track of p1
 
             //update WShelf1
             WShelf1 += selectedJob.getAllotedMachines() * selectedJob.getProcessingTime(selectedJob.getAllotedMachines());
@@ -80,36 +90,33 @@ public class Algo {
         // System.out.println(printSchedule.printTwoShelves(bigJobs, (int) d));
         System.out.println(printSchedule.printTwoShelves(bigJobs, (int) d));
 
-        return true;
+        applyTransformationRules(d, bigJobs, shelf1, p1);
 
-    }
+        return true;
+    };
 
     /**
-     * converts a two shelf schedule to a feasible three schelves schedule.
+     * converts a two shelf schedule to a feasible three schelves schedule. (s. 5.3.1.3 Thesis Felix)
      * @param I an Instance. A two Shelves schedule has to aleady been build.
      * @param d the deadline (also of the two shelves Schedule)
      * @return true if there exists a feasible schedule, false if not
      */
-    public static boolean findThreeShelvesSchedule(Instance I, double d) {
+    protected void applyTransformationRules(double d, Job[] bigJobs, Job[] shelf1, int p1) {
 
-        Job[] jobs = I.getJobs();
-        Job[] bigJobs = MyMath.findBigJobs(I, d);
-        Job[] shelf1 = MyMath.findShelf1(I, d);
         Job[] shelf2 = MyMath.findShelf2(I, d);
 
         int p0 = 0;     //processors required by S0.
-        int p1 = I.getM();     //processors required by S1.  TODO: not correct!!!!
 
         Job singleSmallJob = null;
         for(Job job : shelf1) {
             int allotedMachines = job.getAllotedMachines();
             int pTime = job.getProcessingTime(allotedMachines);
             
-            if (pTime <= 3/4 * d && allotedMachines > 1) {
+            if (pTime <= (3/4.0) * d && allotedMachines > 1) {
                 p1 -= job.getAllotedMachines();
                 job.setAllotedMachines(allotedMachines - 1);        //assign to shelf 0.
                 p0 += job.getAllotedMachines();
-            } else if(pTime <= 3/4 * d && allotedMachines == 1) {
+            } else if(pTime <= (3/4.0) * d && allotedMachines == 1) {
                 if(singleSmallJob == null) {
                     singleSmallJob = job;
                 } else {
@@ -124,8 +131,9 @@ public class Algo {
 
         for(Job job : shelf2) {
             int q = I.getM() - (p1 + p0);
-            if(q > 0 && job.getProcessingTime(q) <= 3/2 * d) {
-                int p = I.canonicalNumberMachines(job.getId(), 3/2 * d);
+            if(q > 0 && job.getProcessingTime(q) <= (3/2.0) * d) {
+                int p = I.canonicalNumberMachines(job.getId(), (3/2.0) * d);
+                //TODO: if moved to shelf1: apply rules 1 and 2!!!
                 job.setAllotedMachines(p);      //either S0 or S1. TODO S0 wenn y(i, p) > d. wenn y(i, d) <= d S1
                 if(job.getProcessingTime(p) > d) {
                     p0 += p;
@@ -134,12 +142,6 @@ public class Algo {
                 }
             }
         }
-
-        
-
-
-
-        return true;
 
     }
 

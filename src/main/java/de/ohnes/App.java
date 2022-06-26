@@ -4,6 +4,8 @@ import java.nio.file.Paths;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
+import de.ohnes.AlgorithmicComponents.Algorithm;
+import de.ohnes.AlgorithmicComponents.Shelves.FelixApproach;
 import de.ohnes.logger.InstanceDeserializer;
 import de.ohnes.util.Instance;
 
@@ -15,14 +17,14 @@ public class App {
         module.addDeserializer(Instance.class, new InstanceDeserializer());
         mapper.registerModule(module);
 
-        Instance I = mapper.readValue(Paths.get("TestInstance copy 2.json").toFile(), Instance.class);
+        Instance I = mapper.readValue(Paths.get("TestInstance copy 3.json").toFile(), Instance.class);
 
         // Instance I = new Instance();
 
         // I.generateRandomInstance(8, 10, 2, 5);
         
         System.out.println(I);
-        Algo.findTwoShelves(I, 100);
-        Algo.findThreeShelvesSchedule(I, 100);
+        Algorithm Algo = new FelixApproach(I);
+        Algo.solve(100, 0.5);
     }
 }

@@ -55,7 +55,7 @@ public class Instance {
      * O(log m)
      * @return -1 if the job cant be executed in time h
      */
-    public int canonicalNumberMachines(long i, double h) {
+    public int canonicalNumberMachines(long i, double h) { //TODO move into job
         int[] processingTimes = this.jobs[(int) i].getProcessingTimes();
         if(processingTimes[this.m - 1] > h) {
             return -1;
