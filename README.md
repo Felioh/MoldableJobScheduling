@@ -20,8 +20,15 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 
 
 # TODO
+- Algorithm.solve in French an Felix is not functional
+
 - ConvolutionElement.add() hinzufügen. (the objects are not reued, so they can be altered.)
 - ConvolutionList -> either linkedList? HashMap?
 
 
 - Decision, if a feasible schedule exists.  -> Knapsack result with work < md - W_s
+
+
+# Ausarbeitung
+- package: amsthm -> für Lemma
+- Related work section -> State of the Art angeben

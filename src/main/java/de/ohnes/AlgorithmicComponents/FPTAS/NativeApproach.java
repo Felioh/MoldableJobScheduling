@@ -1,9 +1,10 @@
 package de.ohnes.AlgorithmicComponents.FPTAS;
 
+import de.ohnes.AlgorithmicComponents.Algorithm;
 import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
 
-public class NativeApproach implements FPTAS {
+public class NativeApproach implements Algorithm {
 
     /**
      * Schedule all Jobs in parallel

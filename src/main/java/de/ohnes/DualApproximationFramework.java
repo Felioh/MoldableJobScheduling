@@ -1,18 +1,17 @@
 package de.ohnes;
 
 
-import de.ohnes.AlgorithmicComponents.FPTAS.FPTAS;
-import de.ohnes.AlgorithmicComponents.Knapsack.KnapsackSolver;
+import de.ohnes.AlgorithmicComponents.Algorithm;
 import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
 
 public class DualApproximationFramework {
     
     //an fptas that is to be used for a large number of machines (>= 8*(n/epsilon))
-    private FPTAS fptas;
+    private Algorithm fptas;
     // private KnapsackSolver knapsackSolver; //TODO think about structure
 
-    public DualApproximationFramework(FPTAS fptas) {
+    public DualApproximationFramework(Algorithm fptas) {
         this.fptas = fptas;
     }
     
@@ -20,7 +19,7 @@ public class DualApproximationFramework {
     public boolean start(Instance I, double epsilon) {
         if(I.getM() >= 8 * (I.getN() / epsilon)) {
             //use the FPTAS
-            double lowerBound = 0;
+            double lowerBound = 0; //TODO either like that or 2 approx. * (1/2) 
             double upperBound = 0;
             for(Job job : I.getJobs()) {
                 lowerBound += job.getProcessingTime(1);

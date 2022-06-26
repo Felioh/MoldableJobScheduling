@@ -1,7 +1,7 @@
-package de.ohnes.AlgorithmicComponents.FPTAS;
+package de.ohnes.AlgorithmicComponents;
 
 import de.ohnes.util.Instance;
 
-public interface FPTAS {
+public interface Algorithm {
     public boolean solve(Instance I, double d, double epsilon);
 }

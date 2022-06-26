@@ -1,9 +1,10 @@
 package de.ohnes.AlgorithmicComponents.FPTAS;
 
+import de.ohnes.AlgorithmicComponents.Algorithm;
 import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
 
-public class CompressionApproach implements FPTAS {
+public class CompressionApproach implements Algorithm {
 
     /**
      * Schedule Jobs to respect d threshold and then compress big jobs.
