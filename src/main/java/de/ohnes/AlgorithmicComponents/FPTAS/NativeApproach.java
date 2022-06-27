@@ -24,7 +24,7 @@ public class NativeApproach implements Algorithm {
     public boolean solve(double d, double epsilon) {
         int allotedMachines = 0;
         for(Job job : I.getJobs()) {
-            int neededMachines = I.canonicalNumberMachines(job.getId(), (1 + epsilon) * d);
+            int neededMachines = job.canonicalNumberMachines((1 + epsilon) * d);
             if (neededMachines == -1) {
                 return false;       //there exists no schedule if a task cant be scheduled in (1 + epsilon) * d time
             }

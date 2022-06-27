@@ -23,7 +23,7 @@ public class CompressionApproach implements Algorithm {
     public boolean solve(double d, double epsilon) {
         int allotedMachines = 0;
         for(Job job : I.getJobs()) {
-            int neededMachines = I.canonicalNumberMachines(job.getId(), d);
+            int neededMachines = job.canonicalNumberMachines(d);
             if (neededMachines == -1) {
                 return false;       //there exists no schedule if a task cant be scheduled in (1 + epsilon) * d time
             }

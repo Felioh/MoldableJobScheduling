@@ -1,9 +1,5 @@
 package de.ohnes.AlgorithmicComponents.Shelves;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import de.ohnes.AlgorithmicComponents.Algorithm;
 import de.ohnes.AlgorithmicComponents.GeometricalRounding;
 import de.ohnes.AlgorithmicComponents.Knapsack.ConvolutionKnapsack;
 import de.ohnes.AlgorithmicComponents.Knapsack.KnapsackSolver;
@@ -42,7 +38,7 @@ public class FelixApproach extends FrenchApproach {
 
         //all the tasks are initially allotted to their canonical number of processors to respect the d/2 threshold
         for(Job job : bigJobs) {
-            job.setAllotedMachines(I.canonicalNumberMachines(job.getId(), d/2));
+            job.setAllotedMachines(job.canonicalNumberMachines(d/2));
         }
 
         //transform to knapsack problem
@@ -50,7 +46,7 @@ public class FelixApproach extends FrenchApproach {
         int[] weight = new int[bigJobs.length];
         // int C = I.getM() - cap;
         for(int i = 0; i < bigJobs.length; i++) {
-            int dAllotment = I.canonicalNumberMachines(bigJobs[i].getId(), d); //Note: Can not be -1. Since the has to exost a schedule with makespan d.
+            int dAllotment = bigJobs[i].canonicalNumberMachines(d); //Note: Can not be -1. Since the has to exost a schedule with makespan d.
             int dHalfAllotment = bigJobs[i].getAllotedMachines();
 
             if(dAllotment > b) { //rounding
@@ -80,8 +76,8 @@ public class FelixApproach extends FrenchApproach {
                         profit[i] = (int) GeometricalRounding.gCeil(profit[i],(int) ((delta / 2) * d),(int) ((b / 2) * d), 1 + (delta / b)); //TODO: chcek Rounding by integer casting
                     }
                 } else { //not compressed job
-                    double dHalfTime = GeometricalRounding.gFloor(bigJobs[i].getProcessingTime(I.canonicalNumberMachines(bigJobs[i].getId(), d / 2)), (int) (d / 4), (int) (d / 2), 1 + (delta / b));
-                    double dTime = GeometricalRounding.gFloor(bigJobs[i].getProcessingTime(I.canonicalNumberMachines(bigJobs[i].getId(), d)), (int) (d / 2), (int) d, 1 + (delta / b));
+                    double dHalfTime = GeometricalRounding.gFloor(bigJobs[i].getProcessingTime(bigJobs[i].canonicalNumberMachines(d / 2)), (int) (d / 4), (int) (d / 2), 1 + (delta / b));
+                    double dTime = GeometricalRounding.gFloor(bigJobs[i].getProcessingTime(bigJobs[i].canonicalNumberMachines(d)), (int) (d / 2), (int) d, 1 + (delta / b));
 
                     profit[i] = (int) ((dHalfTime * dHalfAllotment) - (dTime * dAllotment));
                 }
@@ -98,7 +94,7 @@ public class FelixApproach extends FrenchApproach {
         Job[] shelf1 = kS.solve(bigJobs, weight, profit, bigJobs.length, I.getM());
         int p1 = 0;     //processors required by S1.
         for(Job selectedJob : shelf1) {
-            int dAllotment = I.canonicalNumberMachines(selectedJob.getId(), d);
+            int dAllotment = selectedJob.canonicalNumberMachines(d);
             if(dAllotment > b) { //rounding
                 dAllotment = (int) GeometricalRounding.gFloor(dAllotment, (int) b, I.getM(), 1 + roh); //TODO: chcek Rounding by integer casting
             }
