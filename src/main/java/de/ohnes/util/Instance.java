@@ -49,28 +49,6 @@ public class Instance {
 
     }
 
-    /**
-     * find out the cononical number of machines for a job @param i with max. execution time @param h.
-     * using binary search
-     * O(log m)
-     * @return -1 if the job cant be executed in time h
-     */
-    public int canonicalNumberMachines(long i, double h) { //TODO move into job
-        int[] processingTimes = this.jobs[(int) i].getProcessingTimes();
-        if(processingTimes[this.m - 1] > h) {
-            return -1;
-        }
-        int r = processingTimes.length - 1;
-        int l = 0;
-        while (r >= l) {
-            int mid = l + (r - l) / 2;
-            if (processingTimes[mid] == h) break;
-            if (processingTimes[mid] < h) r = mid - 1;
-            if (processingTimes[mid] > h) l = mid + 1;
-        }
-        return l + (r - l) / 2 + 1;
-    }
-
     @Override
     public String toString() {
         String result = "";

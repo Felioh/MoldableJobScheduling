@@ -33,5 +33,26 @@ public class Job {
     public int getProcessingTime(int i) {
         return this.processingTimes[i - 1];
     }
+
+    /**
+     * find out the cononical number of machines for a job with max. execution time @param h.
+     * using binary search
+     * O(log m)
+     * @return -1 if the job cant be executed in time h
+     */
+    public int canonicalNumberMachines(double h) { //TODO move into job
+        int r = processingTimes.length - 1;
+        if(this.processingTimes[r] > h) {
+            return -1;
+        }
+        int l = 0;
+        while (r >= l) {
+            int mid = l + (r - l) / 2;
+            if (processingTimes[mid] == h) break;
+            if (processingTimes[mid] < h) r = mid - 1;
+            if (processingTimes[mid] > h) l = mid + 1;
+        }
+        return l + (r - l) / 2 + 1;
+    }
     
 }

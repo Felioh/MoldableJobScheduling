@@ -36,7 +36,7 @@ public class FrenchApproach implements Algorithm {
 
         //all the tasks are initially allotted to their canonical number of processors to respect the d/2 threshold
         for(Job job : bigJobs) {
-            job.setAllotedMachines(I.canonicalNumberMachines(job.getId(), d/2));
+            job.setAllotedMachines(job.canonicalNumberMachines(d/2));
         }
 
         // System.out.println(printSchedule.printTwoShelves(bigJobs, (int) d));
@@ -46,7 +46,7 @@ public class FrenchApproach implements Algorithm {
         int[] weight = new int[bigJobs.length];
         // int C = I.getM() - cap;
         for(int i = 0; i < bigJobs.length; i++) {
-            int dAllotment = I.canonicalNumberMachines(bigJobs[i].getId(), d); //Note: Can not be -1. Since the has to exost a schedule with makespan d.
+            int dAllotment = bigJobs[i].canonicalNumberMachines(d); //Note: Can not be -1. Since the has to exost a schedule with makespan d.
             int dHalfAllotment = bigJobs[i].getAllotedMachines();
 
 
@@ -75,8 +75,8 @@ public class FrenchApproach implements Algorithm {
         int p1 = 0;
         Job[] shelf1 = kS.solve(bigJobs, weight, profit, bigJobs.length, I.getM());
         for(Job selectedJob : shelf1) {
-            selectedJob.setAllotedMachines(I.canonicalNumberMachines(selectedJob.getId(), d));
-            p1 += I.canonicalNumberMachines(selectedJob.getId(), d); //keep track of p1
+            selectedJob.setAllotedMachines(selectedJob.canonicalNumberMachines(d));
+            p1 += selectedJob.canonicalNumberMachines(d); //keep track of p1
 
             //update WShelf1
             WShelf1 += selectedJob.getAllotedMachines() * selectedJob.getProcessingTime(selectedJob.getAllotedMachines());
@@ -132,7 +132,7 @@ public class FrenchApproach implements Algorithm {
         for(Job job : shelf2) {
             int q = I.getM() - (p1 + p0);
             if(q > 0 && job.getProcessingTime(q) <= (3/2.0) * d) {
-                int p = I.canonicalNumberMachines(job.getId(), (3/2.0) * d);
+                int p = job.canonicalNumberMachines((3/2.0) * d);
                 //TODO: if moved to shelf1: apply rules 1 and 2!!!
                 job.setAllotedMachines(p);      //either S0 or S1. TODO S0 wenn y(i, p) > d. wenn y(i, d) <= d S1
                 if(job.getProcessingTime(p) > d) {

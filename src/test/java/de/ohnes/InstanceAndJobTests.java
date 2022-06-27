@@ -9,41 +9,34 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
 
 @RunWith(Parameterized.class)
 public class InstanceAndJobTests {
 
-    private Instance I;
+    private Job job;
     private double h;
-    private int m;
+    private double canonicalNumberMachines;
     // private MaxConvolution maxConvolution;
 
-    public InstanceAndJobTests(Instance I, double h, int m) {
+    public InstanceAndJobTests(Job job, double h, double canonicalNumberMachines) {
         super();
-        this.I = I;
+        this.job = job;
         this.h = h;
-        this.m = m;
+        this.canonicalNumberMachines = canonicalNumberMachines;
     }
-
-    // @Before
-    // public void initialize() {
-    //     maxConvolution = new MaxConvolution();
-    // }
 
     @Parameterized.Parameters
     public static List<Object[]> input() {
         int[] pTimes = {100, 80, 50, 40 ,30};
-        Job[] jobs = {new Job(0, pTimes)};
-        Instance I1 = new Instance(0, 5, jobs);
+        Job job = new Job(0, pTimes);
 
-        return Arrays.asList(new Object[][] {{I1, 60, 3}, {I1, 50, 3}, {I1, 20, -1}});
+        return Arrays.asList(new Object[][] {{job, 60, 3}, {job, 50, 3}, {job, 20, -1}, {job, 100, 1}, {job, 110, 1}});
     }
 
     @Test
     public void testCannonicalNubmer() {
-        assertEquals(m, I.canonicalNumberMachines(0, h));
+        assertEquals(this.canonicalNumberMachines, job.canonicalNumberMachines(h), 0.0);
     }
 
     
