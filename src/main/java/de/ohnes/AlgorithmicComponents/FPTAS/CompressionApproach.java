@@ -8,8 +8,8 @@ public class CompressionApproach implements Algorithm {
 
     private Instance I;
 
-    public CompressionApproach(Instance I) {
-        this.I = I;
+    public CompressionApproach() {
+
     }
 
     /**
@@ -40,6 +40,12 @@ public class CompressionApproach implements Algorithm {
         }
 
         return true;
+    }
+
+    @Override
+    public void setInstance(Instance I) {
+        this.I = I;
+        
     }
     
 }

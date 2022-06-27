@@ -10,10 +10,10 @@ import de.ohnes.util.MyMath;
 
 public class FrenchApproach implements Algorithm {
 
-    private Instance I;
+    protected Instance I;
 
-    public FrenchApproach(Instance I) {
-        this.I = I;
+    public FrenchApproach() {
+        
     }
 
     /**
@@ -143,6 +143,12 @@ public class FrenchApproach implements Algorithm {
             }
         }
 
+    }
+
+    @Override
+    public void setInstance(Instance I) {
+        this.I = I;
+        
     }
 
 }

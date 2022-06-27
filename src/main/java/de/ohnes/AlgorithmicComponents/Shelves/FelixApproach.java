@@ -8,11 +8,8 @@ import de.ohnes.util.*;
 
 public class FelixApproach extends FrenchApproach {
 
-    private Instance I;
-
-    public FelixApproach(Instance I) {
-        super(I);
-        this.I = I;
+    public FelixApproach() {
+        super();
     }
 
     @Override
@@ -50,10 +47,10 @@ public class FelixApproach extends FrenchApproach {
             int dHalfAllotment = bigJobs[i].getAllotedMachines();
 
             if(dAllotment > b) { //rounding
-                dAllotment = (int) GeometricalRounding.gFloor(dAllotment, (int) b, I.getM(), 1 + roh); //TODO: chcek Rounding by integer casting
+                dAllotment = (int) GeometricalRounding.gFloor(dAllotment, b, I.getM(), 1 + roh);
             }
             if(dHalfAllotment > b) { //rounding
-                dHalfAllotment = (int) GeometricalRounding.gFloor(dHalfAllotment, (int) b, I.getM(), 1 + roh); //TODO: chcek Rounding by integer casting
+                dHalfAllotment = (int) GeometricalRounding.gFloor(dHalfAllotment, b, I.getM(), 1 + roh);
             }
 
 
@@ -73,11 +70,11 @@ public class FelixApproach extends FrenchApproach {
                     if(profit[i] < (delta / 2) * d) {
                         profit[i] = 0;
                     }else {
-                        profit[i] = (int) GeometricalRounding.gCeil(profit[i],(int) ((delta / 2) * d),(int) ((b / 2) * d), 1 + (delta / b)); //TODO: chcek Rounding by integer casting
+                        profit[i] = (int) GeometricalRounding.gCeil(profit[i], (delta / 2) * d, (b / 2) * d, 1 + (delta / b));
                     }
                 } else { //not compressed job
-                    double dHalfTime = GeometricalRounding.gFloor(bigJobs[i].getProcessingTime(bigJobs[i].canonicalNumberMachines(d / 2)), (int) (d / 4), (int) (d / 2), 1 + (delta / b));
-                    double dTime = GeometricalRounding.gFloor(bigJobs[i].getProcessingTime(bigJobs[i].canonicalNumberMachines(d)), (int) (d / 2), (int) d, 1 + (delta / b));
+                    double dHalfTime = GeometricalRounding.gFloor(bigJobs[i].getProcessingTime(bigJobs[i].canonicalNumberMachines(d / 2)), d / 4, d / 2, 1 + (delta / b));
+                    double dTime = GeometricalRounding.gFloor(bigJobs[i].getProcessingTime(bigJobs[i].canonicalNumberMachines(d)), d / 2, d, 1 + (delta / b));
 
                     profit[i] = (int) ((dHalfTime * dHalfAllotment) - (dTime * dAllotment));
                 }
@@ -96,7 +93,7 @@ public class FelixApproach extends FrenchApproach {
         for(Job selectedJob : shelf1) {
             int dAllotment = selectedJob.canonicalNumberMachines(d);
             if(dAllotment > b) { //rounding
-                dAllotment = (int) GeometricalRounding.gFloor(dAllotment, (int) b, I.getM(), 1 + roh); //TODO: chcek Rounding by integer casting
+                dAllotment = (int) GeometricalRounding.gFloor(dAllotment, b, I.getM(), 1 + roh);
             }
             selectedJob.setAllotedMachines(dAllotment);
             p1 += dAllotment; //keep track of the number of machines used by s1

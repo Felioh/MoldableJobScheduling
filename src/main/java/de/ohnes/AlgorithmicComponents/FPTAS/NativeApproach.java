@@ -8,8 +8,8 @@ public class NativeApproach implements Algorithm {
 
     private Instance I;
 
-    public NativeApproach(Instance I) {
-        this.I = I;
+    public NativeApproach() {
+
     }
 
     /**
@@ -37,6 +37,12 @@ public class NativeApproach implements Algorithm {
         }
 
         return true;
+    }
+
+    @Override
+    public void setInstance(Instance I) {
+        this.I = I;
+        
     }
     
 }

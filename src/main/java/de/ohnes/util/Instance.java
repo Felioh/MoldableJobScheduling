@@ -64,5 +64,31 @@ public class Instance {
         }
         return result;
     }
+
+    public double getMakespan() {
+        double maxMakespan = 0;
+        for(Job job : this.jobs) {
+            double finishTime = job.getStartingTime() + job.getProcessingTime(job.getAllotedMachines());
+            if(finishTime > maxMakespan) {
+                maxMakespan = finishTime;
+            }
+        }
+        return maxMakespan;
+    }
+
+    /**
+     * only for debugging
+     * @return
+     */
+    public double getMakespanBigJobs(double d) {
+        double maxMakespan = 0;
+        for(Job job : MyMath.findBigJobs(this, d)) {
+            double finishTime = job.getStartingTime() + job.getProcessingTime(job.getAllotedMachines());
+            if(finishTime > maxMakespan) {
+                maxMakespan = finishTime;
+            }
+        }
+        return maxMakespan;
+    }
     
 }
