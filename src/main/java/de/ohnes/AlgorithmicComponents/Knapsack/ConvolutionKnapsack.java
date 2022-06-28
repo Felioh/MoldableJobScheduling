@@ -23,7 +23,7 @@ public class ConvolutionKnapsack implements KnapsackSolver {
      * @return     A Subset of the Jobs to be selected
      */
     @Override
-    public Job[] solve(Job[] jobs, int[] wt, int[] val, int n, int W) {
+    public List<Job> solve(List<Job> jobs, int[] wt, int[] val, int n, int W) {
         ConvolutionElement[] sol = new ConvolutionElement[W];
         for(int j = 0; j < W; j++) {        //to avoid NullPointer
             sol[j] = new ConvolutionElement(0, new ArrayList<>());
@@ -32,10 +32,10 @@ public class ConvolutionKnapsack implements KnapsackSolver {
         for(int i = 1; i <= W; i++) {        //for every possible value of weights (D)
             List<Job> currJobs = new ArrayList<>();
             List<Integer> profit = new ArrayList<>();
-            for(int j = 0; j < jobs.length; j++) {
+            for(int j = 0; j < jobs.size(); j++) {
                 if(wt[j] == i) {
                     profit.add(val[j]);     //TODO: Dont use ArrayLists!!
-                    currJobs.add(jobs[j]);
+                    currJobs.add(jobs.get(j));
                 }
             }
 
@@ -61,7 +61,7 @@ public class ConvolutionKnapsack implements KnapsackSolver {
             sol = MaxConvolution.linearApproach(currSol, sol);
         }
         // sol[W - 1].getJobs().forEach(j -> j.setAllotedMachines(I.canonicalNumberMachines(j.getId(), d)));
-        return sol[W - 1].getJobs().toArray(Job[] :: new);
+        return sol[W - 1].getJobs();
     }
     
 }
