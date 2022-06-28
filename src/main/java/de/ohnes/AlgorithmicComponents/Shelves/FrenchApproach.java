@@ -151,6 +151,7 @@ public class FrenchApproach implements Algorithm {
                     i++;
                 }
             }
+            job.setAllotedMachines(1);
             job.setStartingTime((int) machines[i].getFirstFreeTime()); //TODO change to double
             machines[i].addJob(job);
 
