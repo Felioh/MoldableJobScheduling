@@ -37,8 +37,16 @@ public class AppTest {
      */
     @Test
     public void scheduleIsValid() {
+        //TODO
+    }
+
+    /**
+     * Test if the Makespan is smaller than the promised one. (3/2 * d)
+     */
+    @Test
+    public void testMakespan() {
         System.out.println(printSchedule.printThreeShelves(MyMath.findBigJobs(I, d), (int) d));
-        assertTrue("The total makespan needs to be smaller than the promised one.", I.getMakespanBigJobs(d) <= d * (1/2.0));
+        assertTrue("The total makespan needs to be smaller than the promised one.", I.getMakespan() <= d * (3/2.0));
     }
 
     /**
