@@ -103,40 +103,40 @@ public class FrenchApproach implements Algorithm {
         // System.out.println(printSchedule.printTwoShelves(bigJobs, (int) d));
         System.out.println(printSchedule.printTwoShelves(MyMath.findBigJobs(I, d), (int) d));
 
-        applyTransformationRules(d, shelf1, shelf2, p1);
+        List<Job> shelf0 = applyTransformationRules(d, shelf1, shelf2, p1);
 
-        addSmallJobs(shelf1, shelf2, smallJobs, d);
+        addSmallJobs(shelf1, shelf2, smallJobs, d, I.getM()); //TODO procesors not used by s0.
 
         return true;
     };
 
-    protected void addSmallJobs(List<Job> shelf1, List<Job> shelf2, List<Job> smallJobs, double d) {
+    protected void addSmallJobs(List<Job> shelf1, List<Job> shelf2, List<Job> smallJobs, double d, int availableMachines) {
 
-        Machine[] machines = new Machine[this.I.getM()]; //keep track of the free time of each processor.
+        Machine[] machines = new Machine[availableMachines]; //keep track of the free time of each processor.
         int s1_i = 0;
         int s2_i = 0;
         int m1 = 0;
         int m2 = 0;
-        for(int m = 0; m < this.I.getM(); m++) {
+        for(int m = 0; m < availableMachines; m++) {
             machines[m] = new Machine(m);
 
-            if(m1-- == 0) {
-                s1_i++;
-            }
             if(s1_i < shelf1.size()) {
                 machines[m].addJob(shelf1.get(s1_i));
-                m1 = shelf1.get(s1_i).getAllotedMachines();
+                if(m1 == 0) m1 = shelf1.get(s1_i).getAllotedMachines();
             } 
-
-            if(m2-- == 0) {
-                s2_i++;
+            if(--m1 == 0) {
+                s1_i++;
             }
+
             if(s2_i < shelf2.size()) {
                 //set starting time of the job from shelf 2.
                 int startTime = (int) (3/2.0 * d) - shelf2.get(s2_i).getProcessingTime(shelf2.get(s2_i).getAllotedMachines()); //TODO check integer casting
                 shelf2.get(s2_i).setStartingTime(startTime);
                 machines[m].addJob(shelf2.get(s2_i));
-                m2 = shelf2.get(s2_i).getAllotedMachines();
+                if(m2 == 0) m2 = shelf2.get(s2_i).getAllotedMachines();
+            }
+            if(--m2 == 0) {
+                s2_i++;
             }
 
         }
@@ -157,7 +157,7 @@ public class FrenchApproach implements Algorithm {
 
         }
 
-        //TODO print!!
+        this.I.setMachines(machines);
     }
 
     /**
@@ -178,7 +178,7 @@ public class FrenchApproach implements Algorithm {
                 int p = job.canonicalNumberMachines((3/2.0) * d);
                 //TODO: check if this rule needs to be executed after rule 1 and 2
                 job.setAllotedMachines(p);      //either S0 or S1.
-                shelf2.remove(job);
+                shelf2.remove(job); //TODO concurrentModification !!
                 if(job.getProcessingTime(p) > d) {
                     p0 += p;
                     shelf0.add(job);
@@ -209,7 +209,7 @@ public class FrenchApproach implements Algorithm {
                 } else {
                     p1 -= job.getAllotedMachines();     // == 1
                     p1 -= singleSmallJob.getAllotedMachines();
-                    p0 += job.getAllotedMachines();
+                    p0 += job.getAllotedMachines(); //TODO should only be 1
                     singleSmallJob.setStartingTime(pTime);         //assign both to shelf 0.
                     shelf0.add(job);
                     shelf0.add(singleSmallJob);

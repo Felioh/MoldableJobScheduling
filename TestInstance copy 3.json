@@ -17,6 +17,10 @@
         {
             "id": 3,
             "processingTimes": [60, 31, 29]
+        },
+        {
+            "id": 4,
+            "processingTimes": [40, 20, 15]
         }
     ]
 }

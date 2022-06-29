@@ -1,7 +1,9 @@
 package de.ohnes.util;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +24,7 @@ public class Machine {
 
     public void addJob(Job job) {
         this.jobs.add(job);
+        this.jobs = this.jobs.stream().sorted(Comparator.comparing(Job::getStartingTime)).collect(Collectors.toList()); //TODO anders lösen
         this.usedTime += job.getProcessingTime(job.getAllotedMachines());
     }
 

@@ -1,9 +1,14 @@
 package de.ohnes.util;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
+import lombok.Setter;
 
 
 @Getter
@@ -17,6 +22,9 @@ public class Instance {
     // @JsonDeserialize(as = Job[].class)
     @JsonProperty("jobs")
     private Job[] jobs;
+
+    @Setter
+    private Machine[] machines;
 
 
     public Instance(int n, int m, Job[] jobs) {
@@ -63,6 +71,11 @@ public class Instance {
             result += "\n";
         }
         return result;
+    }
+    
+    public void addMachines(List<Machine> machines) {
+        machines.addAll(Arrays.asList(this.machines));
+        this.machines = machines.toArray(Machine[] :: new);
     }
 
     public double getMakespan() {

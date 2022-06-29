@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import de.ohnes.util.Job;
+import de.ohnes.util.Machine;
 
 public class printSchedule {
 
@@ -34,7 +35,7 @@ public class printSchedule {
         for(Job job : shelf1) {
             //result += String.format("Job: %03d", job.getId()) + "-".repeat(100) + "\n";
             for(int m = 0; m < job.getAllotedMachines(); m++) {
-                result += getLineString(job.getId(), job.getProcessingTime(job.getAllotedMachines()), flipper ? "#" : "/");
+                result += getLineString(job.getId(), job.getProcessingTime(job.getAllotedMachines()), flipper ? "#" : "/") + "\n";
                 // if (flipper) result += "#".repeat(job.getProcessingTime(job.getAllotedMachines())) + "\n";
                 // else result += "/".repeat(job.getProcessingTime(job.getAllotedMachines())) + "\n";
             }
@@ -44,7 +45,7 @@ public class printSchedule {
         for(Job job : shelf2) {
             //result += String.format("Job: %03d", job.getId()) + "-".repeat(100) + "\n";
             for(int m = 0; m < job.getAllotedMachines(); m++) {
-                result += getLineString(job.getId(), job.getProcessingTime(job.getAllotedMachines()), flipper ? "#" : "/");
+                result += getLineString(job.getId(), job.getProcessingTime(job.getAllotedMachines()), flipper ? "#" : "/") + "\n";
                 // if (flipper) result += "#".repeat(job.getProcessingTime(job.getAllotedMachines())) + "\n";
                 // else result += "/".repeat(job.getProcessingTime(job.getAllotedMachines())) + "\n";
             }
@@ -53,30 +54,15 @@ public class printSchedule {
         return result;
     }
 
-    public static String printThreeShelves(Job[] jobs, int d) {
+    public static String printThreeShelves(List<Job> shelf0, List<Job> shelf1, List<Job> shelf2) {
         String result = "";
         boolean flipper = false;
-        List<Job> shelf1 = new ArrayList<>();
-        List<Job> shelf0 = new ArrayList<>();
-        List<Job> shelf2 = new ArrayList<>();
-
-        for(Job job : jobs) {
-            if(job.getProcessingTime(job.getAllotedMachines()) <= (d / 2)) {
-                shelf1.add(job);
-                continue;
-            }
-            if(job.getProcessingTime(job.getAllotedMachines()) <= (d)) {
-                shelf2.add(job);
-                continue;
-            }
-            shelf0.add(job);
-        }
 
         result += "Shelf 1:\n";
         for(Job job : shelf1) {
             //result += String.format("Job: %03d", job.getId()) + "-".repeat(100) + "\n";
             for(int m = 0; m < job.getAllotedMachines(); m++) {
-                result += getLineString(job.getId(), job.getProcessingTime(job.getAllotedMachines()), job.getStartingTime(), flipper ? "#" : "/");
+                result += getLineString(job.getId(), job.getProcessingTime(job.getAllotedMachines()), job.getStartingTime(), flipper ? "#" : "/") + "\n";
                 // if (flipper) result += "#".repeat(job.getProcessingTime(job.getAllotedMachines())) + "\n";
                 // else result += "/".repeat(job.getProcessingTime(job.getAllotedMachines())) + "\n";
             }
@@ -86,7 +72,7 @@ public class printSchedule {
         for(Job job : shelf2) {
             //result += String.format("Job: %03d", job.getId()) + "-".repeat(100) + "\n";
             for(int m = 0; m < job.getAllotedMachines(); m++) {
-                result += getLineString(job.getId(), job.getProcessingTime(job.getAllotedMachines()), job.getStartingTime(), flipper ? "#" : "/");
+                result += getLineString(job.getId(), job.getProcessingTime(job.getAllotedMachines()), job.getStartingTime(), flipper ? "#" : "/") + "\n";
                 // if (flipper) result += "#".repeat(job.getProcessingTime(job.getAllotedMachines())) + "\n";
                 // else result += "/".repeat(job.getProcessingTime(job.getAllotedMachines())) + "\n";
             }
@@ -96,7 +82,7 @@ public class printSchedule {
         for(Job job : shelf0) {
             //result += String.format("Job: %03d", job.getId()) + "-".repeat(100) + "\n";
             for(int m = 0; m < job.getAllotedMachines(); m++) {
-                result += getLineString(job.getId(), job.getProcessingTime(job.getAllotedMachines()), job.getStartingTime(), flipper ? "#" : "/");
+                result += getLineString(job.getId(), job.getProcessingTime(job.getAllotedMachines()), job.getStartingTime(), flipper ? "#" : "/") + "\n";
                 // if (flipper) result += "#".repeat(job.getProcessingTime(job.getAllotedMachines())) + "\n";
                 // else result += "/".repeat(job.getProcessingTime(job.getAllotedMachines())) + "\n";
             }
@@ -105,12 +91,30 @@ public class printSchedule {
         return result;
     }
 
+    public static String printMachines(Machine[] machines) {
+        String result = "";
+        for(Machine m : machines) {
+            boolean flipper = false;
+            int t = 0;
+            for(Job j : m.getJobs()) { //Note: Jobs need to be sorted.
+                if(t < j.getStartingTime()) {
+                    result += " ".repeat(j.getStartingTime() - t);
+                }
+                t += j.getProcessingTime(j.getAllotedMachines());
+                result += getLineString(j.getId(), j.getProcessingTime(j.getAllotedMachines()), flipper ? "#" : "/");
+                flipper = !flipper;
+            }
+            result += "\n";
+        }
+        return result;
+    }
+
     private static String getLineString(long JobID, int length, String character) {
-        return String.format(character.repeat(length / 2 - 2) + "%03d" + character.repeat(length / 2 - 2), JobID) + "\n";
+        return String.format(character.repeat(length / 2 - 2) + "%04d" + character.repeat(length / 2 - 2), JobID);
     }
 
     private static String getLineString(long JobID, int length, int start, String character) {
-        return String.format(" ".repeat(start)) + String.format(character.repeat(length / 2 - 2) + "%03d" + character.repeat(length / 2 - 2), JobID) + "\n";
+        return String.format(" ".repeat(start)) + String.format(character.repeat(length / 2 - 2) + "%04d" + character.repeat(length / 2 - 2), JobID);
     }
     
 }

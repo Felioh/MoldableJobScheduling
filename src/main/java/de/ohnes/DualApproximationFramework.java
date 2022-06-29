@@ -1,7 +1,14 @@
 package de.ohnes;
 
 
+import java.io.IOException;
+import java.nio.file.Paths;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+
 import de.ohnes.AlgorithmicComponents.Algorithm;
+import de.ohnes.logger.InstanceDeserializer;
 import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
 
@@ -40,6 +47,15 @@ public class DualApproximationFramework {
     }
 
     private double binarySearch(Algorithm algo, double epsilon, double l, double r) {
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(Instance.class, new InstanceDeserializer());
+        mapper.registerModule(module);
+        try {
+            algo.setInstance(mapper.readValue(Paths.get("TestInstance copy 3.json").toFile(), Instance.class));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         double mid = l + (r - l) / 2;
 

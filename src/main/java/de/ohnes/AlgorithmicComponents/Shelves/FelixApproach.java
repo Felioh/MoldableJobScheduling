@@ -122,9 +122,9 @@ public class FelixApproach extends FrenchApproach {
         }
         
 // ############################################## DEBUG ##################################################################################################################
-        System.out.println();
-        // System.out.println(printSchedule.printTwoShelves(bigJobs, (int) d));
-        System.out.println(printSchedule.printTwoShelves(MyMath.findBigJobs(I, d), (int) d));
+        // System.out.println();
+        // // System.out.println(printSchedule.printTwoShelves(bigJobs, (int) d));
+        // System.out.println(printSchedule.printTwoShelves(MyMath.findBigJobs(I, d), (int) d));
 // ############################################## DEBUG ##################################################################################################################
         
         List<Job> shelf0 = applyTransformationRules(d, shelf1, shelf2, p1);
@@ -132,11 +132,32 @@ public class FelixApproach extends FrenchApproach {
         
         
 // ############################################## DEBUG ##################################################################################################################
+        // System.out.println();
+        // // System.out.println(printSchedule.printTwoShelves(bigJobs, (int) d));
+        // System.out.println(printSchedule.printThreeShelves(shelf0, shelf1, shelf2));
+// ############################################## DEBUG ##################################################################################################################
+        addSmallJobs(shelf1, shelf2, smallJobs, d, I.getM());
+
+        List<Machine> machinesS0 = new ArrayList<>();
+        double startTime = -1;
+        for(Job job : shelf0) {
+            if(job.getStartingTime() != startTime) {
+                Machine m = new Machine(0);
+                m.addJob(job);
+                machinesS0.add(m);
+                startTime = job.getProcessingTime(job.getAllotedMachines());
+            } else {
+                machinesS0.get(machinesS0.size() - 1).addJob(job);
+                startTime += job.getProcessingTime(job.getAllotedMachines());
+            }
+        }
+        I.addMachines(machinesS0);
+
+// ############################################## DEBUG ##################################################################################################################
         System.out.println();
         // System.out.println(printSchedule.printTwoShelves(bigJobs, (int) d));
-        System.out.println(printSchedule.printThreeShelves(MyMath.findBigJobs(I, d), (int) d));
+        System.out.println(printSchedule.printMachines(I.getMachines()));
 // ############################################## DEBUG ##################################################################################################################
-        addSmallJobs(shelf1, shelf2, smallJobs, d);
 
         return true;
     }
