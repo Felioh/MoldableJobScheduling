@@ -13,7 +13,7 @@ public class GeometricalRounding {
      * @param x the "base"
      * @return the rounded value
      */
-    public static double gFloor(int a, int lower, int upper, double x) {  //TODO double??
+    public static double gFloor(int a, double lower, double upper, double x) {  //TODO double??
         int i = 0;
         List<Double> geom = geom(lower, upper, x);
         while(geom.get(i) < a) {
@@ -30,7 +30,7 @@ public class GeometricalRounding {
      * @param x the "base"
      * @return the rounded value
      */
-    public static double gCeil(int a, int lower, int upper, double x) {  //TODO double??
+    public static double gCeil(int a, double lower, double upper, double x) {  //TODO double??
         int i = 0;
         List<Double> geom = geom(lower, upper, x);
         while(geom.get(i) < a) {
@@ -47,7 +47,7 @@ public class GeometricalRounding {
      * @param x > 1 (normally: 1 < x < 2)
      * @return
      */
-    private static List<Double> geom(int lower, int upper, double x) {
+    private static List<Double> geom(double lower, double upper, double x) {
         List<Double> res = new ArrayList<>();
         int i = 0;
         while(lower * Math.pow(x, (double) i) < upper) {    //TODO check upper bound!!!! 

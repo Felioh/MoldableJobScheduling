@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import de.ohnes.AlgorithmicComponents.Algorithm;
+import de.ohnes.AlgorithmicComponents.FPTAS.CompressionApproach;
 import de.ohnes.AlgorithmicComponents.Shelves.FelixApproach;
 import de.ohnes.logger.InstanceDeserializer;
 import de.ohnes.util.Instance;
@@ -24,7 +25,12 @@ public class App {
         // I.generateRandomInstance(8, 10, 2, 5);
         
         System.out.println(I);
-        Algorithm Algo = new FelixApproach(I);
-        Algo.solve(100, 0.5);
+        Algorithm algo = new FelixApproach();
+        Algorithm fptas = new CompressionApproach();
+        DualApproximationFramework dF = new DualApproximationFramework(fptas, algo, I);
+        // algo.setInstance(I);
+        // algo.solve(100, 0.5);
+        double d = dF.start(0.1);
+        System.out.println(d);
     }
 }

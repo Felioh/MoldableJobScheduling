@@ -17,7 +17,7 @@ public class DynamicKnapsack implements KnapsackSolver {
      * @return an array of all selected jobs.
      */
     @Override
-    public Job[] solve(Job[] jobs, int[] wt, int[] val, int n, int W) {
+    public List<Job> solve(List<Job> jobs, int[] wt, int[] val, int n, int W) {
         List<Job> selectedJobs = new ArrayList<>();
         int i, w;
         int K[][] = new int[n + 1][W + 1];
@@ -51,7 +51,7 @@ public class DynamicKnapsack implements KnapsackSolver {
             else {
  
                 // This item is included.
-                selectedJobs.add(jobs[i - 1]);
+                selectedJobs.add(jobs.get(i - 1));
                 // jobs[i - 1].setAllotedMachines(I.canonicalNumberMachines(jobs[i - 1].getId(), d));    //allot job to machines respecting d as a threshold
  
                 // Since this weight is included its
@@ -60,7 +60,7 @@ public class DynamicKnapsack implements KnapsackSolver {
                 w = w - wt[i - 1];
             }
         }
-        return selectedJobs.toArray(Job[] :: new);
+        return selectedJobs;
     }
     
 }

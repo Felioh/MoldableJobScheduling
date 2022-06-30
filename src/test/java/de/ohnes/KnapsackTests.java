@@ -1,6 +1,7 @@
 package de.ohnes;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,14 +16,14 @@ import de.ohnes.util.Job;
 @RunWith(Parameterized.class)
 public class KnapsackTests {
 
-    private Job[] allJobs;
+    private List<Job> allJobs;
     private Job[] solution;
     private int[] wt;
     private int[] val;
     private int n;
     private int W;
 
-    public KnapsackTests(Job[] allJobs, Job[] solution, int[] wt, int[] val, int n, int W) {
+    public KnapsackTests(List<Job> allJobs, Job[] solution, int[] wt, int[] val, int n, int W) {
         super();
         this.allJobs = allJobs;
         this.solution = solution;
@@ -51,11 +52,14 @@ public class KnapsackTests {
     public static List<Object[]> input() {
 
         //1st test env
-        Job[] allJobs1 = new Job[8];
+        List<Job> allJobs1 = new ArrayList<>();
         int[] wt1 = {1, 1, 1, 1, 2, 2, 2, 2};
         int[] val1 = {2, 4, 6, 8, 3, 6, 9, 12};
         int n1 = 8;
         int W1 = 3;
+        for(int i = 0; i < n1; i++) {
+            allJobs1.add(new Job(i, null));
+        }
 
         return Arrays.asList(new Object[][] {{allJobs1, null, wt1, val1, n1, W1}});
     }
@@ -81,8 +85,8 @@ public class KnapsackTests {
     @Test
     public void KnapsackTestDynamicOutputSize() {
         KnapsackSolver kS = new DynamicKnapsack();
-        Job[] selectedJobs = kS.solve(allJobs, wt, val, n, W);
-        assertTrue("The number of selected Jobs should be <= to the capacity", selectedJobs.length <= W); //length should be leq than capacity
+        List<Job> selectedJobs = kS.solve(allJobs, wt, val, n, W);
+        assertTrue("The number of selected Jobs should be <= to the capacity", selectedJobs.size() <= W); //length should be leq than capacity
         // assertThat(selectedJobs, );
     }
 }
