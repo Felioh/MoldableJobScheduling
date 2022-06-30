@@ -1,6 +1,5 @@
 package de.ohnes;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -8,10 +7,9 @@ import org.junit.Test;
 
 import de.ohnes.AlgorithmicComponents.FPTAS.CompressionApproach;
 import de.ohnes.AlgorithmicComponents.Shelves.FelixApproach;
-import de.ohnes.logger.printSchedule;
 import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
-import de.ohnes.util.MyMath;
+import de.ohnes.util.Machine;
 
 /**
  * Unit test for simple App.
@@ -28,8 +26,8 @@ public class AppTest {
     public void setup() {
         this.I = new Instance(0, 0, null);
         this.I.generateRandomInstance(10, 20, 3, 4);
-        DualApproximationFramework dualApproxFramework = new DualApproximationFramework(new CompressionApproach(), new FelixApproach());
-        this.d = dualApproxFramework.start(I, 0.2);
+        DualApproximationFramework dualApproxFramework = new DualApproximationFramework(new CompressionApproach(), new FelixApproach(), I);
+        this.d = dualApproxFramework.start(0.2);
     }
 
     /**
@@ -37,11 +35,20 @@ public class AppTest {
      */
     @Test
     public void scheduleIsValid() {
-        //TODO
+        for(Job job : I.getJobs()) {
+            assertTrue("Every Job should be alloted to at least one Machine", job.getAllotedMachines() > 0);
+            int allotedMachines = job.getAllotedMachines();
+            for(Machine m : I.getMachines()) {
+                if(m.getJobs().contains(job)) {
+                    allotedMachines--;
+                }
+            }
+            assertTrue("The number of machines referencing this job differs from the specified amount in the job", allotedMachines == 0);
+        }
     }
 
     /**
-     * Test if the Makespan is smaller than the promised one. (3/2 * d)
+     * Test if the Makespan is smaller than the promised one. (3/2 * d) TODO account for epsilon
      */
     @Test
     public void testMakespan() {
@@ -56,7 +63,21 @@ public class AppTest {
     public void machineUsageTime0() {
         int usedMachines = 0;
         for(Job job : I.getJobs()) {
-            if(job.getStartingTime() == 0 && job.getAllotedMachines() != 0) {           //TODO delete allotedMachines != 0
+            if(job.getStartingTime() == 0) {
+                usedMachines += job.getAllotedMachines();
+            }
+        }
+        assertTrue("there should not be more than m machines used at time 0.", I.getM() >= usedMachines);
+    }
+
+    /**
+     * there should not be more than m machines used at time d + 1.
+     */
+    @Test
+    public void machineUsageTimed1() {
+        int usedMachines = 0;
+        for(Job job : I.getJobs()) {
+            if(job.getStartingTime() < d + 1 && job.getStartingTime() + job.getProcessingTime(job.getAllotedMachines()) > d + 1) {
                 usedMachines += job.getAllotedMachines();
             }
         }

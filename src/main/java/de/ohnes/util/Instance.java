@@ -1,6 +1,5 @@
 package de.ohnes.util;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class Instance {
         
         for(int i = 0; i < this.n; i++) {
             int[] processingTimes = new int[this.m];
-            processingTimes[0] = MyMath.getRandomNumber(1, 100);
+            processingTimes[0] = MyMath.getRandomNumber(20, 100);
             for(int j = 1; j < this.m; j++) {
                 processingTimes[j] = MyMath.getRandomNumber((j * processingTimes[j - 1]) / (j + 1), processingTimes[j - 1]); //linearity??
             }
@@ -102,6 +101,11 @@ public class Instance {
             }
         }
         return maxMakespan;
+    }
+
+    public void resetInstance() {
+        Arrays.asList(jobs).stream().forEach(j -> j.reset());
+        this.machines = null;
     }
     
 }

@@ -1,14 +1,6 @@
 package de.ohnes;
 
-
-import java.io.IOException;
-import java.nio.file.Paths;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-
 import de.ohnes.AlgorithmicComponents.Algorithm;
-import de.ohnes.logger.InstanceDeserializer;
 import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
 
@@ -17,21 +9,24 @@ public class DualApproximationFramework {
     //an fptas that is to be used for a large number of machines (>= 8*(n/epsilon))
     private Algorithm fptas;
     private Algorithm knapsack;
+    private Instance I;
 
-    public DualApproximationFramework(Algorithm fptas, Algorithm knapsack) {
+    public DualApproximationFramework(Algorithm fptas, Algorithm knapsack, Instance I) {
         this.fptas = fptas;
         this.knapsack = knapsack;
+        this.I = I;
     }
     
 
-    public double start(Instance I, double epsilon) {
+    public double start(double epsilon) {
+        
         Algorithm usedAlgo;
         if(I.getM() >= 8 * (I.getN() / epsilon)) {
-            this.fptas.setInstance(I);
             usedAlgo = this.fptas;
+            usedAlgo.setInstance(I);
         } else {
-            this.knapsack.setInstance(I);
             usedAlgo = this.knapsack;
+            usedAlgo.setInstance(I);
         }
         //use the FPTAS
         double lowerBound = 0; //TODO either like that or 2 approx. * (1/2) 
@@ -47,19 +42,9 @@ public class DualApproximationFramework {
     }
 
     private double binarySearch(Algorithm algo, double epsilon, double l, double r) {
-        ObjectMapper mapper = new ObjectMapper();
-        SimpleModule module = new SimpleModule();
-        module.addDeserializer(Instance.class, new InstanceDeserializer());
-        mapper.registerModule(module);
-        try {
-            algo.setInstance(mapper.readValue(Paths.get("TestInstance copy 3.json").toFile(), Instance.class));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         double mid = l + (r - l) / 2;
-
-        //note: here the same Instance Object can be used, because the jobs are all reassigned every time.
+        I.resetInstance(); //reset the instance because it was altered in previous attempt.
         if(algo.solve(mid, epsilon)) { //a schedule of length "mid" exists
 
             if(r - mid < epsilon) {     //TODO think about minimal steplength

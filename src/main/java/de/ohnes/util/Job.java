@@ -54,5 +54,10 @@ public class Job {
         }
         return l + (r - l) / 2 + 1;
     }
+
+    public void reset() {
+        this.startingTime = 0;
+        this.allotedMachines = 0;
+    }
     
 }

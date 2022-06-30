@@ -27,10 +27,10 @@ public class App {
         System.out.println(I);
         Algorithm algo = new FelixApproach();
         Algorithm fptas = new CompressionApproach();
-        DualApproximationFramework dF = new DualApproximationFramework(fptas, algo);
+        DualApproximationFramework dF = new DualApproximationFramework(fptas, algo, I);
         // algo.setInstance(I);
         // algo.solve(100, 0.5);
-        double d = dF.start(I, 0.1);
+        double d = dF.start(0.1);
         System.out.println(d);
     }
 }
