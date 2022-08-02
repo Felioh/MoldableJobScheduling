@@ -25,9 +25,9 @@ public class AppTest {
     @Before
     public void setup() {
         this.I = new Instance(0, 0, null);
-        this.I.generateRandomInstance(10, 20, 3, 4);
+        this.I.generateRandomInstance(40, 60, 10, 15);
         DualApproximationFramework dualApproxFramework = new DualApproximationFramework(new CompressionApproach(), new FelixApproach(), I);
-        this.d = dualApproxFramework.start(0.2);
+        this.d = dualApproxFramework.start(0.1);
     }
 
     /**

@@ -5,13 +5,16 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import de.ohnes.logger.InstanceDeserializer;
 import lombok.Getter;
 import lombok.Setter;
 
 
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonDeserialize(using = InstanceDeserializer.class)
 public class Instance {
 
     @JsonProperty("number_jobs")
@@ -49,7 +52,7 @@ public class Instance {
             int[] processingTimes = new int[this.m];
             processingTimes[0] = MyMath.getRandomNumber(20, 100);
             for(int j = 1; j < this.m; j++) {
-                processingTimes[j] = MyMath.getRandomNumber((j * processingTimes[j - 1]) / (j + 1), processingTimes[j - 1]); //linearity??
+                processingTimes[j] = MyMath.getRandomNumber((int) Math.round((j / (double) (j + 1)) * processingTimes[j - 1]), processingTimes[j - 1]); //linearity??
             }
             this.jobs[i] = new Job(i, processingTimes);
         }
@@ -86,6 +89,15 @@ public class Instance {
             }
         }
         return maxMakespan;
+    }
+
+    /**
+     * return a job for i in [0 .. n]
+     * @param i
+     * @return
+     */
+    public Job getJob(int i) {
+        return jobs[i];
     }
 
     /**
