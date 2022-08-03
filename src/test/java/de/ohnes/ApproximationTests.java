@@ -34,9 +34,9 @@ public class ApproximationTests {
         Instance I2 = null;
         Instance I3 = null;
         try {
-            I1 = new ObjectMapper().readValue(Paths.get("TestInstance copy 3.json").toFile(), Instance.class);
-            I2 = new ObjectMapper().readValue(Paths.get("TestInstance copy 2.json").toFile(), Instance.class);
-            I3 = new ObjectMapper().readValue(Paths.get("TestInstance copy.json").toFile(), Instance.class);
+            I1 = new ObjectMapper().readValue(Paths.get("TestInstances/TestInstance copy 3.json").toFile(), Instance.class);
+            I2 = new ObjectMapper().readValue(Paths.get("TestInstances/TestInstance copy 2.json").toFile(), Instance.class);
+            I3 = new ObjectMapper().readValue(Paths.get("TestInstances/TestInstance copy.json").toFile(), Instance.class);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

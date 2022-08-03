@@ -2,8 +2,17 @@ package de.ohnes;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.ohnes.AlgorithmicComponents.Approximation.TwoApproximation;
 import de.ohnes.AlgorithmicComponents.FPTAS.CompressionApproach;
@@ -15,6 +24,7 @@ import de.ohnes.util.Machine;
 /**
  * Unit test for simple App.
  */
+@RunWith(Parameterized.class)
 public class AppTest {
 
     private Instance I;
@@ -23,12 +33,44 @@ public class AppTest {
     /**
      * generate a Random Instance an solve it.
      */
-    @Before
-    public void setup() {
-        this.I = new Instance(0, 0, null);
-        this.I.generateRandomInstance(40, 60, 10, 15);
+    public AppTest(Instance I) {
+        this.I = I;
         DualApproximationFramework dualApproxFramework = new DualApproximationFramework(new CompressionApproach(), new FelixApproach(), new TwoApproximation(), I);
         this.d = dualApproxFramework.start(0.1);
+    }
+
+    /**
+     * Test all test-Instances from the folder TestInstances
+     * and some randomly generated Isntances.
+     * @return
+     */
+    @Parameterized.Parameters
+    public static List<Object[]> input() {
+        List<Instance[]> instances = new ArrayList<>();
+
+        File dir = new File("TestInstances");
+        File[] files = dir.listFiles();
+        if(files != null) {
+            for(File testFile : files) {
+                Instance[] args = new Instance[1];
+                try {
+                    args[0] = new ObjectMapper().readValue(testFile, Instance.class);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                instances.add(args);
+            }
+        }
+
+        for(int i = 0; i < 20; i++) {
+            Instance[] args = new Instance[1];
+            args[0] = new Instance(0, 0, null);
+            args[0].generateRandomInstance(40, 60, 10, 15);
+            instances.add(args);
+        }
+        
+
+        return Arrays.asList(instances.toArray(Object[][] :: new));
     }
 
     /**

@@ -19,7 +19,7 @@ public class App {
         // mapper.registerModule(module);
 
         // Instance I = mapper.readValue(Paths.get("TestInstance copy 3.json").toFile(), Instance.class);
-        Instance I = new ObjectMapper().readValue(Paths.get("TestInstance copy 3.json").toFile(), Instance.class);
+        Instance I = new ObjectMapper().readValue(Paths.get("TestInstances/TestInstance copy 3.json").toFile(), Instance.class);
 
         // Instance I = new Instance();
 
