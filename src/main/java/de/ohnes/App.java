@@ -4,6 +4,8 @@ import java.nio.file.Paths;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.ohnes.AlgorithmicComponents.Algorithm;
+import de.ohnes.AlgorithmicComponents.Approximation.Approximation;
+import de.ohnes.AlgorithmicComponents.Approximation.TwoApproximation;
 import de.ohnes.AlgorithmicComponents.FPTAS.CompressionApproach;
 import de.ohnes.AlgorithmicComponents.Shelves.FelixApproach;
 import de.ohnes.util.Instance;
@@ -26,7 +28,8 @@ public class App {
         System.out.println(I);
         Algorithm algo = new FelixApproach();
         Algorithm fptas = new CompressionApproach();
-        DualApproximationFramework dF = new DualApproximationFramework(fptas, algo, I);
+        Approximation approx = new TwoApproximation();
+        DualApproximationFramework dF = new DualApproximationFramework(fptas, algo, approx, I);
         // algo.setInstance(I);
         // algo.solve(100, 0.5);
         double d = dF.start(0.1);

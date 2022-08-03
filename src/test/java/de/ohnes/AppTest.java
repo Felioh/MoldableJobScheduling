@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.ohnes.AlgorithmicComponents.Approximation.TwoApproximation;
 import de.ohnes.AlgorithmicComponents.FPTAS.CompressionApproach;
 import de.ohnes.AlgorithmicComponents.Shelves.FelixApproach;
 import de.ohnes.util.Instance;
@@ -26,7 +27,7 @@ public class AppTest {
     public void setup() {
         this.I = new Instance(0, 0, null);
         this.I.generateRandomInstance(40, 60, 10, 15);
-        DualApproximationFramework dualApproxFramework = new DualApproximationFramework(new CompressionApproach(), new FelixApproach(), I);
+        DualApproximationFramework dualApproxFramework = new DualApproximationFramework(new CompressionApproach(), new FelixApproach(), new TwoApproximation(), I);
         this.d = dualApproxFramework.start(0.1);
     }
 
