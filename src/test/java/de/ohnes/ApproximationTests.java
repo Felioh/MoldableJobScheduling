@@ -13,6 +13,7 @@ import org.junit.runners.Parameterized;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import de.ohnes.AlgorithmicComponents.Approximation.TwoApproximation;
 import de.ohnes.util.Instance;
 
 @RunWith(Parameterized.class)
@@ -29,15 +30,19 @@ public class ApproximationTests {
 
     @Parameterized.Parameters
     public static List<Object[]> input() {
-        Instance I = null;
+        Instance I1 = null;
+        Instance I2 = null;
+        Instance I3 = null;
         try {
-            I = new ObjectMapper().readValue(Paths.get("TestInstance copy 3.json").toFile(), Instance.class);
+            I1 = new ObjectMapper().readValue(Paths.get("TestInstances/TestInstance copy 3.json").toFile(), Instance.class);
+            I2 = new ObjectMapper().readValue(Paths.get("TestInstances/TestInstance copy 2.json").toFile(), Instance.class);
+            I3 = new ObjectMapper().readValue(Paths.get("TestInstances/TestInstance copy.json").toFile(), Instance.class);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        return Arrays.asList(new Object[][] {{I, 80.0}});
+        return Arrays.asList(new Object[][] {{I1, 80.0}, {I2, 200.0}, {I3, 100.0}});
     }
 
     @Test

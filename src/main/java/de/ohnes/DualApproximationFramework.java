@@ -1,8 +1,8 @@
 package de.ohnes;
 
 import de.ohnes.AlgorithmicComponents.Algorithm;
+import de.ohnes.AlgorithmicComponents.Approximation.Approximation;
 import de.ohnes.util.Instance;
-import de.ohnes.util.Job;
 
 public class DualApproximationFramework {
     
@@ -10,15 +10,18 @@ public class DualApproximationFramework {
     private Algorithm fptas;
     private Algorithm knapsack;
     private Instance I;
+    private Approximation approx;
 
-    public DualApproximationFramework(Algorithm fptas, Algorithm knapsack, Instance I) {
+    public DualApproximationFramework(Algorithm fptas, Algorithm knapsack, Approximation approx, Instance I) {
         this.fptas = fptas;
         this.knapsack = knapsack;
+        this.approx = approx;
         this.I = I;
     }
     
 
     public double start(double epsilon) {
+        
         
         Algorithm usedAlgo;
         if(I.getM() >= 8 * (I.getN() / epsilon)) {
@@ -28,15 +31,8 @@ public class DualApproximationFramework {
             usedAlgo = this.knapsack;
             usedAlgo.setInstance(I);
         }
-        //use the FPTAS
-        double lowerBound = 0; //TODO either like that or 2 approx. * (1/2) 
-        double upperBound = 0;
-        for(Job job : I.getJobs()) {
-            lowerBound += job.getProcessingTime(1);
-            upperBound += (job.getProcessingTime(I.getM()) * I.getM()); //TODO Factor M can be ignored because it is divided by immediatly after.
-        }
-        lowerBound = lowerBound / I.getM();
-        upperBound = upperBound / I.getM(); //TODO check if that is correct.
+        double upperBound = this.approx.approximate(I) * 2; //TODO think about exact bounds
+        double lowerBound = upperBound / 3;
 
         return binarySearch(usedAlgo, epsilon, lowerBound, upperBound);
     }

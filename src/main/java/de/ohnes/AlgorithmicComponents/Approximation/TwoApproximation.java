@@ -1,4 +1,4 @@
-package de.ohnes;
+package de.ohnes.AlgorithmicComponents.Approximation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +10,7 @@ import de.ohnes.util.Job;
 /**
  * implementation of the Algorithm from ludwig Tiwari
  */
-public class TwoApproximation {
+public class TwoApproximation implements Approximation {
     
     public double approximate(Instance I) {
 
@@ -46,7 +46,7 @@ public class TwoApproximation {
             for(int i = 0; i < I.getN(); i++) {
                 if(lower[i] <= upper[i]) {
                     mid[i] = (lower[i] + upper[i]) / 2; //step 4(a) integer division. So floored.
-                    pTimes.add(I.getJob(i).getProcessingTime(mid[i] + 1)); //step 4(b)
+                    pTimes.add(I.getJob(i).getProcessingTime(mid[i])); //step 4(b)
                 }
             }
             double target = findTarget(pTimes.toArray(Integer[] :: new)); //step 4(b)
@@ -67,6 +67,13 @@ public class TwoApproximation {
                 for(int i = 0; i < I.getN(); i++) {
                     if(lower[i] <= upper[i]) {
                         lower[i] = I.getJob(i).canonicalNumberMachines(target);
+                        if(I.getJob(i).getProcessingTime(lower[i]) == target) {
+                            if(lower[i] == 1) {
+                                upper[i] = 0;
+                            } else {
+                                lower[i] = lower[i] + 1;
+                            }
+                        }
                     }
                 }
             } else {    //step 4(g)
