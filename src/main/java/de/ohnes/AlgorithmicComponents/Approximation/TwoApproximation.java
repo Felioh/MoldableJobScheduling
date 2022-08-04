@@ -49,7 +49,8 @@ public class TwoApproximation implements Approximation {
                     pTimes.add(I.getJob(i).getProcessingTime(mid[i])); //step 4(b)
                 }
             }
-            double target = findTarget(pTimes.toArray(Integer[] :: new)); //step 4(b)
+            int target = MedianOfMedians.findMedian(pTimes);
+            // double target = findTarget(pTimes.toArray(Integer[] :: new)); //step 4(b)
             for(int i = 0; i < I.getN(); i++) {
                 tallot[i] = I.getJob(i).canonicalNumberMachines(target); //step 4(c)
             }
