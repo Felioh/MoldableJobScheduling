@@ -40,7 +40,7 @@ public class Job {
      * O(log m)
      * @return -1 if the job cant be executed in time h
      */
-    public int canonicalNumberMachines(double h) { //TODO move into job
+    public int canonicalNumberMachines(double h) {
         int r = processingTimes.length - 1;
         if(this.processingTimes[r] > h) {
             return -1;
