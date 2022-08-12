@@ -60,11 +60,11 @@ public class TwoApproximation implements Approximation {
                 work += tallot[i] * I.getJob(i).getProcessingTime(tallot[i]);
             }
             //step 4(e)
-            double achievedBound = Math.max(work / I.getM(), target);
+            double achievedBound = Math.max(work / (double) I.getM(), target);
             //step 4(f)
-            if(work / I.getM() <= target) {
+            if(work / (double) I.getM() <= target) {
                 successful = achievedBound;
-                sallot = tallot;        //TODO watch out for object !!! needs to be a copy.
+                sallot = tallot.clone();
                 for(int i = 0; i < I.getN(); i++) {
                     if(lower[i] <= upper[i]) {
                         lower[i] = I.getJob(i).canonicalNumberMachines(target);
@@ -79,7 +79,7 @@ public class TwoApproximation implements Approximation {
                 }
             } else {    //step 4(g)
                 unsuccessful = achievedBound;
-                uallot = tallot;        //TODO watch out for object !!! needs to be a copy.
+                uallot = tallot.clone();
                 for(int i = 0; i < I.getN(); i++) {
                     if(lower[i] <= upper[i]) {
                         upper[i] = I.getJob(i).canonicalNumberMachines(target) - 1; //TODO check

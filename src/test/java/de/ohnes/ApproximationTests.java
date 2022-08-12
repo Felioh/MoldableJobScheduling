@@ -42,7 +42,7 @@ public class ApproximationTests {
             e.printStackTrace();
         }
 
-        return Arrays.asList(new Object[][] {{I1, 80.0}, {I2, 200.0}, {I3, 100.0}});
+        return Arrays.asList(new Object[][] {{I1, 102.0}, {I2, 200.0}, {I3, 100.0}});
     }
 
     @Test

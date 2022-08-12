@@ -31,8 +31,8 @@ public class DualApproximationFramework {
             usedAlgo = this.knapsack;
             usedAlgo.setInstance(I);
         }
-        double upperBound = this.approx.approximate(I) * 2; //TODO think about exact bounds
-        double lowerBound = upperBound / 3;
+        double lowerBound = this.approx.approximate(I) / 2; //TODO think about exact bounds ( * 4)
+        double upperBound = lowerBound * 8;                 //TODO maybe add list scheduling. -> schedule twiari greedy and divide by 2.
 
         return binarySearch(usedAlgo, epsilon, lowerBound, upperBound);
     }

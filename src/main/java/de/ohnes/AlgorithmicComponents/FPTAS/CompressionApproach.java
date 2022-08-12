@@ -29,6 +29,7 @@ public class CompressionApproach implements Algorithm {
             }
             if(neededMachines >= (4 / epsilon)) {   //compress big jobs
                 //free (epsilon / 4) * neededMachines (compression)
+                //TODO: maybe 1-(epsilon / 4) ???
                 neededMachines = (int) Math.ceil((epsilon / 4) * neededMachines); //because of monotony the jobs should not take longer than (1 + epsilon)*d
             }
             job.setAllotedMachines(neededMachines);
