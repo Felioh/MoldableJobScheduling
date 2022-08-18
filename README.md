@@ -32,3 +32,5 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 # Ausarbeitung
 - package: amsthm -> für Lemma
 - Related work section -> State of the Art angeben
+- theoreme von Algorithmen aus entsprechender Arbeit entnehmen
+- code auf pseudo level

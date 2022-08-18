@@ -152,7 +152,7 @@ public class FrenchApproach implements Algorithm {
                 }
             }
             job.setAllotedMachines(1);
-            job.setStartingTime((int) machines[i].getFirstFreeTime()); //TODO change to double
+            job.setStartingTime((int) machines[i].getFirstFreeTime(job.getProcessingTime(1)));
             machines[i].addJob(job);
 
         }
@@ -171,14 +171,14 @@ public class FrenchApproach implements Algorithm {
         List<Job> shelf0 = new ArrayList<>();
         int p0 = 0;     //processors required by S0.
 
-
+        List<Job> jobsToDelete = new ArrayList<>();
         for(Job job : shelf2) {
             int q = I.getM() - (p1 + p0);
             if(q > 0 && job.getProcessingTime(q) <= (3/2.0) * d) {
                 int p = job.canonicalNumberMachines((3/2.0) * d);
                 //TODO: check if this rule needs to be executed after rule 1 and 2
                 job.setAllotedMachines(p);      //either S0 or S1.
-                shelf2.remove(job); //TODO concurrentModification !!
+                jobsToDelete.add(job);
                 if(job.getProcessingTime(p) > d) {
                     p0 += p;
                     shelf0.add(job);
@@ -188,6 +188,7 @@ public class FrenchApproach implements Algorithm {
                 }
             }
         }
+        shelf2.removeAll(jobsToDelete);
 
         Job singleSmallJob = null;
         int i = 0;

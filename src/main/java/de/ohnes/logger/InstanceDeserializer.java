@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,7 +22,7 @@ public class InstanceDeserializer extends StdDeserializer<Instance> {
     }
 
     @Override
-    public Instance deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JacksonException {
+    public Instance deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);
         int m = (node.get("machines")).asInt();
         int n = (node.get("number_jobs")).asInt();

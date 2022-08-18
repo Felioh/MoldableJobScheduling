@@ -33,14 +33,19 @@ public class Machine {
         this.usedTime -= job.getProcessingTime(job.getAllotedMachines());
     }
 
-    public double getFirstFreeTime() {
+    public double getFirstFreeTime(int time) {
         double t = 0;
-        for(Job job : jobs) {
-            if(job.getStartingTime() == t) {    //TODO deal with possibility that more than two jobs are alloted.
-                t = job.getProcessingTime(job.getAllotedMachines());
+        boolean used = true;
+        while(used) {
+            used = false;
+            for(Job job : jobs) {
+                if(job.getStartingTime() == t) {
+                    t = job.getStartingTime() + job.getProcessingTime(job.getAllotedMachines());
+                    used = true;
+                }
             }
         }
-        return t;
+        return t; 
     }
 
 }

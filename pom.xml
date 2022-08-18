@@ -7,6 +7,7 @@
   <groupId>de.ohnes</groupId>
   <artifactId>bachelorarbeit</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
   <name>bachelorarbeit</name>
   <!-- FIXME change it to the project's website -->
@@ -16,9 +17,22 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <exec.mainClass>de.ohnes.App</exec.mainClass>
   </properties>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+      <version>7.17.5</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.elasticsearch.client</groupId>
+      <artifactId>elasticsearch-rest-high-level-client</artifactId>
+      <version>7.17.5</version>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
@@ -39,12 +53,65 @@
       <artifactId>jackson-databind</artifactId>
       <version>2.13.3</version>
     </dependency>
+    
+    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+    <!-- <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>2.8.11</version>
+    </dependency> -->
+
 
   </dependencies>
 
   <build>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
+
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <configuration>
+            <descriptorRefs>
+              <descriptorRef>jar-with-dependencies</descriptorRef>                            
+            </descriptorRefs>
+            <archive>
+              <manifest>
+                <mainClass>de.ohnes.App</mainClass> 
+              </manifest>
+            </archive>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>single</goal>                                                           
+              </goals>
+              <phase>package</phase>                                                          
+            </execution>
+          </executions>
+        </plugin>
+
+        <!-- <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.0.0</version>
+          <configuration>
+            <transformers>
+              <transformer
+                implementation= "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                <mainClass>de.ohnes.App</mainClass>
+              </transformer>
+            </transformers>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                  <goal>shade</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin> -->
+
         <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
@@ -66,6 +133,35 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.0.2</version>
+          <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <classpathPrefix>lib/</classpathPrefix>
+              <mainClass>de.ohnes.App</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+                <execution>
+                    <phase>install</phase>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        <!-- optional -->
+                        <!-- exclude copying test and provided dependencies -->
+                        <includeScope>runtime</includeScope>
+                        <excludeScope>provided</excludeScope>
+                        <!-- optional -->
+                    </configuration>
+                </execution>
+            </executions>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
@@ -87,4 +183,5 @@
       </plugins>
     </pluginManagement>
   </build>
+
 </project>
