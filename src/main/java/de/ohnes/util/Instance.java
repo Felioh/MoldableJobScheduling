@@ -9,12 +9,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import de.ohnes.logger.InstanceDeserializer;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonDeserialize(using = InstanceDeserializer.class)
+@NoArgsConstructor
 public class Instance {
 
     @JsonProperty("number_jobs")
@@ -27,7 +29,6 @@ public class Instance {
 
     @Setter
     private Machine[] machines;
-
 
     public Instance(int n, int m, Job[] jobs) {
         this.n = n;

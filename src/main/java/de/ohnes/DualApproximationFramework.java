@@ -52,5 +52,17 @@ public class DualApproximationFramework {
             return binarySearch(algo, epsilon, mid, r); //find a schedule for worse makespan
         }
     }
+
+    public String getFPTASName() {
+        return this.fptas.getClass().getSimpleName();
+    }
+
+    public String getApproximationName() {
+        return this.approx.getClass().getSimpleName();
+    }
+
+    public String getShelvesAlgoName() {
+        return this.knapsack.getClass().getSimpleName();
+    }
     
 }

@@ -165,9 +165,9 @@ public class KilianApproach extends FelixApproach {
         I.addMachines(machinesS0);
 
 // ############################################## DEBUG ##################################################################################################################
-        System.out.println(String.format("-".repeat(70) + "%04.2f" + "-".repeat(70), d));
-        System.out.println(printSchedule.printMachines(I.getMachines()));
-        System.out.println(String.format("-".repeat(70) + "%04.2f" + "-".repeat(70), d));
+        // System.out.println(String.format("-".repeat(70) + "%04.2f" + "-".repeat(70), d));
+        // System.out.println(printSchedule.printMachines(I.getMachines()));
+        // System.out.println(String.format("-".repeat(70) + "%04.2f" + "-".repeat(70), d));
 // ############################################## DEBUG ##################################################################################################################
 
         return true;
