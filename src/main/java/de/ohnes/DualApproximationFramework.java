@@ -1,10 +1,16 @@
 package de.ohnes;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.ohnes.AlgorithmicComponents.Algorithm;
 import de.ohnes.AlgorithmicComponents.Approximation.Approximation;
 import de.ohnes.util.Instance;
 
 public class DualApproximationFramework {
+
+    private static final Logger LOGGER = LogManager.getLogger(DualApproximationFramework.class);
+
     
     //an fptas that is to be used for a large number of machines (>= 8*(n/epsilon))
     private Algorithm fptas;
@@ -22,12 +28,13 @@ public class DualApproximationFramework {
 
     public double start(double epsilon) {
         
-        
         Algorithm usedAlgo;
         if(I.getM() >= 8 * (I.getN() / epsilon)) {
+            LOGGER.debug("Starting dual approximation Framework with fptas: {}", this.getFPTASName());
             usedAlgo = this.fptas;
             usedAlgo.setInstance(I);
         } else {
+            LOGGER.debug("Starting dual approximation Framework with shelvesAlgo: {}", this.getShelvesAlgoName());
             usedAlgo = this.knapsack;
             usedAlgo.setInstance(I);
         }

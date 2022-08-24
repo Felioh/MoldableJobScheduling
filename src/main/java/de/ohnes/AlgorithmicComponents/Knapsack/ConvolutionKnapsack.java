@@ -8,6 +8,10 @@ import de.ohnes.AlgorithmicComponents.MaxConvolution;
 import de.ohnes.util.ConvolutionElement;
 import de.ohnes.util.Job;
 
+/**
+ * An implementation of a knapsack solver using convolution.
+ * 
+ */
 public class ConvolutionKnapsack implements KnapsackSolver {
 
     /**

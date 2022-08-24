@@ -3,21 +3,23 @@ package de.ohnes.AlgorithmicComponents.FPTAS;
 import de.ohnes.AlgorithmicComponents.Algorithm;
 import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
+import lombok.NoArgsConstructor;
 
+/**
+ * An implementation as suggested by Felix Land.
+ * Suitable for an Instance with a large number of machines.
+ */
+@NoArgsConstructor
 public class CompressionApproach implements Algorithm {
 
     private Instance I;
 
-    public CompressionApproach() {
-
-    }
-
     /**
      * Schedule Jobs to respect d threshold and then compress big jobs.
-     * @param I
-     * @param d
+     * @param I the instance {@link Instance}.
+     * @param d the deadline (estimated Optimum.)
      * @param epsilon
-     * @return
+     * @return true if there exists a schedule of length d, false otherwise.
      */
     @Override
     public boolean solve(double d, double epsilon) {

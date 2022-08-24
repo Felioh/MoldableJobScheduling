@@ -3,6 +3,9 @@ package de.ohnes.AlgorithmicComponents;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class to implement the geometrical rounding used by Felix Land.
+ */
 public class GeometricalRounding {
 
     /**

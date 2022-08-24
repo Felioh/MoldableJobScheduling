@@ -43,7 +43,7 @@ public class Instance {
      * @param minMachines
      * @param maxMachines
      */
-    public void generateRandomInstance(int minJobs, int maxJobs, int minMachines, int maxMachines) {
+    public void generateRandomInstance(int minJobs, int maxJobs, int minMachines, int maxMachines, int maxSeqTime) {
 
         this.m = MyMath.getRandomNumber(minMachines, maxMachines);
         this.n = MyMath.getRandomNumber(minJobs, maxJobs);
@@ -51,9 +51,9 @@ public class Instance {
         
         for(int i = 0; i < this.n; i++) {
             int[] processingTimes = new int[this.m];
-            processingTimes[0] = MyMath.getRandomNumber(20, 100);
+            processingTimes[0] = MyMath.getRandomNumber(20, maxSeqTime);
             for(int j = 1; j < this.m; j++) {
-                processingTimes[j] = MyMath.getRandomNumber((int) Math.round((j / (double) (j + 1)) * processingTimes[j - 1]), processingTimes[j - 1]); //linearity??
+                processingTimes[j] = MyMath.getRandomNumber((int) Math.ceil((j / (double) (j + 1)) * processingTimes[j - 1]), processingTimes[j - 1]); //TODO linearity??
             }
             this.jobs[i] = new Job(i, processingTimes);
         }
@@ -103,7 +103,7 @@ public class Instance {
 
     /**
      * only for debugging
-     * @return
+     * @return the total makespan
      */
     public double getMakespanBigJobs(double d) {
         double maxMakespan = 0;

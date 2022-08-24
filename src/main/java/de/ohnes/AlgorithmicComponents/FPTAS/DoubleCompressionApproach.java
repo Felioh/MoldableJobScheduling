@@ -4,17 +4,24 @@ import de.ohnes.AlgorithmicComponents.Algorithm;
 import de.ohnes.Exceptions.NoExistingSchedule;
 import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
+import lombok.NoArgsConstructor;
 
+/**
+ * An implementation as suggested by Kilian Grage.
+ * Suitable for an Instance with a large number of machines.
+ */
+@NoArgsConstructor
 public class DoubleCompressionApproach implements Algorithm {
     
     private Instance I;
 
-
-    public DoubleCompressionApproach() {
-
-    }
-
-
+    /**
+     * Schedule Jobs to respect d threshold and then compress big jobs.
+     * @param I the instance {@link Instance}.
+     * @param d the deadline (estimated Optimum.)
+     * @param epsilon
+     * @return true if there exists a schedule of length d, false otherwise.
+     */
     @Override
     public boolean solve(double d, double epsilon) {
         double roh = epsilon / 4;
