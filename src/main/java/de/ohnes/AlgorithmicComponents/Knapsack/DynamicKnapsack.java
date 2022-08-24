@@ -5,6 +5,9 @@ import java.util.List;
 
 import de.ohnes.util.Job;
 
+/**
+ * An implementation of a simple dynamic Knapsack solver.
+ */
 public class DynamicKnapsack implements KnapsackSolver {
 
     /**

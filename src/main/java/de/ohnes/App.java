@@ -2,6 +2,11 @@ package de.ohnes;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.ohnes.AlgorithmicComponents.Algorithm;
@@ -20,41 +25,51 @@ import de.ohnes.util.TestResult;
 
 public class App {
 
+    private static final Logger LOGGER = LogManager.getLogger(App.class);
+
     private static String rand;
     private static String minJobs;
     private static String maxJobs;
     private static String minMachines;
     private static String maxMachines;
+    private static String maxSeqTime;
     private static String ESHost;
     private static String loop;
+    private static String ESIndexPrefix;
+    private static String ExecutionsBeforePush;
 
     private static String algo;
 
     public static void main(String[] args) throws Exception {
-        
+        Configurator.setRootLevel(Level.INFO);
+
         rand = System.getenv("INSTANCE_RANDOM");
         minJobs = System.getenv("INSTANCE_MINJOBS");
         maxJobs = System.getenv("INSTNACE_MAXJOBS");
         minMachines = System.getenv("INSTANCE_MINMACHINES");
         maxMachines = System.getenv("INSTANCE_MAXMACHINES");
+        maxSeqTime = System.getenv("INSTANCE_MAX_SEQUENTIAL_TIME");
         ESHost = System.getenv("ELASTICSEARCH_HOST");
-        loop = System.getenv("LOOP");
+        loop = System.getenv("DETATCHED");
         algo = System.getenv("ALGO");
+        ESIndexPrefix = System.getenv("ES_INDEX");
+        ExecutionsBeforePush = System.getenv("EXECS_BEFORE_PUSH");
         
+        LOGGER.info("Starting Algorithm!");
         MyElasticsearchClient.makeConnection(ESHost);
         if(loop != null) {
             while(true) {
-                for(int i = 0; i < 10; i++) {
+                for(int i = 0; i < Integer.parseInt(ExecutionsBeforePush); i++) {
                     MyElasticsearchClient.addData(runTest());
                 }
-                MyElasticsearchClient.pushData("testdata-" + java.time.LocalDate.now().toString());
+                MyElasticsearchClient.pushData(ESIndexPrefix + java.time.LocalDate.now().toString());
 
             }
         } else {
             for(int i = 0; i < 10; i++) {
                 MyElasticsearchClient.addData(runTest());
             }
-            MyElasticsearchClient.pushData("testdata-" + java.time.LocalDate.now().toString());
+            MyElasticsearchClient.pushData(ESIndexPrefix + java.time.LocalDate.now().toString());
         }
 
     }
@@ -75,7 +90,7 @@ public class App {
                 e.printStackTrace();
             }
         } else {
-            I.generateRandomInstance(Integer.parseInt(minJobs), Integer.parseInt(maxJobs), Integer.parseInt(minMachines), Integer.parseInt(maxMachines));
+            I.generateRandomInstance(Integer.parseInt(minJobs), Integer.parseInt(maxJobs), Integer.parseInt(minMachines), Integer.parseInt(maxMachines), Integer.parseInt(maxSeqTime));
         }
 
 
@@ -101,7 +116,8 @@ public class App {
         long startTime = System.currentTimeMillis();
         double d = dF.start(0.1);
         long endTime = System.currentTimeMillis();
-        System.out.println("Ran Instance with " + I.getM() + " Machines and " + I.getN() + " Jobs in " + (endTime - startTime) + " Milliseconds...");
+        LOGGER.info("Ran instance with {} machines and {} jobs in {} seconds.", I.getM(), I.getN(), (endTime - startTime) / 1000);
+        // System.out.println("Ran Instance with " + I.getM() + " Machines and " + I.getN() + " Jobs in " + (endTime - startTime) + " Milliseconds...");
 
 // ############################################## DEBUG ##################################################################################################################
         // System.out.println(String.format("-".repeat(70) + "%04.2f" + "-".repeat(70), d));

@@ -5,6 +5,9 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * A helper object to represent a single convolution element with its accumulated profit and all elements it consists of.
+ */
 @Getter
 @Setter
 public class ConvolutionElement {

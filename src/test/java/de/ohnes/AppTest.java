@@ -67,7 +67,7 @@ public class AppTest {
         for(int i = 0; i < 20; i++) {
             Instance[] args = new Instance[1];
             args[0] = new Instance(0, 0, null);
-            args[0].generateRandomInstance(100, 1000, 10, 50);
+            args[0].generateRandomInstance(100, 1000, 10, 50, 100);
             instances.add(args);
         }
         

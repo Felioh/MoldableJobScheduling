@@ -3,14 +3,16 @@ package de.ohnes.AlgorithmicComponents.FPTAS;
 import de.ohnes.AlgorithmicComponents.Algorithm;
 import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
+import lombok.NoArgsConstructor;
 
+/**
+ * A simple FPTAS.
+ * Suitable for an Instance with a large number of machines.
+ */
+@NoArgsConstructor
 public class NativeApproach implements Algorithm {
 
     private Instance I;
-
-    public NativeApproach() {
-
-    }
 
     /**
      * Schedule all Jobs in parallel
@@ -18,7 +20,7 @@ public class NativeApproach implements Algorithm {
      * @param I
      * @param d
      * @param epsilon
-     * @return
+     * @return true if there exists a schedule of length d, false otherwise.
      */
     @Override
     public boolean solve(double d, double epsilon) {

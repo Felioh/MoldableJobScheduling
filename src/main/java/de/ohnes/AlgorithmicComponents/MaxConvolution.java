@@ -5,6 +5,9 @@ import java.util.List;
 
 import de.ohnes.util.*;
 
+/**
+ * An implementation of a maximum convolution algorithm.
+ */
 public class MaxConvolution {
 
     /**
@@ -157,6 +160,9 @@ public class MaxConvolution {
     
 }
 
+/**
+ * a helper object to represent the imaginary matrix without actually building a matrix.
+ */
 class ImaginaryMatrix {
 
     ConvolutionElement[] seqA;

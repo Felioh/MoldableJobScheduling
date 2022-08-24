@@ -6,6 +6,7 @@ import lombok.Setter;
 
 @Setter
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@SuppressWarnings("unused")
 public class TestResult {
 
     private int jobs;

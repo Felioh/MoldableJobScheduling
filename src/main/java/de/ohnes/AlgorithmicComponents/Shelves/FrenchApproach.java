@@ -12,17 +12,18 @@ import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
 import de.ohnes.util.Machine;
 import de.ohnes.util.MyMath;
+import lombok.NoArgsConstructor;
 
+/**
+ * An implementation of the Algorithm by Mounie, Rapine, Trystram
+ */
+@NoArgsConstructor
 public class FrenchApproach implements Algorithm {
 
     protected Instance I;
 
-    public FrenchApproach() {
-        
-    }
-
     /**
-     * finds a two shelf shedule for the instance I with deadline d, if a schedule of length d exists.
+     * finds a two two shedule for the instance I with deadline d, if a schedule of length d exists.
      * @param d the deadline (makespan guess)
      * @param epsilon the "the small error"
      * @return true if a schedule of length d exists, false if none exists.

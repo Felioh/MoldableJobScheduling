@@ -12,19 +12,28 @@ import de.ohnes.util.Job;
 import de.ohnes.util.Machine;
 import de.ohnes.util.MyMath;
 
+/**
+ * An implementation of the algorithm by Kilian Grage.
+ */
 public class KilianApproach extends FelixApproach {
 
     public KilianApproach() {
         super();
     }
 
+    /**
+     * finds a two three shedule for the instance I with deadline d, if a schedule of length d exists.
+     * @param d the deadline (makespan guess)
+     * @param epsilon the "the small error"
+     * @return true if a schedule of length d exists, false if none exists.
+     */
     @Override
     public boolean solve(double d, double epsilon) {
 
         //parameters
-        double roh = (1 / 4.0) * epsilon;
-        double b = 1 / roh;
-        double d_quote = (1 + 4 * epsilon) * d;
+        final double roh = (1 / 4.0) * epsilon;
+        final double b = 1 / roh;
+        final double d_quote = (1 + 4 * epsilon) * d;
 
 
         //"forget about small jobs"

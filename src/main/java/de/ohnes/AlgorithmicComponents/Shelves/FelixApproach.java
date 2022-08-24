@@ -10,20 +10,29 @@ import de.ohnes.AlgorithmicComponents.Knapsack.KnapsackSolver;
 import de.ohnes.logger.printSchedule;
 import de.ohnes.util.*;
 
+/**
+ * An implementation of the algorithm by Felix Land.
+ */
 public class FelixApproach extends FrenchApproach {
 
     public FelixApproach() {
         super();
     }
 
+    /**
+     * finds a two three shedule for the instance I with deadline d, if a schedule of length d exists.
+     * @param d the deadline (makespan guess)
+     * @param epsilon the "the small error"
+     * @return true if a schedule of length d exists, false if none exists.
+     */
     @Override
     public boolean solve(double d, double epsilon) {
 
         //parameters
-        double delta = (1 / 5.0) * epsilon;
-        double roh = (1 / 4.0) * (Math.sqrt(1 + delta) - 1);
-        double b = 1 / (2 * roh - Math.pow(roh, 2));
-        double d_quote = Math.pow((1 + roh), 2) * d;
+        final double delta = (1 / 5.0) * epsilon;
+        final double roh = (1 / 4.0) * (Math.sqrt(1 + delta) - 1);
+        final double b = 1 / (2 * roh - Math.pow(roh, 2));
+        final double d_quote = Math.pow((1 + roh), 2) * d;
 
 
         //"forget about small jobs"

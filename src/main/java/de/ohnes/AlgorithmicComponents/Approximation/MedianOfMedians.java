@@ -2,9 +2,17 @@ package de.ohnes.AlgorithmicComponents.Approximation;
 
 import java.util.List;
 
+/**
+ * a class that implements the medianOfMedians Algorithm (https://en.wikipedia.org/wiki/Median_of_medians)
+ */
 public class MedianOfMedians {
     
-
+    /**
+     * find the median of an input list.
+     * this finds the upper median if len(list) % 2
+     * @param list the input list
+     * @return Upper median of the input list.
+     */
     public static int findMedian(List<Integer> list) {
         Integer[] Arrlist = list.toArray(Integer[] :: new);
         int index = select(Arrlist, 0, list.size() - 1, list.size() / 2);

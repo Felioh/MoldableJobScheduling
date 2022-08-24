@@ -12,6 +12,10 @@ import de.ohnes.util.Job;
  */
 public class TwoApproximation implements Approximation {
     
+    /**
+     * approximate a lower bound for the optimum of an Instance I
+     * @param I the Instance.
+     */
     public double approximate(Instance I) {
 
         //1
@@ -107,6 +111,10 @@ public class TwoApproximation implements Approximation {
         return false;
     }
 
+    /**
+     * a primitive median algorithm.
+     * running time is too slow !!
+     */
     private double findTarget(Integer[] pTimes) {
         Arrays.sort(pTimes);
         if(pTimes.length % 2 == 0) {
