@@ -2,7 +2,9 @@ package de.ohnes.util;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -19,6 +21,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Instance {
 
+    @JsonProperty("id")
+    private long id = System.currentTimeMillis();
     @JsonProperty("number_jobs")
     private int n;
     @JsonProperty("machines")
@@ -28,6 +32,7 @@ public class Instance {
     private Job[] jobs;
 
     @Setter
+    @JsonIgnore
     private Machine[] machines;
 
     public Instance(int n, int m, Job[] jobs) {
@@ -75,12 +80,13 @@ public class Instance {
         }
         return result;
     }
-    
+    @JsonIgnore
     public void addMachines(List<Machine> machines) {
         machines.addAll(Arrays.asList(this.machines));
         this.machines = machines.toArray(Machine[] :: new);
     }
 
+    @JsonIgnore
     public double getMakespan() {
         double maxMakespan = 0;
         for(Job job : this.jobs) {
