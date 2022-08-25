@@ -193,7 +193,7 @@ public class App {
             try {
                 I = new ObjectMapper().readValue(files[0], Instance.class);
                 if (files[0].delete()) {
-                    LOGGER.info("Successfully loaded Instance {} and deleted the file.", files[0].getName());
+                    LOGGER.debug("Successfully loaded Instance {} and deleted the file.", files[0].getName());
                 }
             } catch (IOException e) {
                 e.printStackTrace();
