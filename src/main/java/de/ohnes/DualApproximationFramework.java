@@ -30,11 +30,11 @@ public class DualApproximationFramework {
         
         Algorithm usedAlgo;
         if(I.getM() >= 8 * (I.getN() / epsilon)) {
-            LOGGER.debug("Starting dual approximation Framework with fptas: {}", this.getFPTASName());
+            LOGGER.info("Starting dual approximation Framework with fptas: {}", this.getFPTASName());
             usedAlgo = this.fptas;
             usedAlgo.setInstance(I);
         } else {
-            LOGGER.debug("Starting dual approximation Framework with shelvesAlgo: {}", this.getShelvesAlgoName());
+            LOGGER.info("Starting dual approximation Framework with shelvesAlgo: {}", this.getShelvesAlgoName());
             usedAlgo = this.knapsack;
             usedAlgo.setInstance(I);
         }

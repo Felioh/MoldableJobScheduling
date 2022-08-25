@@ -1,7 +1,7 @@
 services:
 
   bakilian:
-    image: baalgo:latest
+    image: baalgo:1.5
     environment:
       - ELASTICSEARCH_HOST=192.168.178.79
       - ALGO=Kilian
@@ -11,6 +11,7 @@ services:
       - INSTANCE_MAXMACHINES=500
       - INSTANCE_MAX_SEQUENTIAL_TIME=500
       - ES_INDEX=raspidata-
+      - INSTANCE_POLICY=push
     # networks:
     #   - es-net
     deploy:
@@ -21,7 +22,7 @@ services:
       - algoInstances:/home/instances
 
   bafelix:
-    image: baalgo:latest
+    image: baalgo:1.5
     environment:
       - ELASTICSEARCH_HOST=192.168.178.79
       - ALGO=Felix
@@ -31,6 +32,7 @@ services:
       - INSTANCE_MAXMACHINES=500
       - INSTANCE_MAX_SEQUENTIAL_TIME=500
       - ES_INDEX=raspidata-
+      - INSTANCE_POLICY=pull
     # networks:
     #   - es-net
     deploy:

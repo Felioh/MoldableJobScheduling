@@ -1,6 +1,8 @@
 package de.ohnes;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -37,11 +39,17 @@ public class App {
     private static String loop;
     private static String ESIndexPrefix;
     private static String ExecutionsBeforePush;
+    private static String InstancePolicy;
 
     private static String algo;
 
+    
+    /** 
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
-        Configurator.setRootLevel(Level.INFO);
+        Configurator.setRootLevel(Level.ALL);
 
         rand = System.getenv("INSTANCE_RANDOM");
         minJobs = System.getenv("INSTANCE_MINJOBS");
@@ -54,10 +62,12 @@ public class App {
         algo = System.getenv("ALGO");
         ESIndexPrefix = System.getenv("ES_INDEX");
         ExecutionsBeforePush = System.getenv("EXECS_BEFORE_PUSH");
+        InstancePolicy = System.getenv("INSTANCE_POLICY");
+        
         
         LOGGER.info("Starting Algorithm!");
-        MyElasticsearchClient.makeConnection(ESHost);
         if(loop != null) {
+            MyElasticsearchClient.makeConnection(ESHost);
             while(true) {
                 for(int i = 0; i < Integer.parseInt(ExecutionsBeforePush); i++) {
                     MyElasticsearchClient.addData(runTest());
@@ -66,14 +76,16 @@ public class App {
 
             }
         } else {
-            for(int i = 0; i < 10; i++) {
-                MyElasticsearchClient.addData(runTest());
-            }
-            MyElasticsearchClient.pushData(ESIndexPrefix + java.time.LocalDate.now().toString());
+            runTest();
+
         }
 
     }
 
+    
+    /** 
+     * @return TestResult
+     */
     private static TestResult runTest() {
         Instance I = new Instance();
         if(rand == null) {
@@ -90,7 +102,7 @@ public class App {
                 e.printStackTrace();
             }
         } else {
-            I.generateRandomInstance(Integer.parseInt(minJobs), Integer.parseInt(maxJobs), Integer.parseInt(minMachines), Integer.parseInt(maxMachines), Integer.parseInt(maxSeqTime));
+            I = getInstance();
         }
 
 
@@ -138,9 +150,66 @@ public class App {
         tr.setMilliseconds((endTime - startTime));
         tr.setBigJobs(MyMath.findBigJobs(I, d).length);
         tr.setSmallJobs(MyMath.findSmallJobs(I, d).length);
+        tr.setInstanceID(I.getId());
         // tr.setProcessingTimes(I.getJobs());
 
         return tr;
+    }
+
+    
+    /** 
+     * @return Instance
+     * @throws InterruptedException
+     */
+    private static Instance getInstance() {
+        Instance I = new Instance();
+        if(InstancePolicy == null) {
+            I.generateRandomInstance(Integer.parseInt(minJobs), Integer.parseInt(maxJobs), Integer.parseInt(minMachines), Integer.parseInt(maxMachines), Integer.parseInt(maxSeqTime));
+
+        } else if(InstancePolicy.equals("push")) {
+            I.generateRandomInstance(Integer.parseInt(minJobs), Integer.parseInt(maxJobs), Integer.parseInt(minMachines), Integer.parseInt(maxMachines), Integer.parseInt(maxSeqTime));
+            try {
+                new ObjectMapper().writeValue(Paths.get("/home/instances/instance_" + I.getId() + ".json").toFile(), I);
+                LOGGER.info("Saved file {}.", "/home/instances/instance_" + I.getId());;
+            } catch (IOException e) {
+                e.printStackTrace();
+                LOGGER.error("The Instance couldn't be saved to a File.");
+            }
+
+        } else if(InstancePolicy.equals("pull")) {
+
+            File dir = new File("/home/instances"); //TODO NullPointer if directory does not exist.
+            File[] files = dir.listFiles();
+            while(files.length == 0) {
+                LOGGER.debug("Could not find an Instance to execute. Waiting 60 seconds.");
+                try {
+                    TimeUnit.SECONDS.sleep(60);
+                } catch (InterruptedException e) {
+                    //TODO deal with interrupt.
+                }
+                dir = new File("/home/instances");
+                files = dir.listFiles();
+            }
+            try {
+                I = new ObjectMapper().readValue(files[0], Instance.class);
+                if (files[0].delete()) {
+                    LOGGER.info("Successfully loaded Instance {} and deleted the file.", files[0].getName());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                LOGGER.error("Could not read File {}", files[0].getName());
+                try {
+                    TimeUnit.SECONDS.sleep(60);
+                } catch (InterruptedException e2) {
+                    //TODO deal with interrupt.
+                }
+                return getInstance();
+            }
+
+
+        }
+        return I;
+
     }
 
 }

@@ -9,6 +9,7 @@ import lombok.Setter;
 @SuppressWarnings("unused")
 public class TestResult {
 
+    private long InstanceID;
     private int jobs;
     private int machines;
     private int[][] processingTimes;
