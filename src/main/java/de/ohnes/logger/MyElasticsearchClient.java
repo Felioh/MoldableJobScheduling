@@ -1,7 +1,6 @@
 package de.ohnes.logger;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,11 +15,9 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import de.ohnes.App;
 import de.ohnes.util.TestResult;
 
 /**
@@ -65,7 +62,7 @@ public class MyElasticsearchClient {
                 return false;
             }
         }
-        LOGGER.info("Trying to push {} Elements to Elasticsearch...", data.size());    //TODO add logger for this class.
+        LOGGER.info("Trying to push {} Elements to Elasticsearch...", data.size());
         // System.out.println("Pushing " + data.size() + " Elements to Elasticsearch...");
         
         try {

@@ -42,12 +42,12 @@ public class MaxConvolution {
                     try {
                         selected_jobs.addAll(seqA[x].getJobs());
                     } catch (IndexOutOfBoundsException e) {
-                        //TODO: handle exception
+                        //TODO: handle exception (should not happen)
                     }
                     try {
                         selected_jobs.addAll(seqB[y].getJobs());
                     } catch (IndexOutOfBoundsException e) {
-                        //TODO: handle exception
+                        //TODO: handle exception (should not happen)
                     }
                     bestElement = new ConvolutionElement(profitA + profitB, selected_jobs);
                 }
@@ -61,7 +61,6 @@ public class MaxConvolution {
     }
 
     /**
-     * TODO think about running time.
      * a function, that computes the max-convolution using an imaginary matrix.
      * @param seqA an arbitrary sequence of convolution Elements
      * @param seqB a concave sequence of convolution Elements
@@ -82,7 +81,7 @@ public class MaxConvolution {
 
         ImaginaryMatrix A = new ImaginaryMatrix(seqA2, seqB2);
 
-        int[] max_ind = linearApproach_maxCompute(A);   //TODO column index is wrong
+        int[] max_ind = linearApproach_maxCompute(A);
         ConvolutionElement[] seqC = new ConvolutionElement[max_ind.length - 1];
         for(int i = 0; i < seqC.length; i++) {
             seqC[i] = A.getConvolutionElement(i + 1, max_ind[i + 1]);
@@ -124,7 +123,6 @@ public class MaxConvolution {
                     }
 
                 }
-                //TODO search max between prev_res[i] and prev_res[i + 1]
             }
         }
 
@@ -136,7 +134,7 @@ public class MaxConvolution {
      * @param A the imaginary Matrix
      * @return a List of the columns, that have been deleted.
      */
-    private static List<Integer> linearApproach_reduce(ImaginaryMatrix A) {        //TODO: nb. Rows as constant (n)
+    private static List<Integer> linearApproach_reduce(ImaginaryMatrix A) {
         List<Integer> delCols = new ArrayList<>();
         int k = 0;
         while(A.getColumns() > A.getRows()) {
@@ -168,8 +166,8 @@ class ImaginaryMatrix {
     ConvolutionElement[] seqA;
     ConvolutionElement[] seqB;
 
-    ArrayList<Integer> killedCols = new ArrayList<>(); //TODO array. values are monotone
-    ArrayList<Integer> killedRows = new ArrayList<>(); //TODO maybe linked list (bisection search)
+    ArrayList<Integer> killedCols = new ArrayList<>();
+    ArrayList<Integer> killedRows = new ArrayList<>();
 
     ImaginaryMatrix(ConvolutionElement[] seqA, ConvolutionElement[] seqB) {
         this.seqA = seqA;

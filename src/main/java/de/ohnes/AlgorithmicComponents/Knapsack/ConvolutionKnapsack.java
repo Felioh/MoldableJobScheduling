@@ -38,7 +38,7 @@ public class ConvolutionKnapsack implements KnapsackSolver {
             List<Integer> profit = new ArrayList<>();
             for(int j = 0; j < jobs.size(); j++) {
                 if(wt[j] == i) {
-                    profit.add(val[j]);     //TODO: Dont use ArrayLists!!
+                    profit.add(val[j]);
                     currJobs.add(jobs.get(j));
                 }
             }

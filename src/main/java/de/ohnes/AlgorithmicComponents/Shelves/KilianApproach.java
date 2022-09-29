@@ -7,7 +7,6 @@ import java.util.List;
 import de.ohnes.AlgorithmicComponents.GeometricalRounding;
 import de.ohnes.AlgorithmicComponents.Knapsack.ConvolutionKnapsack;
 import de.ohnes.AlgorithmicComponents.Knapsack.KnapsackSolver;
-import de.ohnes.logger.printSchedule;
 import de.ohnes.util.Job;
 import de.ohnes.util.Machine;
 import de.ohnes.util.MyMath;
@@ -33,7 +32,7 @@ public class KilianApproach extends FelixApproach {
         //parameters
         final double roh = (1 / 4.0) * epsilon;
         final double b = 1 / roh;
-        final double d_quote = (1 + 4 * epsilon) * d;
+        // final double d_quote = (1 + 4 * epsilon) * d;
 
 
         //"forget about small jobs"
@@ -64,7 +63,7 @@ public class KilianApproach extends FelixApproach {
         for(int i = 0; i < shelf2.size(); i++) {
             Job job = shelf2.get(i);
             int dAllotment = gammaPrime(job, d, roh, b);
-            int dHalfAllotment = gammaPrime(job, d / 2, roh, b); //TODO check -1 possibility. (should not happen.)
+            int dHalfAllotment = gammaPrime(job, d / 2, roh, b);
 
 
             if(dAllotment == -1) {  //there cant exists a schedule of legnth d if any job cant be scheduled in d time.
@@ -78,7 +77,7 @@ public class KilianApproach extends FelixApproach {
             if (dHalfAllotment != -1) {
                 //profit of an item-task will correspond to the work saving obtained by executing the task just to respect the threshold d instead of d/2
                 //w_{i, y{i, d/2} - w_{i, y{i, d}}
-                profit[i] = (dHalfAllotment * job.getProcessingTime(dHalfAllotment)) - (dAllotment * job.getProcessingTime(dAllotment)); //TODO: is not the original profit (p. 89 Thesis Felix)
+                profit[i] = (dHalfAllotment * job.getProcessingTime(dHalfAllotment)) - (dAllotment * job.getProcessingTime(dAllotment));
                 if(dHalfAllotment < b && dAllotment < b) { //both sizes are small
                     //round the original profit down to the next multiple of epsilon * d
                     int j = 1;
@@ -88,7 +87,7 @@ public class KilianApproach extends FelixApproach {
                             break;
                         }
                     }
-                    profit[i] = (int) Math.floor((j - 1) * epsilon * d);    //TODO use double profits.
+                    profit[i] = (int) Math.floor((j - 1) * epsilon * d);
                 } else if(dHalfAllotment >= b && dAllotment >= b) { //both sizes are big
                     double t_PrimeD = (1 / (1 + 4 * d));
                     double t_PrimeDHalf = (1 / (1 + 4 * (d / 2.0)));
@@ -96,7 +95,7 @@ public class KilianApproach extends FelixApproach {
                 } else { //jobs where dHalfAllotment >= b and dAllotment < b
                     double t_PrimeDHalf = (1 / (1 + 4 * (d / 2.0)));
                     int w_dHalf = (int) Math.floor(t_PrimeDHalf * dHalfAllotment);
-                    int w_d = (int) Math.floor(dAllotment * job.getProcessingTime(dAllotment));
+                    // int w_d = (int) Math.floor(dAllotment * job.getProcessingTime(dAllotment));
                     //round w(j, d) down to the next multiple of epsilon * d
                     int j = 1;
                     while(Math.floor(j * epsilon * d) <= profit[i]) {
@@ -109,7 +108,6 @@ public class KilianApproach extends FelixApproach {
                 }
                 
             } else { //job has to be scheduled on s1.
-                //TODO remove from knapsack and schedule on shelf 1.
                 profit[i] = (int) Math.round(I.getM() * d);     //really big.
             }
 
@@ -128,7 +126,7 @@ public class KilianApproach extends FelixApproach {
             //"move job to shelf1"
             int dAllotment = selectedJob.canonicalNumberMachines(d);
             if(dAllotment > b) { //rounding
-                dAllotment = (int) GeometricalRounding.gFloor(dAllotment, b, I.getM(), 1 + roh); //TODO check rounding by integer casting.
+                dAllotment = (int) GeometricalRounding.gFloor(dAllotment, b, I.getM(), 1 + roh);
             }
             selectedJob.setAllotedMachines(dAllotment);
             p1 += dAllotment; //keep track of the number of machines used by s1
@@ -188,10 +186,10 @@ public class KilianApproach extends FelixApproach {
             return -1;
         }
         int gamma_prime = gamma;
-        while(Math.ceil((1 - roh) * (gamma_prime + 1)) <= gamma) {      //TODO 1- roh correct??
+        while(Math.ceil((1 - roh) * (gamma_prime + 1)) <= gamma) {
             gamma_prime++;
         }
-        return (int) Math.ceil((1 - roh) * gamma_prime); //TODO maybe floor.
+        return (int) Math.ceil((1 - roh) * gamma_prime);
     }
 
 }

@@ -7,7 +7,6 @@ import java.util.List;
 import de.ohnes.AlgorithmicComponents.GeometricalRounding;
 import de.ohnes.AlgorithmicComponents.Knapsack.ConvolutionKnapsack;
 import de.ohnes.AlgorithmicComponents.Knapsack.KnapsackSolver;
-import de.ohnes.logger.printSchedule;
 import de.ohnes.util.*;
 
 /**
@@ -32,7 +31,7 @@ public class FelixApproach extends FrenchApproach {
         final double delta = (1 / 5.0) * epsilon;
         final double roh = (1 / 4.0) * (Math.sqrt(1 + delta) - 1);
         final double b = 1 / (2 * roh - Math.pow(roh, 2));
-        final double d_quote = Math.pow((1 + roh), 2) * d;
+        // final double d_quote = Math.pow((1 + roh), 2) * d;
 
 
         //"forget about small jobs"
@@ -65,10 +64,10 @@ public class FelixApproach extends FrenchApproach {
             int dHalfAllotment = job.getAllotedMachines();
 
             if(dAllotment > b) { //rounding
-                dAllotment = (int) GeometricalRounding.gFloor(dAllotment, b, I.getM(), 1 + roh); //TODO check rounding by integer casting.
+                dAllotment = (int) GeometricalRounding.gFloor(dAllotment, b, I.getM(), 1 + roh);
             }
             if(dHalfAllotment > b) { //rounding
-                dHalfAllotment = (int) GeometricalRounding.gFloor(dHalfAllotment, b, I.getM(), 1 + roh); //TODO check rounding by integer casting.
+                dHalfAllotment = (int) GeometricalRounding.gFloor(dHalfAllotment, b, I.getM(), 1 + roh);
             }
 
 
@@ -83,7 +82,7 @@ public class FelixApproach extends FrenchApproach {
             if (dHalfAllotment != -1) {
                 //profit of an item-task will correspond to the work saving obtained by executing the task just to respect the threshold d instead of d/2
                 //w_{i, y{i, d/2} - w_{i, y{i, d}}
-                profit[i] = (dHalfAllotment * job.getProcessingTime(dHalfAllotment)) - (dAllotment * job.getProcessingTime(dAllotment)); //TODO: is not the original profit (p. 89 Thesis Felix)
+                profit[i] = (dHalfAllotment * job.getProcessingTime(dHalfAllotment)) - (dAllotment * job.getProcessingTime(dAllotment));
                 if(dHalfAllotment < b) { //this means the job has been compressed.
                     if(profit[i] < (delta / 2) * d) {
                         profit[i] = 0;
@@ -98,7 +97,6 @@ public class FelixApproach extends FrenchApproach {
                 }
                 
             } else { //job has to be scheduled on s1.
-                //TODO remove from knapsack and schedule on shelf 1.
                 profit[i] = (int) Math.round(I.getM() * d);     //really big.
             }
 
@@ -117,7 +115,7 @@ public class FelixApproach extends FrenchApproach {
             //"move job to shelf1"
             int dAllotment = selectedJob.canonicalNumberMachines(d);
             if(dAllotment > b) { //rounding
-                dAllotment = (int) GeometricalRounding.gFloor(dAllotment, b, I.getM(), 1 + roh); //TODO check rounding by integer casting.
+                dAllotment = (int) GeometricalRounding.gFloor(dAllotment, b, I.getM(), 1 + roh);
             }
             selectedJob.setAllotedMachines(dAllotment);
             p1 += dAllotment; //keep track of the number of machines used by s1

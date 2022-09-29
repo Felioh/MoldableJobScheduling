@@ -47,7 +47,7 @@ public class DrawSchedule {
               int start = job.getStartingTime();
               int duration = job.getProcessingTime(job.getAllotedMachines());
               ig.setPaint(Color.black);
-              ig.drawRect(x + 1, start, machine_width - 1, duration); //TODO normalize startingTime and ProcessingTime
+              ig.drawRect(x + 1, start, machine_width - 1, duration);
               // ig.setPaint(Color.WHITE);
               ig.drawString(String.format("%03d", job.getId()), x + 5, start + 10);
 

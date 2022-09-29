@@ -1,36 +1,41 @@
-## Getting Started
+Algorithms for machine scheduling with malleable jobs
+---
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+An Implementation of the algorithms from Jansen & Land and Grage & Jansen, building upon an algorithm from Mounié, Rapine and Trystram.
 
-## Folder Structure
 
-The workspace contains two folders by default, where:
+# A couple of Maven commands
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+Once you have configured your project in your IDE you can build it from there. However if you prefer you can use maven from the command line. In that case you could be interested in this short list of commands:
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+* `mvn compile`: it will just compile the code of your application and tell you if there are errors
+* `mvn test`: it will compile the code of your application and your tests. It will then run your tests (if you wrote any) and let you know if some fails
+* `mvn install`: it will do everything `mvn test` does and then if everything looks file it will install the library or the application into your local maven repository (typically under <USER FOLDER>/.m2). In this way you could use this library from other projects you want to build on the same machine
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+If you need more information please take a look at this [quick tutorial](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html).
 
 
 
-# TODO
-- Algorithm.solve in French an Felix is not functional
+# Execution with docker-compose
+Hint: before execution docker-compose the images need to be build using docker. For this see section Docker.
 
-- ConvolutionElement.add() hinzufügen. (the objects are not reued, so they can be altered.)
-- ConvolutionList -> either linkedList? HashMap?
+Docker-compose can be started with the following command:
+```
+docker-compose up -d
+```
 
+The logs of each container should look something like this:
+```
+19:33:00.888 [main] INFO  de.ohnes.App - Starting Algorithm!
+19:33:01.337 [main] INFO  de.ohnes.DualApproximationFramework - Starting dual approximation Framework with shelvesAlgo: KilianApproach
+19:33:04.141 [main] INFO  de.ohnes.App - Ran instance with 90 machines and 81 jobs in 2 seconds.
+19:33:04.142 [main] INFO  de.ohnes.DualApproximationFramework - Starting dual approximation Framework with shelvesAlgo: KilianApproach
+```
 
-- Decision, if a feasible schedule exists.  -> Knapsack result with work < md - W_s
-
-
-# Ausarbeitung
-- package: amsthm -> für Lemma
-- Related work section -> State of the Art angeben
-- theoreme von Algorithmen aus entsprechender Arbeit entnehmen
-- code auf pseudo level
+# Building docker images
+The docker image can be build with the following command.
+```
+docker build -t baalgo .
+```
+With the current configuration of the `Dockerfile` the `target/bachelorarbeit-1.0-SNAPSHOT-jar-with-dependencies.jar` will be used, so make sure to call `mvn compile` before.
+The other configuration in this file are only defaults and can be changed in the `docker-compose.yml`.

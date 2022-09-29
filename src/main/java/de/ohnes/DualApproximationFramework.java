@@ -38,8 +38,8 @@ public class DualApproximationFramework {
             usedAlgo = this.knapsack;
             usedAlgo.setInstance(I);
         }
-        double lowerBound = this.approx.approximate(I) / 2; //TODO think about exact bounds ( * 4)
-        double upperBound = lowerBound * 8;                 //TODO maybe add list scheduling. -> schedule twiari greedy and divide by 2.
+        double lowerBound = this.approx.approximate(I) / 2; //TODO this bound could be thighter.
+        double upperBound = lowerBound * 8;                 //TODO add list scheduling. -> schedule twiari greedy and divide by 2.
 
         return binarySearch(usedAlgo, epsilon, lowerBound, upperBound);
     }
@@ -50,7 +50,7 @@ public class DualApproximationFramework {
         I.resetInstance(); //reset the instance because it was altered in previous attempt.
         if(algo.solve(mid, epsilon)) { //a schedule of length "mid" exists
 
-            if(r - mid < epsilon) {     //TODO think about minimal steplength
+            if(r - mid < epsilon) {
                 return mid;
             }
 

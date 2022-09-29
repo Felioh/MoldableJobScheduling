@@ -33,7 +33,7 @@ public class TwoApproximation implements Approximation {
             if(I.getJob(i).getProcessingTime(1) < low) {
                 upper[i] = 0;
             } else {
-                upper[i] = I.getJob(i).canonicalNumberMachines(low) - 1; //TODO check!!!
+                upper[i] = I.getJob(i).canonicalNumberMachines(low) - 1;
             }
         }
         //3
@@ -44,7 +44,7 @@ public class TwoApproximation implements Approximation {
         int[] tallot = new int[I.getN()];
         int[] sallot = new int[I.getN()];
         int[] uallot = new int[I.getN()];
-        //TODO track a list for all i's that have lower <= upper
+
         while(checkAllUppperGreaterThanLower(lower, upper)) {
             List<Integer> pTimes = new ArrayList<>();
             for(int i = 0; i < I.getN(); i++) {
@@ -86,13 +86,13 @@ public class TwoApproximation implements Approximation {
                 uallot = tallot.clone();
                 for(int i = 0; i < I.getN(); i++) {
                     if(lower[i] <= upper[i]) {
-                        upper[i] = I.getJob(i).canonicalNumberMachines(target) - 1; //TODO check
+                        upper[i] = I.getJob(i).canonicalNumberMachines(target) - 1;
                     }
                 }
             }
         }
         //step 6
-        return Math.max(unsuccessful, successful); //TODO check
+        return Math.max(unsuccessful, successful);
     }
 
     /**

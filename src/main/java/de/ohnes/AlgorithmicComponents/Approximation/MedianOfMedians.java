@@ -35,7 +35,7 @@ public class MedianOfMedians {
     }
 
     private static int pivot(Integer[] list, int l, int r) {
-        if(r - l < 5) {     //TODO <=  ??
+        if(r - l < 5) {
             return partition5(list, l, r);
         }
         for(int i = l; i < r; i = i + 5) {

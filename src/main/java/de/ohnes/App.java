@@ -18,9 +18,7 @@ import de.ohnes.AlgorithmicComponents.FPTAS.CompressionApproach;
 import de.ohnes.AlgorithmicComponents.FPTAS.DoubleCompressionApproach;
 import de.ohnes.AlgorithmicComponents.Shelves.FelixApproach;
 import de.ohnes.AlgorithmicComponents.Shelves.KilianApproach;
-import de.ohnes.logger.DrawSchedule;
 import de.ohnes.logger.MyElasticsearchClient;
-import de.ohnes.logger.printSchedule;
 import de.ohnes.util.Instance;
 import de.ohnes.util.MyMath;
 import de.ohnes.util.TestResult;
@@ -98,7 +96,6 @@ public class App {
                 // I = mapper.readValue(Paths.get("TestInstance copy 3.json").toFile(), Instance.class);
                 I = new ObjectMapper().readValue(Paths.get("TestInstances/TestInstance copy 3.json").toFile(), Instance.class);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         } else {
@@ -128,7 +125,7 @@ public class App {
         long startTime = System.currentTimeMillis();
         double d = dF.start(0.1);
         long endTime = System.currentTimeMillis();
-        LOGGER.info("Ran instance with {} machines and {} jobs in {} seconds.", I.getM(), I.getN(), (endTime - startTime) / 1000);
+        LOGGER.info("Ran instance with {} machines and {} jobs in {} seconds.", I.getM(), I.getN(), (endTime - startTime));
         // System.out.println("Ran Instance with " + I.getM() + " Machines and " + I.getN() + " Jobs in " + (endTime - startTime) + " Milliseconds...");
 
 // ############################################## DEBUG ##################################################################################################################
@@ -178,14 +175,13 @@ public class App {
 
         } else if(InstancePolicy.equals("pull")) {
 
-            File dir = new File("/home/instances"); //TODO NullPointer if directory does not exist.
+            File dir = new File("/home/instances");
             File[] files = dir.listFiles();
             while(files.length == 0) {
                 LOGGER.debug("Could not find an Instance to execute. Waiting 60 seconds.");
                 try {
                     TimeUnit.SECONDS.sleep(60);
                 } catch (InterruptedException e) {
-                    //TODO deal with interrupt.
                 }
                 dir = new File("/home/instances");
                 files = dir.listFiles();
@@ -201,7 +197,6 @@ public class App {
                 try {
                     TimeUnit.SECONDS.sleep(60);
                 } catch (InterruptedException e2) {
-                    //TODO deal with interrupt.
                 }
                 return getInstance();
             }

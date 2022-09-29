@@ -24,7 +24,7 @@ public class Machine {
 
     public void addJob(Job job) {
         this.jobs.add(job);
-        this.jobs = this.jobs.stream().sorted(Comparator.comparing(Job::getStartingTime)).collect(Collectors.toList()); //TODO anders lösen
+        this.jobs = this.jobs.stream().sorted(Comparator.comparing(Job::getStartingTime)).collect(Collectors.toList());
         this.usedTime += job.getProcessingTime(job.getAllotedMachines());
     }
 

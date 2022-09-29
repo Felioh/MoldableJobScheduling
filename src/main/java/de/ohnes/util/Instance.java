@@ -2,7 +2,6 @@ package de.ohnes.util;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -58,7 +57,8 @@ public class Instance {
             int[] processingTimes = new int[this.m];
             processingTimes[0] = MyMath.getRandomNumber(20, maxSeqTime);
             for(int j = 1; j < this.m; j++) {
-                processingTimes[j] = MyMath.getRandomNumber((int) Math.ceil((j / (double) (j + 1)) * processingTimes[j - 1]), processingTimes[j - 1]); //TODO linearity??
+                processingTimes[j] = (int) (processingTimes[0] / (j + 1)); //minimal processing time
+                // processingTimes[j] = MyMath.getRandomNumber((int) Math.ceil((j / (double) (j + 1)) * processingTimes[j - 1]), processingTimes[j - 1]); //comment in for random processing times.
             }
             this.jobs[i] = new Job(i, processingTimes);
         }

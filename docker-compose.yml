@@ -1,7 +1,7 @@
 services:
 
   bakilian:
-    image: baalgo:1.5
+    image: baalgo:latest
     environment:
       - ELASTICSEARCH_HOST=192.168.178.79
       - ALGO=Kilian
@@ -12,8 +12,8 @@ services:
       - INSTANCE_MAX_SEQUENTIAL_TIME=500
       - ES_INDEX=raspidata-
       - INSTANCE_POLICY=push
-    # networks:
-    #   - es-net
+    networks:
+      - es-net
     deploy:
       resources:
         limits:
@@ -22,7 +22,7 @@ services:
       - algoInstances:/home/instances
 
   bafelix:
-    image: baalgo:1.5
+    image: baalgo:latest
     environment:
       - ELASTICSEARCH_HOST=192.168.178.79
       - ALGO=Felix
@@ -33,8 +33,8 @@ services:
       - INSTANCE_MAX_SEQUENTIAL_TIME=500
       - ES_INDEX=raspidata-
       - INSTANCE_POLICY=pull
-    # networks:
-    #   - es-net
+    networks:
+      - es-net
     deploy:
       resources:
         limits:
@@ -42,32 +42,32 @@ services:
     volumes:
       - algoInstances:/home/instances
 
-  # elasticsearch:
-  #   container_name: es-container
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
-  #   environment:
-  #     - xpack.security.enabled=false
-  #     - "discovery.type=single-node"
-  #   networks:
-  #     - es-net
-  #   ports:
-  #     - 9200:9200
-  #     - 9300:9300
-  # kibana:
-  #   container_name: kb-container
-  #   image: docker.elastic.co/kibana/kibana:7.17.5
-  #   environment:
-  #     - ELASTICSEARCH_HOSTS=http://192.168.178.79:9200
-  #   # networks:
-  #   #   - es-net
-  #   # depends_on:
-  #   #   - elasticsearch
-  #   ports:
-  #     - 5601:5601
+  elasticsearch:
+    container_name: es-container
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+    environment:
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+    networks:
+      - es-net
+    ports:
+      - 9200:9200
+      - 9300:9300
+  kibana:
+    container_name: kb-container
+    image: docker.elastic.co/kibana/kibana:7.17.5
+    environment:
+      - ELASTICSEARCH_HOSTS=http://192.168.178.79:9200
+    networks:
+      - es-net
+    depends_on:
+      - elasticsearch
+    ports:
+      - 5601:5601
 
-# networks:
-#   es-net:
-#     driver: bridge
+networks:
+  es-net:
+    driver: bridge
 
 volumes:
   algoInstances:

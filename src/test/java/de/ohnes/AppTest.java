@@ -15,9 +15,7 @@ import org.junit.runners.Parameterized;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.ohnes.AlgorithmicComponents.Approximation.TwoApproximation;
-import de.ohnes.AlgorithmicComponents.FPTAS.CompressionApproach;
 import de.ohnes.AlgorithmicComponents.FPTAS.DoubleCompressionApproach;
-import de.ohnes.AlgorithmicComponents.Shelves.FelixApproach;
 import de.ohnes.AlgorithmicComponents.Shelves.KilianApproach;
 import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
@@ -93,7 +91,7 @@ public class AppTest {
     }
 
     /**
-     * Test if the Makespan is smaller than the promised one. (3/2 * d) TODO account for epsilon
+     * Test if the Makespan is smaller than the promised one. (3/2 * d) Note: epsilon is not accounted for.
      */
     @Test
     public void testMakespan() {

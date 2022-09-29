@@ -59,10 +59,10 @@ public class DoubleCompressionApproach implements Algorithm {
             throw new NoExistingSchedule("Job cant be scheduled in deadline d.");
         }
         int gamma_prime = gamma;
-        while(Math.ceil((1 - roh) * (gamma_prime + 1)) <= gamma) {      //TODO 1- roh correct??
+        while(Math.ceil((1 - roh) * (gamma_prime + 1)) <= gamma) {
             gamma_prime++;
         }
-        return (int) Math.ceil((1 - roh) * gamma_prime);    //TODO maybe floor.
+        return (int) Math.ceil((1 - roh) * gamma_prime);
     }
 
 
