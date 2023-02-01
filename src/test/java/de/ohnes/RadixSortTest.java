@@ -36,19 +36,19 @@ public class RadixSortTest {
         int[] l1S = list1.stream().mapToInt(i -> i).toArray();
         Collections.shuffle(list1);
         int[] l1 = list1.stream().mapToInt(i -> i).toArray();
-        int b1 = 1 + (int) Math.random() * 100;
+        int b1 = 10 + (int) Math.random() * 100;
 
         List<Integer> list2 = IntStream.range(1, 6).boxed().collect(Collectors.toList());
         int[] l2S = list2.stream().mapToInt(i -> i).toArray();
         Collections.shuffle(list2);
         int[] l2 = list2.stream().mapToInt(i -> i).toArray();
-        int b2 = 1 + (int) Math.random() * 100;
+        int b2 = 10 + (int) Math.random() * 100;
 
         List<Integer> list3 = IntStream.range(1, 101).boxed().collect(Collectors.toList());
         int[] l3S = list3.stream().mapToInt(i -> i).toArray();
         Collections.shuffle(list3);
         int[] l3 = list3.stream().mapToInt(i -> i).toArray();
-        int b3 = 1 + (int) Math.random() * 100;
+        int b3 = 10 + (int) Math.random() * 100;
 
 
         return Arrays.asList(new Object[][] {{l1, l1S, b1}, {l2, l2S, b2}, {l3, l3S, b3}});
