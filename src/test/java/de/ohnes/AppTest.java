@@ -22,7 +22,9 @@ import de.ohnes.util.Job;
 import de.ohnes.util.Machine;
 
 /**
- * Unit test for simple App.
+ * Tests for the complete program.
+ * 
+ * tests all predefined instances from the TestInstances Folder as well as some randomly generated ones.
  */
 @RunWith(Parameterized.class)
 public class AppTest {

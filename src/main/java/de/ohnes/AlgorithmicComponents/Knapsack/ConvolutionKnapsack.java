@@ -48,7 +48,7 @@ public class ConvolutionKnapsack implements KnapsackSolver {
                 List<Job> selected_Jobs = new ArrayList<>();
                 List<Integer> selected_Profit = new ArrayList<>();
                 while(selected_Jobs.size() * i <= (W - i) && !profit.isEmpty()) {        // <= W - i because there needs to be space for at least one item of weight i
-                    int maxProfit = Collections.max(profit);
+                    int maxProfit = Collections.max(profit); //TODO sort list for faster access.
                     selected_Profit.add(maxProfit);
                     selected_Jobs.add(currJobs.get(profit.indexOf(maxProfit)));
                     //delete
