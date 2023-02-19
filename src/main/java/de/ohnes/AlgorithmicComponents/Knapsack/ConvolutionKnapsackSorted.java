@@ -1,7 +1,6 @@
 package de.ohnes.AlgorithmicComponents.Knapsack;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import de.ohnes.AlgorithmicComponents.MaxConvolution;
@@ -10,9 +9,9 @@ import de.ohnes.util.Job;
 
 /**
  * An implementation of a knapsack solver using convolution.
- * 
+ * expects the input lists to be sorted by the profit (val).
  */
-public class ConvolutionKnapsack implements KnapsackSolver {
+public class ConvolutionKnapsackSorted implements KnapsackSolver {
 
     /**
      *  Laufzeit: O(DT), T = Capacity, D = Distinct weights (<=M)
@@ -28,6 +27,7 @@ public class ConvolutionKnapsack implements KnapsackSolver {
      */
     @Override
     public List<Job> solve(List<Job> jobs, int[] wt, int[] val, int n, int W) {
+        
         ConvolutionElement[] sol = new ConvolutionElement[W];
         for(int j = 0; j < W; j++) {        //to avoid NullPointer
             sol[j] = new ConvolutionElement(0, new ArrayList<>());
@@ -48,9 +48,9 @@ public class ConvolutionKnapsack implements KnapsackSolver {
                 List<Job> selected_Jobs = new ArrayList<>();
                 List<Integer> selected_Profit = new ArrayList<>();
                 while(selected_Jobs.size() * i <= (W - i) && !profit.isEmpty()) {        // <= W - i because there needs to be space for at least one item of weight i
-                    int maxProfit = Collections.max(profit); //TODO sort list for faster access.
+                    int maxProfit = profit.get(profit.size() - 1);
                     selected_Profit.add(maxProfit);
-                    selected_Jobs.add(currJobs.get(profit.indexOf(maxProfit)));
+                    selected_Jobs.add(currJobs.get(profit.indexOf(maxProfit))); //TODO dont use index of, since index should be the same as in the profit list.
                     //delete
                     currJobs.remove(currJobs.get(profit.indexOf(maxProfit)));
                     profit.remove((Integer) maxProfit);

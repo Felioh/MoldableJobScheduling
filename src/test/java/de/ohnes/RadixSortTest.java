@@ -14,6 +14,7 @@ import org.junit.runners.Parameterized;
 
 
 import de.ohnes.AlgorithmicComponents.Sorting.RadixSort;
+import de.ohnes.util.Job;
 
 
 @RunWith(Parameterized.class)
@@ -57,7 +58,10 @@ public class RadixSortTest {
     @Test
     public void testRadixSort() {
         RadixSort radixSort = new RadixSort(this.base);
-        radixSort.sortDynamicList(this.list);
+        //dummy arrays. only test the sorting of the first array.
+        Job[] jobs = Arrays.stream(this.list).mapToObj(i -> new Job(i, null)).toArray(Job[] :: new);
+        int[] list2 = this.list.clone();
+        radixSort.sortDynamicList(this.list, jobs, list2);
         for (int i = 0; i < this.list.length; i++) {
             assertEquals(this.list[i], this.sorted[i]);
         }

@@ -5,8 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.ohnes.AlgorithmicComponents.GeometricalRounding;
-import de.ohnes.AlgorithmicComponents.Knapsack.ConvolutionKnapsack;
+import de.ohnes.AlgorithmicComponents.Knapsack.ConvolutionKnapsackSorted;
 import de.ohnes.AlgorithmicComponents.Knapsack.KnapsackSolver;
+import de.ohnes.AlgorithmicComponents.Sorting.RadixSort;
 import de.ohnes.util.Job;
 import de.ohnes.util.Machine;
 import de.ohnes.util.MyMath;
@@ -113,8 +114,13 @@ public class KilianApproach extends FelixApproach {
 
         }
         
+        //TODO use a custom data structure to sort all three relevant lists at once.
+        Job[] jobsArray = shelf2.toArray(Job[] :: new); //TODO: has time complexity O(n)
+        RadixSort radixSort = new RadixSort((int) (1 / epsilon)); //TODO check base
+        radixSort.sortDynamicList(profit, jobsArray, weight);
+        shelf2 = new ArrayList<>(Arrays.asList(jobsArray));
 
-        KnapsackSolver kS = new ConvolutionKnapsack();
+        KnapsackSolver kS = new ConvolutionKnapsackSorted();
         List<Job> shelf1 = kS.solve(shelf2, weight, profit, shelf2.size(), I.getM());
         shelf2.removeAll(shelf1); //update shelf2
         int p1 = 0;     //processors required by S1.

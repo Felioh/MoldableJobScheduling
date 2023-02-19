@@ -3,8 +3,13 @@ package de.ohnes.AlgorithmicComponents.Sorting;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.ohnes.util.Job;
+import lombok.Getter;
+
 /**
  * Radix sort for positive numbers.
+ * 
+ * This class is implemented highly specific to the context it is used in.
  */
 public class RadixSort {
 
@@ -14,57 +19,78 @@ public class RadixSort {
         this.base = base;
     }
 
+    @Getter
     private static class Bucket {
     
-        private final List<Integer> elements = new ArrayList<>();
+        private final List<Integer> profits = new ArrayList<>();
+        private final List<Job> jobs = new ArrayList<>();
+        private final List<Integer> weights = new ArrayList<>();
     
-        private void add(int element) {
-            elements.add(element);
-        }
-    
-        private List<Integer> getElements() {
-            return elements;
+        private void add(int profit, Job job, int weight) {
+            profits.add(profit);
+            jobs.add(job);
+            weights.add(weight);
         }
     
     }
 
-    public void sortDynamicList(int[] elements) {
-        int max = getMaximum(elements);
+    /**
+     * This method gets three lists and sorts them in a way that the 1st list will be sorted.
+     * The other two lists will be sorted in the same way
+     * 
+     * for example:
+     * [3, 2, 1], [a, b, c] [c, b, a] -> [1, 2, 3], [c, b, a], [a, b, c]
+     */
+    public void sortDynamicList(int[] profits, Job[] jobs, int[] weights) {
+        int max = getMaximum(profits);
         int nbDigits = getNumberOfDigits(max);
 
         for (int digitIndex = 0; digitIndex < nbDigits; digitIndex++) {
-            sortByDigit(elements, digitIndex);
+            sortByDigit(profits, digitIndex, jobs, weights);
         }
 
     }
 
-    private void sortByDigit(int[] elements, int digitIndex) {
-        Bucket[] buckets = partition(elements, digitIndex);
-        collect(buckets, elements);
+    private void sortByDigit(int[] profits, int digitIndex, Job[] jobs, int[] weights) {
+        Bucket[] buckets = partition(profits, digitIndex, jobs, weights);
+        collect(buckets, profits, jobs, weights);
     }
 
-    private void collect(Bucket[] buckets, int[] elements) {
-        int index = 0;
+    private void collect(Bucket[] buckets, int[] profits, Job[] jobs, int[] weights) {
+        int globIndex = 0;
+        int tmpIndex = 0;
         for (Bucket bucket : buckets) {
-            for (int element : bucket.getElements()) {
-                elements[index] = element;
-                index++;
+            tmpIndex = globIndex;
+            for (int profit : bucket.getProfits()) {
+                profits[tmpIndex] = profit;
+                tmpIndex++;
             }
+            tmpIndex = globIndex;
+            for (int weight : bucket.getWeights()) {
+                weights[tmpIndex] = weight;
+                tmpIndex++;
+            }
+            tmpIndex = globIndex;
+            for (Job job : bucket.getJobs()) {
+                jobs[tmpIndex] = job;
+                tmpIndex++;
+            }
+            globIndex = tmpIndex;
         }
     }
 
-    private Bucket[] partition(int[] elements, int digitIndex) {
+    private Bucket[] partition(int[] profits, int digitIndex, Job[] jobs, int[] weights) {
         Bucket[] buckets = createBuckets();
-        distributeToBuckets(elements, digitIndex, buckets);
+        distributeToBuckets(profits, digitIndex, buckets, jobs, weights);
         return buckets;
     }
 
-    private void distributeToBuckets(int[] elements, int digitIndex, Bucket[] buckets) {
+    private void distributeToBuckets(int[] profits, int digitIndex, Bucket[] buckets, Job[] jobs, int[] weights) {
         int div = calculateDivisor(digitIndex);
 
-        for (int element : elements) {
-            int digit = element / div % this.base;
-            buckets[digit].add(element);
+        for (int i = 0; i < profits.length; i++) {
+            int digit = profits[i] / div % this.base;
+            buckets[digit].add(profits[i], jobs[i], weights[i]);
         }
     }
 
@@ -84,10 +110,10 @@ public class RadixSort {
         return buckets;
     }
     
-    private int getMaximum(int[] elements) {
+    private int getMaximum(int[] profits) {
         int max = 0;
-        for (int element : elements) {
-            if (element > max) max = element;
+        for (int profit : profits) {
+            if (profit > max) max = profit;
         }
         return max;
     }

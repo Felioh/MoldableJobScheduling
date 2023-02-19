@@ -19,6 +19,7 @@ import de.ohnes.AlgorithmicComponents.FPTAS.DoubleCompressionApproach;
 import de.ohnes.AlgorithmicComponents.Shelves.FelixApproach;
 import de.ohnes.AlgorithmicComponents.Shelves.KilianApproach;
 import de.ohnes.logger.MyElasticsearchClient;
+import de.ohnes.logger.printSchedule;
 import de.ohnes.util.Instance;
 import de.ohnes.util.MyMath;
 import de.ohnes.util.TestResult;
@@ -129,9 +130,9 @@ public class App {
         // System.out.println("Ran Instance with " + I.getM() + " Machines and " + I.getN() + " Jobs in " + (endTime - startTime) + " Milliseconds...");
 
 // ############################################## DEBUG ##################################################################################################################
-        // System.out.println(String.format("-".repeat(70) + "%04.2f" + "-".repeat(70), d));
-        // System.out.println(printSchedule.printMachines(I.getMachines()));
-        // System.out.println(String.format("-".repeat(70) + "%04.2f" + "-".repeat(70), d));
+        System.out.println(String.format("-".repeat(70) + "%04.2f" + "-".repeat(70), d));
+        System.out.println(printSchedule.printMachines(I.getMachines()));
+        System.out.println(String.format("-".repeat(70) + "%04.2f" + "-".repeat(70), d));
 // ############################################## DEBUG ##################################################################################################################
         // System.out.println("That took " + (endTime - startTime) + " milliseconds");
         // DrawSchedule.drawSchedule(I);

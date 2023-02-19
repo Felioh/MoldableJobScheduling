@@ -6,6 +6,7 @@ import java.util.List;
 
 import de.ohnes.AlgorithmicComponents.GeometricalRounding;
 import de.ohnes.AlgorithmicComponents.Knapsack.ConvolutionKnapsack;
+import de.ohnes.AlgorithmicComponents.Knapsack.DynamicKnapsack;
 import de.ohnes.AlgorithmicComponents.Knapsack.KnapsackSolver;
 import de.ohnes.util.*;
 

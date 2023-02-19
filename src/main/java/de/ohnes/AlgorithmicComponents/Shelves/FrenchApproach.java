@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.ohnes.AlgorithmicComponents.Algorithm;
-import de.ohnes.AlgorithmicComponents.Knapsack.ConvolutionKnapsack;
+import de.ohnes.AlgorithmicComponents.Knapsack.DynamicKnapsack;
 import de.ohnes.AlgorithmicComponents.Knapsack.KnapsackSolver;
 import de.ohnes.logger.printSchedule;
 import de.ohnes.util.Instance;
@@ -79,7 +79,7 @@ public class FrenchApproach implements Algorithm {
         
 
         // bigJobs = MyMath.dynamicKnapsack(bigJobs, weight, profit, bigJobs.length, I.getM(), I, d);
-        KnapsackSolver kS = new ConvolutionKnapsack();
+        KnapsackSolver kS = new DynamicKnapsack();
         // int p1 = 0;
         List<Job> shelf1 = kS.solve(shelf2, weight, profit, shelf2.size(), I.getM());
         shelf2.removeAll(shelf1); //update shelf2
