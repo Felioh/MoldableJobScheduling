@@ -35,7 +35,7 @@ The logs of each container should look something like this:
 # Building docker images
 The docker image can be build with the following command.
 ```
-docker build -t baalgo .
+docker build -t malleable .
 ```
 With the current configuration of the `Dockerfile` the `target/bachelorarbeit-1.0-SNAPSHOT-jar-with-dependencies.jar` will be used, so make sure to call `mvn compile` before.
 The other configuration in this file are only defaults and can be changed in the `docker-compose.yml`.

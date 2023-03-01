@@ -1,7 +1,7 @@
 services:
 
   bakilian:
-    image: baalgo:latest
+    image: malleable:latest
     environment:
       - ELASTICSEARCH_HOST=192.168.178.79
       - ALGO=Grage
@@ -23,7 +23,7 @@ services:
       - algoInstances:/home/instances
 
   bafelix:
-    image: baalgo:latest
+    image: malleable:latest
     environment:
       - ELASTICSEARCH_HOST=192.168.178.79
       - ALGO=Land
