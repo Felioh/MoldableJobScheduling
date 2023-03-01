@@ -4,7 +4,8 @@ services:
     image: baalgo:latest
     environment:
       - ELASTICSEARCH_HOST=192.168.178.79
-      - ALGO=Kilian
+      - ALGO=Grage
+      - EPSILON=0.1
       - INSTANCE_MINJOBS=20
       - INSTNACE_MAXJOBS=500
       - INSTANCE_MINMACHINES=100
@@ -25,7 +26,8 @@ services:
     image: baalgo:latest
     environment:
       - ELASTICSEARCH_HOST=192.168.178.79
-      - ALGO=Felix
+      - ALGO=Land
+      - EPSILON=0.1
       - INSTANCE_MINJOBS=20
       - INSTNACE_MAXJOBS=500
       - INSTANCE_MINMACHINES=100

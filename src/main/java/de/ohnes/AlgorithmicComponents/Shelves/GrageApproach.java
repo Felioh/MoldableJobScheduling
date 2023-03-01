@@ -5,17 +5,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.ohnes.AlgorithmicComponents.GeometricalRounding;
-import de.ohnes.AlgorithmicComponents.Knapsack.ConvolutionKnapsack;
-import de.ohnes.AlgorithmicComponents.Knapsack.DynamicKnapsack;
+import de.ohnes.AlgorithmicComponents.Knapsack.ConvolutionKnapsackSorted;
 import de.ohnes.AlgorithmicComponents.Knapsack.KnapsackSolver;
-import de.ohnes.util.*;
+import de.ohnes.AlgorithmicComponents.Sorting.RadixSort;
+import de.ohnes.util.Job;
+import de.ohnes.util.Machine;
+import de.ohnes.util.MyMath;
 
 /**
- * An implementation of the algorithm by Felix Land.
+ * An implementation of the algorithm by Kilian Grage.
  */
-public class FelixApproach extends FrenchApproach {
+public class GrageApproach extends LandApproach {
 
-    public FelixApproach() {
+    public GrageApproach() {
         super();
     }
 
@@ -29,10 +31,9 @@ public class FelixApproach extends FrenchApproach {
     public boolean solve(double d, double epsilon) {
 
         //parameters
-        final double delta = (1 / 5.0) * epsilon;
-        final double roh = (1 / 4.0) * (Math.sqrt(1 + delta) - 1);
-        final double b = 1 / (2 * roh - Math.pow(roh, 2));
-        // final double d_quote = Math.pow((1 + roh), 2) * d;
+        final double roh = (1 / 4.0) * epsilon;
+        final double b = 1 / roh;
+        // final double d_quote = (1 + 4 * epsilon) * d;
 
 
         //"forget about small jobs"
@@ -58,18 +59,12 @@ public class FelixApproach extends FrenchApproach {
         //transform to knapsack problem
         int[] profit = new int[shelf2.size()];
         int[] weight = new int[shelf2.size()];
+
         // int C = I.getM() - cap;
         for(int i = 0; i < shelf2.size(); i++) {
             Job job = shelf2.get(i);
-            int dAllotment = job.canonicalNumberMachines(d); //Note: Can not be -1. Since the has to exost a schedule with makespan d.
-            int dHalfAllotment = job.getAllotedMachines();
-
-            if(dAllotment > b) { //rounding
-                dAllotment = (int) GeometricalRounding.gFloor(dAllotment, b, I.getM(), 1 + roh);
-            }
-            if(dHalfAllotment > b) { //rounding
-                dHalfAllotment = (int) GeometricalRounding.gFloor(dHalfAllotment, b, I.getM(), 1 + roh);
-            }
+            int dAllotment = gammaPrime(job, d, roh, b);
+            int dHalfAllotment = gammaPrime(job, d / 2, roh, b);
 
 
             if(dAllotment == -1) {  //there cant exists a schedule of legnth d if any job cant be scheduled in d time.
@@ -84,17 +79,33 @@ public class FelixApproach extends FrenchApproach {
                 //profit of an item-task will correspond to the work saving obtained by executing the task just to respect the threshold d instead of d/2
                 //w_{i, y{i, d/2} - w_{i, y{i, d}}
                 profit[i] = (dHalfAllotment * job.getProcessingTime(dHalfAllotment)) - (dAllotment * job.getProcessingTime(dAllotment));
-                if(dHalfAllotment < b) { //this means the job has been compressed.
-                    if(profit[i] < (delta / 2) * d) {
-                        profit[i] = 0;
-                    }else {
-                        profit[i] = (int) GeometricalRounding.gCeil(profit[i], (delta / 2) * d, (b / 2) * d, 1 + (delta / b));
+                if(dHalfAllotment < b && dAllotment < b) { //both sizes are small
+                    //round the original profit down to the next multiple of epsilon * d
+                    int j = 1;
+                    while(Math.floor(j * epsilon * d) <= profit[i]) {
+                        j++;
+                        if(j > (2 / Math.pow(epsilon, 2))) { // j \in N <= 2/ e^2
+                            break;
+                        }
                     }
-                } else { //not compressed job
-                    double dHalfTime = GeometricalRounding.gFloor(job.getProcessingTime(job.canonicalNumberMachines(d / 2)), d / 4, d / 2, 1 + (delta / b));
-                    double dTime = GeometricalRounding.gFloor(job.getProcessingTime(job.canonicalNumberMachines(d)), d / 2, d, 1 + (delta / b));
-
-                    profit[i] = (int) ((dHalfTime * dHalfAllotment) - (dTime * dAllotment));
+                    profit[i] = (int) Math.floor((j - 1) * epsilon * d);
+                } else if(dHalfAllotment >= b && dAllotment >= b) { //both sizes are big
+                    double t_PrimeD = (1 / (1 + 4 * d));
+                    double t_PrimeDHalf = (1 / (1 + 4 * (d / 2.0)));
+                    profit[i] = (int) Math.floor(dHalfAllotment * t_PrimeDHalf - dAllotment * t_PrimeD);
+                } else { //jobs where dHalfAllotment >= b and dAllotment < b
+                    double t_PrimeDHalf = (1 / (1 + 4 * (d / 2.0)));
+                    int w_dHalf = (int) Math.floor(t_PrimeDHalf * dHalfAllotment);
+                    // int w_d = (int) Math.floor(dAllotment * job.getProcessingTime(dAllotment));
+                    //round w(j, d) down to the next multiple of epsilon * d
+                    int j = 1;
+                    while(Math.floor(j * epsilon * d) <= profit[i]) {
+                        j++;
+                        if(j > (4 / Math.pow(epsilon, 2))) { // j \in N <= 4/ e^2
+                            break;
+                        }
+                    }
+                    profit[i] = w_dHalf - (int) Math.floor((j - 1) * epsilon * d);
                 }
                 
             } else { //job has to be scheduled on s1.
@@ -103,8 +114,13 @@ public class FelixApproach extends FrenchApproach {
 
         }
         
+        //TODO use a custom data structure to sort all three relevant lists at once.
+        Job[] jobsArray = shelf2.toArray(Job[] :: new); //TODO: has time complexity O(n)
+        RadixSort radixSort = new RadixSort((int) (1 / epsilon)); //TODO check base
+        radixSort.sortDynamicList(profit, jobsArray, weight);
+        shelf2 = new ArrayList<>(Arrays.asList(jobsArray));
 
-        KnapsackSolver kS = new ConvolutionKnapsack();
+        KnapsackSolver kS = new ConvolutionKnapsackSorted();
         List<Job> shelf1 = kS.solve(shelf2, weight, profit, shelf2.size(), I.getM());
         shelf2.removeAll(shelf1); //update shelf2
         int p1 = 0;     //processors required by S1.
@@ -168,6 +184,18 @@ public class FelixApproach extends FrenchApproach {
 // ############################################## DEBUG ##################################################################################################################
 
         return true;
+    }
+
+    private int gammaPrime(Job job, double d, double roh, double b) {
+        int gamma = job.canonicalNumberMachines(d);
+        if(gamma == -1) {
+            return -1;
+        }
+        int gamma_prime = gamma;
+        while(Math.ceil((1 - roh) * (gamma_prime + 1)) <= gamma) {
+            gamma_prime++;
+        }
+        return (int) Math.ceil((1 - roh) * gamma_prime);
     }
 
 }

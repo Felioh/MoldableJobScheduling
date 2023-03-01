@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.ohnes.AlgorithmicComponents.Approximation.TwoApproximation;
 import de.ohnes.AlgorithmicComponents.FPTAS.DoubleCompressionApproach;
-import de.ohnes.AlgorithmicComponents.Shelves.KilianApproach;
+import de.ohnes.AlgorithmicComponents.Shelves.GrageApproach;
 import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
 import de.ohnes.util.Machine;
@@ -37,7 +37,7 @@ public class AppTest {
      */
     public AppTest(Instance I) {
         this.I = I;
-        DualApproximationFramework dualApproxFramework = new DualApproximationFramework(new DoubleCompressionApproach(), new KilianApproach(), new TwoApproximation(), I);
+        DualApproximationFramework dualApproxFramework = new DualApproximationFramework(new DoubleCompressionApproach(), new GrageApproach(), new TwoApproximation(), I);
         this.d = dualApproxFramework.start(0.1);
     }
 

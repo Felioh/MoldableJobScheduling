@@ -16,8 +16,8 @@ import de.ohnes.AlgorithmicComponents.Approximation.Approximation;
 import de.ohnes.AlgorithmicComponents.Approximation.TwoApproximation;
 import de.ohnes.AlgorithmicComponents.FPTAS.CompressionApproach;
 import de.ohnes.AlgorithmicComponents.FPTAS.DoubleCompressionApproach;
-import de.ohnes.AlgorithmicComponents.Shelves.FelixApproach;
-import de.ohnes.AlgorithmicComponents.Shelves.KilianApproach;
+import de.ohnes.AlgorithmicComponents.Shelves.GrageApproach;
+import de.ohnes.AlgorithmicComponents.Shelves.LandApproach;
 import de.ohnes.logger.MyElasticsearchClient;
 import de.ohnes.logger.printSchedule;
 import de.ohnes.util.Instance;
@@ -29,6 +29,7 @@ public class App {
     private static final Logger LOGGER = LogManager.getLogger(App.class);
 
     private static String rand;
+    private static String epsilon;
     private static String minJobs;
     private static String maxJobs;
     private static String minMachines;
@@ -39,6 +40,7 @@ public class App {
     private static String ESIndexPrefix;
     private static String ExecutionsBeforePush;
     private static String InstancePolicy;
+    private static String printResult;
 
     private static String algo;
 
@@ -51,6 +53,7 @@ public class App {
         Configurator.setRootLevel(Level.ALL);
 
         rand = System.getenv("INSTANCE_RANDOM");
+        epsilon = System.getenv("EPSILON");
         minJobs = System.getenv("INSTANCE_MINJOBS");
         maxJobs = System.getenv("INSTNACE_MAXJOBS");
         minMachines = System.getenv("INSTANCE_MINMACHINES");
@@ -62,7 +65,7 @@ public class App {
         ESIndexPrefix = System.getenv("ES_INDEX");
         ExecutionsBeforePush = System.getenv("EXECS_BEFORE_PUSH");
         InstancePolicy = System.getenv("INSTANCE_POLICY");
-        
+        printResult = System.getenv("PRINT_RESULT");
         
         LOGGER.info("Starting Algorithm!");
         if(loop != null) {
@@ -88,13 +91,7 @@ public class App {
     private static TestResult runTest() {
         Instance I = new Instance();
         if(rand == null) {
-            // Instance I = mapper.readValue(Paths.get("TestInstance copy 3.json").toFile(), Instance.class);
             try {
-                // ObjectMapper mapper = new ObjectMapper();
-                // SimpleModule module = new SimpleModule();
-                // module.addDeserializer(Instance.class, new InstanceDeserializer());
-                // mapper.registerModule(module);
-                // I = mapper.readValue(Paths.get("TestInstance copy 3.json").toFile(), Instance.class);
                 I = new ObjectMapper().readValue(Paths.get("TestInstances/TestInstance copy 3.json").toFile(), Instance.class);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -108,13 +105,13 @@ public class App {
         // if(algo == null) {
         //     return null; //algo not specified.
         // }
-        if(algo == null || algo.equals("Kilian")) {
-            Algorithm algo = new KilianApproach();
+        if(algo == null || algo.equals("Grage")) {
+            Algorithm algo = new GrageApproach();
             Algorithm fptas = new DoubleCompressionApproach();
             Approximation approx = new TwoApproximation();
             dF = new DualApproximationFramework(fptas, algo, approx, I);
         } else if(algo.equals("Felix")) {
-            Algorithm algo = new FelixApproach();
+            Algorithm algo = new LandApproach();
             Algorithm fptas = new CompressionApproach();
             Approximation approx = new TwoApproximation();
             dF = new DualApproximationFramework(fptas, algo, approx, I);
@@ -124,18 +121,18 @@ public class App {
 
 
         long startTime = System.currentTimeMillis();
-        double d = dF.start(0.1);
+        double d = dF.start(Double.parseDouble(epsilon));
         long endTime = System.currentTimeMillis();
-        LOGGER.info("Ran instance with {} machines and {} jobs in {} seconds.", I.getM(), I.getN(), (endTime - startTime));
-        // System.out.println("Ran Instance with " + I.getM() + " Machines and " + I.getN() + " Jobs in " + (endTime - startTime) + " Milliseconds...");
+        LOGGER.info("Ran instance with {} machines and {} jobs in {} milliseconds.", I.getM(), I.getN(), (endTime - startTime));
 
 // ############################################## DEBUG ##################################################################################################################
-        System.out.println(String.format("-".repeat(70) + "%04.2f" + "-".repeat(70), d));
-        System.out.println(printSchedule.printMachines(I.getMachines()));
-        System.out.println(String.format("-".repeat(70) + "%04.2f" + "-".repeat(70), d));
+        if (printResult.equals("true")) {
+            System.out.println(String.format("-".repeat(70) + "%04.2f" + "-".repeat(70), d));
+            System.out.println(printSchedule.printMachines(I.getMachines()));
+            System.out.println(String.format("-".repeat(70) + "%04.2f" + "-".repeat(70), d));
+        }
+        // DrawSchedule.drawSchedule(I); //TODO: comment this line in to create .png fiels of the result schedule.
 // ############################################## DEBUG ##################################################################################################################
-        // System.out.println("That took " + (endTime - startTime) + " milliseconds");
-        // DrawSchedule.drawSchedule(I);
 
         TestResult tr = new TestResult();
         tr.setApproximation(dF.getApproximationName());
