@@ -37,5 +37,5 @@ The docker image can be build with the following command.
 ```
 docker build -t malleable .
 ```
-With the current configuration of the `Dockerfile` the `target/bachelorarbeit-1.0-SNAPSHOT-jar-with-dependencies.jar` will be used, so make sure to call `mvn compile` before.
+With the current configuration of the `Dockerfile` the `target/bachelorarbeit-1.0-SNAPSHOT-jar-with-dependencies.jar` will be used, so make sure to call `mvn package` before.
 The other configuration in this file are only defaults and can be changed in the `docker-compose.yml`.
