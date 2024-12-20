@@ -12,7 +12,7 @@ import de.ohnes.util.*;
 /**
  * An implementation of the algorithm by Felix Land.
  */
-public class LandApproach extends FrenchApproach {
+public class LandApproach extends MounieApproach {
 
     public LandApproach() {
         super();
@@ -35,8 +35,8 @@ public class LandApproach extends FrenchApproach {
 
 
         //"forget about small jobs"
-        List<Job> shelf2 = new ArrayList<>(Arrays.asList(MyMath.findBigJobs(I, d)));
-        List<Job> smallJobs = new ArrayList<>(Arrays.asList(MyMath.findSmallJobs(I, d)));
+        List<Job> shelf2 = new ArrayList<>(Arrays.asList(MyMath.findBigJobs(I, d/2)));
+        List<Job> smallJobs = new ArrayList<>(Arrays.asList(MyMath.findSmallJobs(I, d/2)));
 
         //minimal work of small jobs
         double Ws = 0;

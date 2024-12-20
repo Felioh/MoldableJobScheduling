@@ -143,8 +143,8 @@ public class App {
         tr.setJobs(I.getN());
         tr.setMachines(I.getM());
         tr.setMilliseconds((endTime - startTime));
-        tr.setBigJobs(MyMath.findBigJobs(I, d).length);
-        tr.setSmallJobs(MyMath.findSmallJobs(I, d).length);
+        tr.setBigJobs(MyMath.findBigJobs(I, d/2).length);
+        tr.setSmallJobs(MyMath.findSmallJobs(I, d/2).length);
         tr.setInstanceID(I.getId());
         // tr.setProcessingTimes(I.getJobs());
 

@@ -113,7 +113,7 @@ public class Instance {
      */
     public double getMakespanBigJobs(double d) {
         double maxMakespan = 0;
-        for(Job job : MyMath.findBigJobs(this, d)) {
+        for(Job job : MyMath.findBigJobs(this, d/2)) {
             double finishTime = job.getStartingTime() + job.getProcessingTime(job.getAllotedMachines());
             if(finishTime > maxMakespan) {
                 maxMakespan = finishTime;
