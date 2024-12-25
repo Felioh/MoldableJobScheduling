@@ -6,6 +6,7 @@ import java.util.List;
 
 import de.ohnes.AlgorithmicComponents.Algorithm;
 import de.ohnes.AlgorithmicComponents.Knapsack.MCKnapsack;
+import de.ohnes.util.ApproximationRatio;
 import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
 import de.ohnes.util.Machine;
@@ -24,7 +25,7 @@ public class OhnesorgeApproach implements Algorithm {
      * @return true if a schedule of length d exists, false if none exists.
      */
     @Override
-    public boolean solve(double d, double epsilon) {
+    public ApproximationRatio solve(double d, double epsilon) {
         double t = 3 * d / 7;
         // forget about small jobs
         List<Job> bigJobs = new ArrayList<>(Arrays.asList(MyMath.findBigJobs(I, t)));
@@ -52,7 +53,7 @@ public class OhnesorgeApproach implements Algorithm {
                 .sum();
 
         if (WShelf1 + WShelf2 + WShelf0 > I.getM() * d - Ws) {
-            return false;
+            return ApproximationRatio.NONE;
         }
 
         // adjust jobs chosen in c2, i.e. shelf0
@@ -90,12 +91,16 @@ public class OhnesorgeApproach implements Algorithm {
             // algorithm in any way.
             // TODO: do we need to exchange this job in the instance?
             int pTime = j3.getProcessingTime(2);
+
             shelf0.remove(j3);
             Job virtualJob1 = new Job(j3.getId(), new int[] { pTime, pTime });
+            Job virtualJob2 = new Job(j3.getId(), new int[] { pTime, pTime });
             virtualJob1.setAllotedMachines(1);
+            virtualJob2.setAllotedMachines(1);
             shelf0.add(virtualJob1);
+            shelf1.add(virtualJob2);
             j1.setStartingTime(pTime);
-            shelf1.add(virtualJob1);
+
         } else {
             if (j3 != null) {
                 // schedule job in \gamma(, 10/7d)
@@ -119,12 +124,13 @@ public class OhnesorgeApproach implements Algorithm {
         // shelf 0 and shelf 1 should not use more than m machines
         assert (m0 + m1 <= I.getM());
 
+        double lambdad = 10 * d / 7;
         if (m2 <= I.getM() - m0) {
-            return true; // done. the schedule should be feasible.
+            placeJobs(shelf0, shelf1, shelf2, smallJobs, I, lambdad);
+            return ApproximationRatio.RATIO_10_7; // done. the schedule should be feasible.
         }
 
         // apply transformation rules with increasing \lambda
-        double lambdad = 10 * d / 7;
         applyTransformationRules(lambdad, d, shelf0, shelf1, shelf2, I.getM() - m0 - m1);
 
         m2 = shelf2.stream().mapToInt(Job::getAllotedMachines).sum();
@@ -132,13 +138,15 @@ public class OhnesorgeApproach implements Algorithm {
         m0 = shelf0.stream().filter(j -> j.getStartingTime() == 0).mapToInt(Job::getAllotedMachines).sum();
 
         if (m2 <= I.getM() - m0) {
-            return true; // done. the schedule should be feasible.
+            placeJobs(shelf0, shelf1, shelf2, smallJobs, I, lambdad);
+            return ApproximationRatio.RATIO_10_7; // done. the schedule should be feasible.
         }
 
         // if q = 0, we can find a feasible schedule
         if (I.getM() - m0 - m1 == 0) {
             algorithm3(shelf1, shelf2, m2, m1);
-            return true;
+            placeJobs(shelf0, shelf1, shelf2, smallJobs, I, lambdad);
+            return ApproximationRatio.RATIO_10_7;
         }
 
         lambdad = 13 * d / 9;
@@ -149,13 +157,15 @@ public class OhnesorgeApproach implements Algorithm {
         m0 = shelf0.stream().filter(j -> j.getStartingTime() == 0).mapToInt(Job::getAllotedMachines).sum();
 
         if (m2 <= I.getM() - m0) {
-            return true; // done. the schedule should be feasible.
+            placeJobs(shelf0, shelf1, shelf2, smallJobs, I, lambdad);
+            return ApproximationRatio.RATIO_13_9; // done. the schedule should be feasible.
         }
 
         // for \lambda \leq m_1/6, we can find a feasible schedule
         if (I.getM() - m0 - m1 <= m1 / 6) {
             algorithm3(shelf1, shelf2, m2, m1);
-            return true;
+            placeJobs(shelf0, shelf1, shelf2, smallJobs, I, lambdad);
+            return ApproximationRatio.RATIO_13_9;
         }
 
         lambdad = 73 * d / 50;
@@ -166,52 +176,107 @@ public class OhnesorgeApproach implements Algorithm {
         m0 = shelf0.stream().filter(j -> j.getStartingTime() == 0).mapToInt(Job::getAllotedMachines).sum();
 
         if (m2 <= I.getM() - m0) {
-            return true; // done. the schedule should be feasible.
+            placeJobs(shelf0, shelf1, shelf2, smallJobs, I, lambdad);
+            return ApproximationRatio.RATIO_73_50; // done. the schedule should be feasible.
         }
 
         // we can find a feasible schedule with either algorithm 3 or 4
         if (I.getM() - m0 - m1 <= m1 / 6) {
             algorithm3(shelf1, shelf2, m2, m1);
-            return true;
+            placeJobs(shelf0, shelf1, shelf2, smallJobs, I, lambdad);
+            return ApproximationRatio.RATIO_73_50;
         } else {
             assert (shelf2.size() == 1); // Observation 3.5
             algorithm4(lambdad, shelf1, shelf2.get(0), m1);
-            return true;
+            placeJobs(shelf0, shelf1, shelf2, smallJobs, I, lambdad);
+            return ApproximationRatio.RATIO_73_50;
         }
 
     }
 
-    protected boolean placeJobs(List<Job> shelf0, List<Job> shelf1, List<Job> shelf2, Instance I, double d) {
-        Machine[] machines = I.getMachines();
+    protected void placeJobs(List<Job> shelf0, List<Job> shelf1, List<Job> shelf2, List<Job> smallJobs, Instance I,
+            double lambdad) {
+        List<Machine> machines = new ArrayList<>(Arrays.asList(I.getMachines()));
 
         int i = 0;
         // S0
-        List<Machine> partiallyFilledMachines = new ArrayList<>();
         for (Job job : shelf0.stream().filter(j -> j.getStartingTime() == 0).toArray(Job[]::new)) {
-            int allotedMachines = job.getAllotedMachines();
-            boolean small = job.getProcessingTime(allotedMachines) <= d;
-            for (; i < i + allotedMachines; allotedMachines--, i++) {
-                machines[i].addJob(job);
-                if (small) {
-                    partiallyFilledMachines.add(machines[i]);
-                }
+            int allottedMachines = job.getAllotedMachines();
+            for (; allottedMachines > 0; allottedMachines--, i++) {
+                machines.get(i).addJob(job);
             }
         }
         for (Job job : shelf0.stream().filter(j -> j.getStartingTime() != 0).toArray(Job[]::new)) {
-            int allotedMachines = job.getAllotedMachines();
-            for (Machine machine : partiallyFilledMachines.stream()
+            int allottedMachines = job.getAllotedMachines();
+            for (Machine machine : machines.stream()
                     .filter(m -> m.getFirstFreeTime() == job.getStartingTime()).toArray(Machine[]::new)) {
+                // TODO: check if job fits on top
                 machine.addJob(job);
-                allotedMachines--;
-                if (allotedMachines == 0) {
+                allottedMachines--;
+                if (allottedMachines == 0) {
                     break;
                 }
             }
-            assert (allotedMachines == 0); // all jobs should be placed.
+            assert (allottedMachines == 0); // all jobs should be placed.
         }
 
-        // TODO: place shelf1 and shelf2.
-        return true;
+        // there should be enough machines left.
+        assert (shelf1.stream().filter(j -> j.getStartingTime() == 0).mapToInt(Job::getAllotedMachines)
+                .sum() <= I.getM() - i);
+        assert (shelf2.stream().mapToInt(Job::getAllotedMachines).sum() <= I.getM() - i);
+
+        int m0 = i;
+
+        // TODO: these do not always need to be sorted.
+        shelf1.sort((j1, j2) -> Integer.compare(j1.getProcessingTime(j1.getAllotedMachines()),
+                j2.getProcessingTime(j2.getAllotedMachines())));
+        shelf2.sort((j1, j2) -> Integer.compare(j1.getProcessingTime(j1.getAllotedMachines()),
+                j2.getProcessingTime(j2.getAllotedMachines())));
+
+        // place shelf1 in ascending order.
+        for (Job job : shelf1.stream().filter(j -> j.getStartingTime() == 0).toArray(Job[]::new)) {
+            int allottedMachines = job.getAllotedMachines();
+            for (; allottedMachines > 0; allottedMachines--, i++) {
+                machines.get(i).addJob(job);
+            }
+        }
+        for (Job job : shelf1.stream().filter(j -> j.getStartingTime() != 0).toArray(Job[]::new)) {
+            int allottedMachines = job.getAllotedMachines();
+            for (Machine machine : machines.stream()
+                    .filter(m -> m.getFirstFreeTime() == job.getStartingTime()).toArray(Machine[]::new)) {
+                // TODO: check if job fits on top
+                machine.addJob(job);
+                allottedMachines--;
+                if (allottedMachines == 0) {
+                    break;
+                }
+            }
+            assert (allottedMachines == 0); // all jobs should be placed.
+        }
+
+        assert (i <= I.getM() - 1); // we do not use more machines than available
+
+        // place shelf2 in descending order
+        i = I.getM() - 1;
+        for (Job job : shelf2) {
+            int allottedMachines = job.getAllotedMachines();
+            // TODO: this introduces a rounding error of up to 1
+            job.setStartingTime((int) Math.ceil(lambdad - job.getProcessingTime(allottedMachines)));
+            for (; allottedMachines > 0; allottedMachines--, i--) {
+                machines.get(i).addJob(job);
+            }
+
+        }
+
+        assert (i >= m0); // we do not place any jobs into shelf 0.
+
+        // place small jobs.
+        for (Job job : smallJobs) {
+            // place on any machine with enough idle time.
+            // this list should never be empty
+            machines.stream().filter(m -> lambdad - m.getUsedTime() >= job.getProcessingTime(1)).findAny().get()
+                    .addJob(job);
+        }
     }
 
     protected void algorithm3(List<Job> shelf1, List<Job> shelf2, int m2, int m1) {

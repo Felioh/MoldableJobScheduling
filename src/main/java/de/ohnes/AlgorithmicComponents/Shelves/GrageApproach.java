@@ -5,9 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.ohnes.AlgorithmicComponents.GeometricalRounding;
+import de.ohnes.AlgorithmicComponents.Approximation.Approximation;
 import de.ohnes.AlgorithmicComponents.Knapsack.ConvolutionKnapsackSorted;
 import de.ohnes.AlgorithmicComponents.Knapsack.KnapsackSolver;
 import de.ohnes.AlgorithmicComponents.Sorting.RadixSort;
+import de.ohnes.util.ApproximationRatio;
 import de.ohnes.util.Job;
 import de.ohnes.util.Machine;
 import de.ohnes.util.MyMath;
@@ -30,7 +32,7 @@ public class GrageApproach extends LandApproach {
      * @return true if a schedule of length d exists, false if none exists.
      */
     @Override
-    public boolean solve(double d, double epsilon) {
+    public ApproximationRatio solve(double d, double epsilon) {
 
         // parameters
         final double roh = (1 / 4.0) * epsilon;
@@ -71,7 +73,7 @@ public class GrageApproach extends LandApproach {
 
             if (dAllotment == -1) { // there cant exists a schedule of legnth d if any job cant be scheduled in d
                                     // time.
-                return false;
+                return ApproximationRatio.NONE;
             }
 
             // weight of an item-task will be its canonical number of processors needed to
@@ -150,7 +152,7 @@ public class GrageApproach extends LandApproach {
 
         if (WShelf1 + WShelf2 > I.getM() * d - Ws) { // there cant exists a schedule of with makespan d (s. Thesis Felix
                                                      // S. 76)
-            return false;
+            return ApproximationRatio.NONE;
         }
 
         // ############################################## DEBUG
@@ -198,7 +200,7 @@ public class GrageApproach extends LandApproach {
         // ############################################## DEBUG
         // ##################################################################################################################
 
-        return true;
+        return ApproximationRatio.RATIO_3_2;
     }
 
     private int gammaPrime(Job job, double d, double roh, double b) {

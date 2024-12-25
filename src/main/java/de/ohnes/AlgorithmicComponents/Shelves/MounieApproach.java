@@ -8,6 +8,7 @@ import de.ohnes.AlgorithmicComponents.Algorithm;
 import de.ohnes.AlgorithmicComponents.Knapsack.DynamicKnapsack;
 import de.ohnes.AlgorithmicComponents.Knapsack.KnapsackSolver;
 import de.ohnes.logger.printSchedule;
+import de.ohnes.util.ApproximationRatio;
 import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
 import de.ohnes.util.Machine;
@@ -30,7 +31,7 @@ public class MounieApproach implements Algorithm {
      * @param epsilon the "the small error"
      * @return true if a schedule of length d exists, false if none exists.
      */
-    public boolean solve(double d, double epsilon) {
+    public ApproximationRatio solve(double d, double epsilon) {
         // "forget about small jobs"
 
         List<Job> shelf2 = new ArrayList<>(Arrays.asList(MyMath.findBigJobs(I, d / 2)));
@@ -65,7 +66,7 @@ public class MounieApproach implements Algorithm {
 
             if (dAllotment == -1) { // there cant exists a schedule of legnth d if any job cant be scheduled in d
                                     // time.
-                return false;
+                return ApproximationRatio.NONE;
             }
 
             weight[i] = dAllotment;
@@ -106,7 +107,7 @@ public class MounieApproach implements Algorithm {
 
         if (WShelf1 + WShelf2 > I.getM() * d - Ws) { // there cant exists a schedule of with makespan (s. Thesis Felix
                                                      // S. 76)
-            return false;
+            return ApproximationRatio.NONE;
         }
 
         System.out.println();
@@ -117,7 +118,7 @@ public class MounieApproach implements Algorithm {
 
         addSmallJobs(shelf1, shelf2, smallJobs, d, I.getM());
 
-        return true;
+        return ApproximationRatio.RATIO_3_2;
     };
 
     protected void addSmallJobs(List<Job> shelf1, List<Job> shelf2, List<Job> smallJobs, double d,
