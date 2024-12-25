@@ -39,7 +39,7 @@ public class OhnesorgeApproach implements Algorithm {
         List<Job> shelf0 = new ArrayList<>();
         List<Job> shelf2 = new ArrayList<>();
         MCKnapsack knapsack = new MCKnapsack();
-        knapsack.solve(bigJobs, 0, shelf1, shelf0, shelf2, d);
+        knapsack.solve(bigJobs, I.getM(), shelf1, shelf0, shelf2, d);
 
         // check work constraint
         int WShelf1 = shelf1.stream()
@@ -100,6 +100,14 @@ public class OhnesorgeApproach implements Algorithm {
             shelf0.add(virtualJob1);
             shelf1.add(virtualJob2);
             j1.setStartingTime(pTime);
+
+            // exchange job in instance
+            Job[] jobs = I.getJobs();
+            List<Job> jobList = new ArrayList<>(Arrays.asList(jobs));
+            jobList.remove(j3);
+            jobList.add(virtualJob1);
+            jobList.add(virtualJob2);
+            I.setJobs(jobList.toArray(Job[]::new));
 
         } else {
             if (j3 != null) {
@@ -196,7 +204,15 @@ public class OhnesorgeApproach implements Algorithm {
 
     protected void placeJobs(List<Job> shelf0, List<Job> shelf1, List<Job> shelf2, List<Job> smallJobs, Instance I,
             double lambdad) {
-        List<Machine> machines = new ArrayList<>(Arrays.asList(I.getMachines()));
+
+        // init machines
+        Machine[] machinesArray = new Machine[I.getM()];
+        for (int i = 0; i < I.getM(); i++) {
+            machinesArray[i] = new Machine(i);
+        }
+        I.setMachines(machinesArray);
+
+        List<Machine> machines = new ArrayList<>(Arrays.asList(machinesArray));
 
         int i = 0;
         // S0
@@ -254,7 +270,7 @@ public class OhnesorgeApproach implements Algorithm {
             assert (allottedMachines == 0); // all jobs should be placed.
         }
 
-        assert (i <= I.getM() - 1); // we do not use more machines than available
+        assert (i <= I.getM()); // we do not use more machines than available
 
         // place shelf2 in descending order
         i = I.getM() - 1;
@@ -268,15 +284,20 @@ public class OhnesorgeApproach implements Algorithm {
 
         }
 
-        assert (i >= m0); // we do not place any jobs into shelf 0.
+        assert (i + 1 >= m0); // we do not place any jobs into shelf 0.
 
         // place small jobs.
         for (Job job : smallJobs) {
             // place on any machine with enough idle time.
             // this list should never be empty
-            machines.stream().filter(m -> lambdad - m.getUsedTime() >= job.getProcessingTime(1)).findAny().get()
-                    .addJob(job);
+            Machine machine = machines.stream().filter(m -> lambdad - m.getUsedTime() >= job.getProcessingTime(1))
+                    .findAny().get();
+            job.setAllotedMachines(1);
+            job.setStartingTime(machine.getFirstFreeTime());
+            machine.addJob(job);
+
         }
+
     }
 
     protected void algorithm3(List<Job> shelf1, List<Job> shelf2, int m2, int m1) {
@@ -324,6 +345,7 @@ public class OhnesorgeApproach implements Algorithm {
     protected void applyTransformationRules(double lambdad, double d, List<Job> shelf0, List<Job> shelf1,
             List<Job> shelf2, int q) {
         Job j1 = null;
+        List<Job> jobsToRemove = new ArrayList<>();
         for (Job job : shelf1) {
             if (job.getAllotedMachines() == 1) {
                 // T2
@@ -336,8 +358,8 @@ public class OhnesorgeApproach implements Algorithm {
                     // schedule these jobs after each other
                     shelf0.add(j1);
                     shelf0.add(job);
-                    shelf1.remove(j1);
-                    shelf1.remove(job);
+                    jobsToRemove.add(j1);
+                    jobsToRemove.add(job);
                     j1.setStartingTime(job.getProcessingTime(1));
                     j1 = null;
                 }
@@ -348,20 +370,23 @@ public class OhnesorgeApproach implements Algorithm {
             if (job.canonicalNumberMachines(lambdad) < job.getAllotedMachines()) {
                 job.setAllotedMachines(job.canonicalNumberMachines(lambdad));
                 shelf0.add(job);
-                shelf1.remove(job);
+                jobsToRemove.remove(job);
             }
         }
+        shelf1.removeAll(jobsToRemove);
 
         // T3
+        jobsToRemove.clear();
         for (Job job : shelf2) {
             if (job.canonicalNumberMachines(lambdad) <= q) {
                 job.setAllotedMachines(job.canonicalNumberMachines(lambdad));
                 if (job.getProcessingTime(job.getAllotedMachines()) <= d) {
                     shelf1.add(job);
-                    shelf2.remove(job);
+                    jobsToRemove.remove(job);
                 }
             }
         }
+        shelf2.removeAll(jobsToRemove);
     }
 
     @Override

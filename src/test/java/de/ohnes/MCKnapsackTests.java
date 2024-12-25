@@ -25,7 +25,9 @@ public class MCKnapsackTests {
         List<Job> c3 = new ArrayList<>();
 
         knapsack.solve(jobs, 3, c1, c2, c3, 2.5);
-        assertEquals(1, c1.size());
+        assertEquals(0, c1.size());
+        assertEquals(2, c2.size());
+        assertEquals(1, c3.size());
 
     }
 

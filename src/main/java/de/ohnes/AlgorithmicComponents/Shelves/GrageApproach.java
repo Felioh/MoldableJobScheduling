@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.ohnes.AlgorithmicComponents.GeometricalRounding;
-import de.ohnes.AlgorithmicComponents.Approximation.Approximation;
 import de.ohnes.AlgorithmicComponents.Knapsack.ConvolutionKnapsackSorted;
 import de.ohnes.AlgorithmicComponents.Knapsack.KnapsackSolver;
 import de.ohnes.AlgorithmicComponents.Sorting.RadixSort;

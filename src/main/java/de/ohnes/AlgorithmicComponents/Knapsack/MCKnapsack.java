@@ -1,6 +1,5 @@
 package de.ohnes.AlgorithmicComponents.Knapsack;
 
-import java.util.HashMap;
 import java.util.List;
 
 import de.ohnes.util.Job;
@@ -26,17 +25,26 @@ public class MCKnapsack {
         // initialize the dp array
         for (int i = 0; i <= n; i++) {
             for (int j = 0; j <= 2 * capacity; j++) {
-                dp[i][j] = 0.0;
+                dp[i][j] = Double.NEGATIVE_INFINITY;
             }
         }
+        dp[0][0] = 0.0;
 
         // actual knapsack algorithm
         for (int i = 1; i <= n; i++) {
-            for (int j = 0; j <= capacity; j++) {
+            for (int j = 0; j <= 2 * capacity; j++) {
 
                 Job item = items.get(i - 1);
-                int maxWork = item.canonicalNumberMachines(3 * d / 7)
-                        * item.getProcessingTime(item.canonicalNumberMachines(3 * d / 7));
+                int maxWork = 0;
+                if (item.canonicalNumberMachines(3 * d / 7) != -1) {
+                    maxWork = item.canonicalNumberMachines(3 * d / 7)
+                            * item.getProcessingTime(item.canonicalNumberMachines(3 * d / 7));
+                } else if (item.canonicalNumberMachines(4 * d / 7) != -1) {
+                    maxWork = item.canonicalNumberMachines(4 * d / 7)
+                            * item.getProcessingTime(item.canonicalNumberMachines(4 * d / 7));
+                } else {
+                    maxWork = item.canonicalNumberMachines(d) * item.getProcessingTime(item.canonicalNumberMachines(d));
+                }
 
                 // for each choice of the item
                 for (int k = 0; k < 3; k++) {
@@ -50,10 +58,16 @@ public class MCKnapsack {
                             weight = 2 * weight;
                             break;
                         case 1:
+                            if (item.canonicalNumberMachines(4 * d / 7) == -1) {
+                                continue; // this choice is not vaild.
+                            }
                             weight = item.canonicalNumberMachines(4 * d / 7);
                             profit = maxWork - item.getProcessingTime(weight) * weight;
                             break;
                         case 2:
+                            if (item.canonicalNumberMachines(3 * d / 7) == -1) {
+                                continue; // this choice is not vaild.
+                            }
                             weight = 0;
                             profit = 0;
                             break;
@@ -74,24 +88,36 @@ public class MCKnapsack {
         int j = 2 * capacity;
         for (int i = n; i > 0; i--) {
             Job item = items.get(i - 1);
-            int maxWork = item.canonicalNumberMachines(3 * d / 7)
-                    * item.getProcessingTime(item.canonicalNumberMachines(3 * d / 7));
-            int weight = item.canonicalNumberMachines(d);
+            int maxWork = 0;
+            if (item.canonicalNumberMachines(3 * d / 7) != -1) {
+                maxWork = item.canonicalNumberMachines(3 * d / 7)
+                        * item.getProcessingTime(item.canonicalNumberMachines(3 * d / 7));
+            } else if (item.canonicalNumberMachines(4 * d / 7) != -1) {
+                maxWork = item.canonicalNumberMachines(4 * d / 7)
+                        * item.getProcessingTime(item.canonicalNumberMachines(4 * d / 7));
+            } else {
+                maxWork = item.canonicalNumberMachines(d) * item.getProcessingTime(item.canonicalNumberMachines(d));
+            }
             // TODO: check outOfBounds
-            if (j - 2 * weight >= 0
-                    && dp[i][j] == dp[i - 1][j - 2 * weight] + maxWork - item.getProcessingTime(weight) * weight) {
+            int weight1 = item.canonicalNumberMachines(d);
+            int weight2 = item.canonicalNumberMachines(4 * d / 7);
+            if (j - weight1 * 2 >= 0
+                    && dp[i][j] == dp[i - 1][j - weight1 * 2] + maxWork - item.getProcessingTime(weight1) * weight1) {
                 item.setAllotedMachines(item.canonicalNumberMachines(d));
                 c1.add(item);
-                j -= 2 * weight;
-            } else if (j - weight >= 0 &&
-                    dp[i][j] == dp[i - 1][j - weight] + maxWork - item.getProcessingTime(weight) * weight) {
+                j -= 2 * weight1;
+            } else if (j - weight2 >= 0 &&
+                    dp[i][j] == dp[i - 1][j - weight2] + maxWork - item.getProcessingTime(weight2) * weight2) {
+                assert (item.canonicalNumberMachines(4 * d / 7) > 0);
                 item.setAllotedMachines(item.canonicalNumberMachines(4 * d / 7));
                 c2.add(item);
-                j -= weight;
+                j -= weight2;
             } else {
+                assert (item.canonicalNumberMachines(3 * d / 7) > 0);
                 item.setAllotedMachines(item.canonicalNumberMachines(3 * d / 7));
                 c3.add(item);
             }
+            // TODO: check this. We should not backtrack invalid choices. :(
         }
     }
 }

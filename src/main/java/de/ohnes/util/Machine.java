@@ -33,8 +33,8 @@ public class Machine {
         this.usedTime -= job.getProcessingTime(job.getAllotedMachines());
     }
 
-    public double getFirstFreeTime() {
-        double t = 0;
+    public int getFirstFreeTime() {
+        int t = 0;
         boolean used = true;
         while (used) {
             used = false;
