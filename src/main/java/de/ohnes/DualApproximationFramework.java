@@ -47,9 +47,12 @@ public class DualApproximationFramework {
 
         double mid = l + (r - l) / 2;
         I.resetInstance(); // reset the instance because it was altered in previous attempt.
-        if (!algo.solve(mid, epsilon).equals(ApproximationRatio.NONE)) { // a schedule of length "mid" exists
+        ApproximationRatio result = algo.solve(mid, epsilon);
+        if (!result.equals(ApproximationRatio.NONE)) { // a schedule of length "mid" exists
 
             if (r - mid < epsilon) {
+                LOGGER.info("Found schedule with makespan: {}", mid);
+                LOGGER.info("Guaranteed approximation ratio: {}", result);
                 return mid;
             }
 

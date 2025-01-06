@@ -103,7 +103,8 @@ public class OhnesorgeTests {
     public void testMakespan() {
         // System.out.println(printSchedule.printThreeShelves(MyMath.findBigJobs(I, d),
         // (int) d));
-        assertTrue("The total makespan needs to be smaller than the promised one.", I.getMakespan() <= d * (3 / 2.0));
+        // TODO: check other promises.
+        assertTrue("The total makespan needs to be smaller than the promised one.", I.getMakespan() <= d * (73 / 50.0));
     }
 
     /**
