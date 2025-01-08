@@ -92,7 +92,7 @@ public class App {
         Instance I = new Instance();
         if (rand == null) {
             try {
-                I = new ObjectMapper().readValue(Paths.get("TestInstances/TestInstance copy 3.json").toFile(),
+                I = new ObjectMapper().readValue(Paths.get("TestInstances/TestInstance.json").toFile(),
                         Instance.class);
             } catch (IOException e) {
                 e.printStackTrace();

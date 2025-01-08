@@ -41,6 +41,8 @@ public class OhnesorgeApproach implements Algorithm {
         MCKnapsack knapsack = new MCKnapsack();
         knapsack.solve(bigJobs, I.getM(), shelf1, shelf0, shelf2, d);
 
+        assert (shelf1.stream().noneMatch(j -> shelf2.contains(j)));
+
         // check work constraint
         int WShelf1 = shelf1.stream()
                 .mapToInt(j -> j.getAllotedMachines() * j.getProcessingTime(j.getAllotedMachines()))
@@ -115,13 +117,13 @@ public class OhnesorgeApproach implements Algorithm {
                 int allottedMachines = j3.canonicalNumberMachines(10 * d / 7);
                 j3.setAllotedMachines(allottedMachines);
                 if (j3.getProcessingTime(allottedMachines) <= d) {
-                    shelf1.add(j3);
                     shelf0.remove(j3);
+                    shelf1.add(j3);
                 }
             }
             if (j1 != null) {
-                shelf1.add(j1);
                 shelf0.remove(j1);
+                shelf1.add(j1);
             }
         }
 
@@ -297,6 +299,7 @@ public class OhnesorgeApproach implements Algorithm {
             machine.addJob(job);
 
         }
+        assert (machines.stream().anyMatch(m -> m.getJobs().size() == 2));
 
     }
 
@@ -370,7 +373,7 @@ public class OhnesorgeApproach implements Algorithm {
             if (job.canonicalNumberMachines(lambdad) < job.getAllotedMachines()) {
                 job.setAllotedMachines(job.canonicalNumberMachines(lambdad));
                 shelf0.add(job);
-                jobsToRemove.remove(job);
+                jobsToRemove.add(job);
             }
         }
         shelf1.removeAll(jobsToRemove);
@@ -382,7 +385,7 @@ public class OhnesorgeApproach implements Algorithm {
                 job.setAllotedMachines(job.canonicalNumberMachines(lambdad));
                 if (job.getProcessingTime(job.getAllotedMachines()) <= d) {
                     shelf1.add(job);
-                    jobsToRemove.remove(job);
+                    jobsToRemove.add(job);
                 }
             }
         }
