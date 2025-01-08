@@ -255,7 +255,7 @@ public class OhnesorgeApproach implements Algorithm {
         for (Job job : shelf1.stream().filter(j -> j.getStartingTime() == 0).toArray(Job[]::new)) {
             int allottedMachines = job.getAllotedMachines();
             for (; allottedMachines > 0; allottedMachines--, i++) {
-                machines.get(i).addJob(job);
+                machines.get(i).addJob(job); // TODO: IndexOutOfBoundsException
             }
         }
         for (Job job : shelf1.stream().filter(j -> j.getStartingTime() != 0).toArray(Job[]::new)) {
@@ -365,12 +365,14 @@ public class OhnesorgeApproach implements Algorithm {
                     jobsToRemove.add(job);
                     j1.setStartingTime(job.getProcessingTime(1));
                     j1 = null;
+                    q -= 1;
                 }
                 continue;
             }
 
             // T1
             if (job.canonicalNumberMachines(lambdad) < job.getAllotedMachines()) {
+                q += job.getAllotedMachines() - job.canonicalNumberMachines(lambdad);
                 job.setAllotedMachines(job.canonicalNumberMachines(lambdad));
                 shelf0.add(job);
                 jobsToRemove.add(job);
@@ -385,8 +387,11 @@ public class OhnesorgeApproach implements Algorithm {
                 job.setAllotedMachines(job.canonicalNumberMachines(lambdad));
                 if (job.getProcessingTime(job.getAllotedMachines()) <= d) {
                     shelf1.add(job);
-                    jobsToRemove.add(job);
+                } else {
+                    shelf0.add(job);
                 }
+                jobsToRemove.add(job);
+                q -= job.getAllotedMachines();
             }
         }
         shelf2.removeAll(jobsToRemove);
