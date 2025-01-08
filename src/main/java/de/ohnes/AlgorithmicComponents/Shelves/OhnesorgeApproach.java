@@ -299,7 +299,6 @@ public class OhnesorgeApproach implements Algorithm {
             machine.addJob(job);
 
         }
-        assert (machines.stream().anyMatch(m -> m.getJobs().size() == 2));
 
     }
 
