@@ -59,6 +59,7 @@ public class OhnesorgeApproach implements Algorithm {
         }
 
         // adjust jobs chosen in c2, i.e. shelf0
+        List<Job> jobsToRemove = new ArrayList<>();
         Job j1 = null;
         Job j3 = null;
         for (Job job : shelf0) {
@@ -85,9 +86,14 @@ public class OhnesorgeApproach implements Algorithm {
                 default:
                     // schedule job in \gamma(, 10/7d)
                     job.setAllotedMachines(job.canonicalNumberMachines(10 * d / 7));
+                    if (job.getProcessingTime(job.getAllotedMachines()) <= d) {
+                        shelf1.add(job);
+                        jobsToRemove.add(job);
+                    }
                     break;
             }
         }
+        shelf0.removeAll(jobsToRemove);
         if (j3 != null && j1 != null) {
             // this job can be artificially split, since it will not be altered during the
             // algorithm in any way.

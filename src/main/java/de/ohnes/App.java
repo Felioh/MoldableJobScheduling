@@ -89,6 +89,10 @@ public class App {
      * @return TestResult
      */
     private static TestResult runTest() {
+        if (algo == null) {
+            LOGGER.error("No Algorithm specified. Exiting.");
+            return null;
+        }
         Instance I = new Instance();
         if (rand == null) {
             try {
@@ -102,24 +106,21 @@ public class App {
         }
 
         DualApproximationFramework dF;
-        // if(algo == null) {
-        // return null; //algo not specified.
-        // }
-        if (algo == null || algo.equals("Grage")) {
-            Algorithm algo = new GrageApproach();
+        if (algo.equals("Grage")) {
+            Algorithm shelves = new GrageApproach();
             Algorithm fptas = new DoubleCompressionApproach();
             Approximation approx = new TwoApproximation();
-            dF = new DualApproximationFramework(fptas, algo, approx, I);
-        } else if (algo.equals("Felix")) {
-            Algorithm algo = new LandApproach();
+            dF = new DualApproximationFramework(fptas, shelves, approx, I);
+        } else if (algo.equals("Land")) {
+            Algorithm shelves = new LandApproach();
             Algorithm fptas = new CompressionApproach();
             Approximation approx = new TwoApproximation();
-            dF = new DualApproximationFramework(fptas, algo, approx, I);
+            dF = new DualApproximationFramework(fptas, shelves, approx, I);
         } else if (algo.equals("Ohnesorge")) {
-            Algorithm algo = new OhnesorgeApproach();
+            Algorithm shelves = new OhnesorgeApproach();
             Algorithm fptas = new CompressionApproach();
             Approximation approx = new TwoApproximation();
-            dF = new DualApproximationFramework(fptas, algo, approx, I);
+            dF = new DualApproximationFramework(fptas, shelves, approx, I);
         } else {
             return null;
         }
