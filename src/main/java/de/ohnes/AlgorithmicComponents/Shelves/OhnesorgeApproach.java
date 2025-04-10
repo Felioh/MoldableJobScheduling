@@ -71,6 +71,16 @@ public class OhnesorgeApproach implements Algorithm {
                     } else {
                         // schedule these jobs after each other
                         j1.setStartingTime(job.getProcessingTime(1));
+                        if (job.getProcessingTime(1) + j1.getProcessingTime(1) <= d) {
+                            int pTimes[] = new int[j1.getProcessingTimes().length];
+                            int j1pTimes[] = j1.getProcessingTimes();
+                            Arrays.setAll(pTimes, i -> job.getProcessingTimes()[i] + j1pTimes[i]);
+                            Job newJob = new Job(j1.getId(), pTimes);
+                            newJob.setAllotedMachines(1);
+                            shelf1.add(newJob);
+                            jobsToRemove.add(j1);
+                            jobsToRemove.add(job);
+                        }
                         j1 = null;
                     }
                     break;
@@ -80,6 +90,16 @@ public class OhnesorgeApproach implements Algorithm {
                     } else {
                         // schedule these jobs after each other
                         j3.setStartingTime(job.getProcessingTime(3));
+                        if (job.getProcessingTime(1) + j3.getProcessingTime(1) <= d) {
+                            int pTimes[] = new int[j3.getProcessingTimes().length];
+                            int j1pTimes[] = j3.getProcessingTimes();
+                            Arrays.setAll(pTimes, i -> job.getProcessingTimes()[i] + j1pTimes[i]);
+                            Job newJob = new Job(j3.getId(), pTimes);
+                            newJob.setAllotedMachines(3);
+                            shelf1.add(newJob);
+                            jobsToRemove.add(j3);
+                            jobsToRemove.add(job);
+                        }
                         j3 = null;
                     }
                     break;
@@ -102,7 +122,7 @@ public class OhnesorgeApproach implements Algorithm {
 
             shelf0.remove(j3);
             Job virtualJob1 = new Job(j3.getId(), new int[] { pTime, pTime });
-            Job virtualJob2 = new Job(j3.getId(), new int[] { pTime, pTime });
+            Job virtualJob2 = new Job(-j3.getId(), new int[] { pTime, pTime });
             virtualJob1.setAllotedMachines(1);
             virtualJob2.setAllotedMachines(1);
             shelf0.add(virtualJob1);
@@ -316,6 +336,7 @@ public class OhnesorgeApproach implements Algorithm {
             // get the smallest job in shelf2
             Job job = shelf2.get(0);
             job.setAllotedMachines(job.getAllotedMachines() - 1);
+            m2--;
             // resort the list
             // TODO: this can be done smarter
             shelf2.sort((j1, j2) -> Integer.compare(j1.getProcessingTime(j1.getAllotedMachines()),
@@ -370,7 +391,7 @@ public class OhnesorgeApproach implements Algorithm {
                     jobsToRemove.add(job);
                     j1.setStartingTime(job.getProcessingTime(1));
                     j1 = null;
-                    q -= 1;
+                    q += 1;
                 }
                 continue;
             }
@@ -384,9 +405,9 @@ public class OhnesorgeApproach implements Algorithm {
             }
         }
         shelf1.removeAll(jobsToRemove);
+        jobsToRemove.clear();
 
         // T3
-        jobsToRemove.clear();
         for (Job job : shelf2) {
             if (job.canonicalNumberMachines(lambdad) <= q) {
                 job.setAllotedMachines(job.canonicalNumberMachines(lambdad));

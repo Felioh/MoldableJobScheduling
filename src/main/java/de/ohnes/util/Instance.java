@@ -12,6 +12,8 @@ import de.ohnes.logger.InstanceDeserializer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -26,7 +28,7 @@ public class Instance {
     @JsonProperty("machines")
     private int m;
     // @JsonDeserialize(as = Job[].class)
-    @Setter //TODO: remove setter
+    @Setter // TODO: remove setter
     @JsonProperty("jobs")
     private Job[] jobs;
 
@@ -56,10 +58,15 @@ public class Instance {
             int[] processingTimes = new int[this.m];
             processingTimes[0] = MyMath.getRandomNumber(20, maxSeqTime);
             for (int j = 1; j < this.m; j++) {
-                processingTimes[j] = (int) (processingTimes[0] / (j + 1)); // minimal processing time
-                // processingTimes[j] = MyMath.getRandomNumber((int) Math.ceil((j / (double) (j
-                // + 1)) * processingTimes[j - 1]), processingTimes[j - 1]); //comment in for
-                // random processing times.
+                processingTimes[j] = (int) Math.ceil((j / (double) (j
+                        + 1)) * processingTimes[j - 1]); // minimal
+                // processing time
+                processingTimes[j] = MyMath.getRandomNumber(Math.max(processingTimes[j], 1), processingTimes[j - 1]); // comment
+                                                                                                                      // in
+                                                                                                                      // for
+                                                                                                                      // random
+                                                                                                                      // processing
+                // times.
             }
             this.jobs[i] = new Job(i, processingTimes);
         }
@@ -129,6 +136,16 @@ public class Instance {
     public void resetInstance() {
         Arrays.asList(jobs).stream().forEach(j -> j.reset());
         this.machines = null;
+    }
+
+    public String toJson() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }
