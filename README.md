@@ -1,7 +1,11 @@
 Algorithms for machine scheduling with malleable jobs
 ---
 
-An Implementation of the algorithms from Jansen & Land and Grage & Jansen, building upon an algorithm from Mounié, Rapine and Trystram.
+An Implementation of the algorithms from 
+- [Mounié, Rapine and Trystram](https://dblp.org/rec/journals/siamcomp/MounieRT07.html)
+- [Jansen & Land](https://dblp.org/rec/conf/ipps/JansenL18.html)
+- [Grage, Jansen, and Ohnesorge](https://dblp.org/rec/conf/europar/GrageJO23.html)
+- Jansen & Ohnesorge
 
 
 # A couple of Maven commands
