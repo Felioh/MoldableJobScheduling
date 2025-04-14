@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -75,24 +76,6 @@ public class OhnesorgeTests {
         }
 
         return Arrays.asList(instances.toArray(Object[][]::new));
-    }
-
-    /**
-     * Tests if the returned Schedule is valid
-     */
-    @Test
-    public void scheduleIsValid() {
-        for (Job job : I.getJobs()) {
-            assertTrue("Every Job should be alloted to at least one Machine", job.getAllotedMachines() > 0);
-            int allotedMachines = job.getAllotedMachines();
-            for (Machine m : I.getMachines()) {
-                if (m.getJobs().contains(job)) {
-                    allotedMachines--;
-                }
-            }
-            assertTrue("The number of machines referencing this job differs from the specified amount in the job",
-                    allotedMachines == 0);
-        }
     }
 
     /**

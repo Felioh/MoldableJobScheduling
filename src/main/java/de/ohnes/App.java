@@ -96,7 +96,7 @@ public class App {
         Instance I = new Instance();
         if (rand == null) {
             try {
-                I = new ObjectMapper().readValue(Paths.get("TestInstances/error.json").toFile(),
+                I = new ObjectMapper().readValue(Paths.get("TestInstances/TestInstance copy.json").toFile(),
                         Instance.class);
             } catch (IOException e) {
                 e.printStackTrace();
