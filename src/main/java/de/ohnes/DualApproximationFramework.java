@@ -57,6 +57,7 @@ public class DualApproximationFramework {
         } catch (Exception e) {
             LOGGER.error("Error while solving instance with makespan: {}", mid);
             LOGGER.error(e);
+            e.printStackTrace();
             LOGGER.info("Instance: {}", I.toJson());
             return -1;
         }

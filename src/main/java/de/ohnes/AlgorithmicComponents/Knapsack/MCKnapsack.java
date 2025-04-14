@@ -20,109 +20,139 @@ public class MCKnapsack {
         int n = items.size();
         // 1st dimension: number of items
         // 2nd dimension: capacity (needs to be scaled by two, to keep integer values)
-        Double[][] dp = new Double[n + 1][2 * capacity + 1];
+        Integer[][][] dp = new Integer[n + 1][2 * capacity + 1][3];
 
         // initialize the dp array
         for (int i = 0; i <= n; i++) {
             for (int j = 0; j <= 2 * capacity; j++) {
-                dp[i][j] = Double.NEGATIVE_INFINITY;
+                for (int k = 0; k < 3; k++) {
+                    if (i == 0) {
+                        dp[i][j][k] = 0; // base case
+                    } else {
+                        dp[i][j][k] = Integer.MAX_VALUE;
+                    }
+                }
             }
         }
-        dp[0][0] = 0.0;
 
         double d3div7 = 3 * d / 7;
         double d4div7 = 4 * d / 7;
 
+        Integer minCost = Integer.MAX_VALUE - 1;
+        int maxJ = 0;
+        int maxK = 0;
+
+        int[][] precomputedWeights = new int[n][3];
+        int[][] precomputedCosts = new int[n][3];
+
+        for (int i = 0; i < n; i++) {
+            Job item = items.get(i);
+            precomputedWeights[i][0] = item.canonicalNumberMachines(d) * 2;
+            precomputedWeights[i][1] = item.canonicalNumberMachines(d4div7);
+            precomputedWeights[i][2] = 0;
+
+            precomputedCosts[i][0] = item.getProcessingTime(item.canonicalNumberMachines(d))
+                    * item.canonicalNumberMachines(d);
+            precomputedCosts[i][1] = item.canonicalNumberMachines(d4div7) == -1 ? 0
+                    : item.getProcessingTime(precomputedWeights[i][1]) * precomputedWeights[i][1]; // 0 will not be
+                                                                                                   // used.
+            precomputedCosts[i][2] = item.canonicalNumberMachines(d3div7) == -1 ? 0
+                    : item.getProcessingTime(item.canonicalNumberMachines(d3div7))
+                            * item.canonicalNumberMachines(d3div7); // 0 will not be used.
+        }
+
         // actual knapsack algorithm
         for (int i = 1; i <= n; i++) {
+            if (minCost == Integer.MAX_VALUE) {
+                // the previous job was not placeable
+                return false; // The intsance is not solvable.
+            }
+            minCost = Integer.MAX_VALUE;
             for (int j = 0; j <= 2 * capacity; j++) {
 
                 Job item = items.get(i - 1);
-                int maxWork = 0;
-                if (item.canonicalNumberMachines(d3div7) != -1) {
-                    maxWork = item.canonicalNumberMachines(d3div7)
-                            * item.getProcessingTime(item.canonicalNumberMachines(d3div7));
-                } else if (item.canonicalNumberMachines(d4div7) != -1) {
-                    maxWork = item.canonicalNumberMachines(d4div7)
-                            * item.getProcessingTime(item.canonicalNumberMachines(d4div7));
-                } else if (item.canonicalNumberMachines(d) != -1) {
-                    maxWork = item.canonicalNumberMachines(d) * item.getProcessingTime(item.canonicalNumberMachines(d));
-                } else {
-                    return false; // this item cannot be executed in time d.
-                }
 
                 // for each choice of the item
                 for (int k = 0; k < 3; k++) {
                     // calculate the cost and weight of the job
-                    double profit = 0;
-                    int weight = 0;
+                    int cost = precomputedCosts[i - 1][k];
+                    int weight = precomputedWeights[i - 1][k];
                     switch (k) {
                         case 0:
-                            weight = item.canonicalNumberMachines(d);
-                            profit = maxWork - item.getProcessingTime(weight) * weight;
-                            weight = 2 * weight;
+                            if (item.canonicalNumberMachines(d) == -1) {
+                                return false; // The intsance is not solvable.
+                            }
                             break;
                         case 1:
                             if (item.canonicalNumberMachines(d4div7) == -1) {
                                 continue; // this choice is not vaild.
                             }
-                            weight = item.canonicalNumberMachines(d4div7);
-                            profit = maxWork - item.getProcessingTime(weight) * weight;
                             break;
                         case 2:
                             if (item.canonicalNumberMachines(d3div7) == -1) {
                                 continue; // this choice is not vaild.
                             }
-                            weight = 0;
-                            profit = 0;
                             break;
-                        default:
-                            throw new IllegalArgumentException("Invalid choice");
                     }
 
                     // if the weight is less than the capacity
                     if (j >= weight) {
+                        int bestPrevious = Math.min(
+                                dp[i - 1][j - weight][0],
+                                Math.min(dp[i - 1][j - weight][1],
+                                        dp[i - 1][j - weight][2]));
                         // update the dp array
-                        dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - weight] + profit);
+                        if (bestPrevious != Integer.MAX_VALUE) {
+                            dp[i][j][k] = bestPrevious + cost;
+                            if (dp[i][j][k] <= minCost) {
+                                minCost = dp[i][j][k];
+                                maxJ = j;
+                                maxK = k;
+                            }
+                        }
                     }
                 }
             }
         }
 
         // backtracking to find the selected items
-        int j = 2 * capacity;
         for (int i = n; i > 0; i--) {
             Job item = items.get(i - 1);
-            int maxWork = 0;
-            if (item.canonicalNumberMachines(d3div7) != -1) {
-                maxWork = item.canonicalNumberMachines(d3div7)
-                        * item.getProcessingTime(item.canonicalNumberMachines(d3div7));
-            } else if (item.canonicalNumberMachines(d4div7) != -1) {
-                maxWork = item.canonicalNumberMachines(d4div7)
-                        * item.getProcessingTime(item.canonicalNumberMachines(d4div7));
-            } else {
-                maxWork = item.canonicalNumberMachines(d) * item.getProcessingTime(item.canonicalNumberMachines(d));
+            int cost = precomputedCosts[i - 1][maxK];
+            int weight = precomputedWeights[i - 1][maxK];
+            switch (maxK) {
+                case 0:
+                    item.setAllotedMachines(item.canonicalNumberMachines(d));
+                    c1.add(item);
+                    break;
+                case 1:
+                    item.setAllotedMachines(item.canonicalNumberMachines(d4div7));
+                    c2.add(item);
+                    break;
+                case 2:
+                    item.setAllotedMachines(item.canonicalNumberMachines(d3div7));
+                    c3.add(item);
+                    break;
             }
-            // TODO: check outOfBounds
-            int weight1 = item.canonicalNumberMachines(d);
-            int weight2 = item.canonicalNumberMachines(d4div7);
-            if (j - weight1 * 2 >= 0
-                    && dp[i][j] == dp[i - 1][j - weight1 * 2] + maxWork - item.getProcessingTime(weight1) * weight1) {
-                item.setAllotedMachines(item.canonicalNumberMachines(d));
-                c1.add(item);
-                j -= 2 * weight1;
-            } else if (j - weight2 >= 0 &&
-                    dp[i][j] == dp[i - 1][j - weight2] + maxWork - item.getProcessingTime(weight2) * weight2) {
-                assert (item.canonicalNumberMachines(d4div7) > 0);
-                item.setAllotedMachines(item.canonicalNumberMachines(d4div7));
-                c2.add(item);
-                j -= weight2;
-            } else {
-                assert (item.canonicalNumberMachines(d3div7) > 0);
-                item.setAllotedMachines(item.canonicalNumberMachines(d3div7));
-                c3.add(item);
+
+            if (i == 1) {
+                break; // no more items to process
             }
-            // TODO: check this. We should not backtrack invalid choices. :(
+            // find the best previous choice
+            if (minCost - cost == dp[i - 1][maxJ - weight][0]) {
+                maxK = 0;
+            } else if (minCost - cost == dp[i - 1][maxJ - weight][1]) {
+                maxK = 1;
+            } else if (minCost - cost == dp[i - 1][maxJ - weight][2]) {
+                maxK = 2;
+            } else {
+                throw new IllegalArgumentException("Invalid choice in Backtracking");
+            }
+            // update the maxProfit
+            maxJ = maxJ - weight;
+            minCost = dp[i - 1][maxJ][maxK];
+
         }
+        return true;
     }
 }

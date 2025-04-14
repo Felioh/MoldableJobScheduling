@@ -38,7 +38,10 @@ public class OhnesorgeApproach implements Algorithm {
         List<Job> shelf0 = new ArrayList<>();
         List<Job> shelf2 = new ArrayList<>();
         MCKnapsack knapsack = new MCKnapsack();
-        knapsack.solve(bigJobs, I.getM(), shelf1, shelf0, shelf2, d);
+        boolean solvable = knapsack.solve(bigJobs, I.getM(), shelf1, shelf0, shelf2, d);
+        if (!solvable) {
+            return ApproximationRatio.NONE;
+        }
 
         assert (shelf1.stream().noneMatch(j -> j.getAllotedMachines() == -1));
         assert (shelf2.stream().noneMatch(j -> j.getAllotedMachines() == -1));
