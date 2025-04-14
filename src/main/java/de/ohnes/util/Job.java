@@ -32,6 +32,7 @@ public class Job {
      * @return the execution time
      */
     public int getProcessingTime(int i) {
+        assert (i > 0 && i <= this.processingTimes.length);
         return this.processingTimes[i - 1];
     }
 

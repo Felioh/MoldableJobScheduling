@@ -14,7 +14,7 @@ public class MCKnapsack {
      * solves a multiple choice knapsack problem.
      * 
      */
-    public void solve(List<Job> items, int capacity,
+    public boolean solve(List<Job> items, int capacity,
             List<Job> c1, List<Job> c2, List<Job> c3, double d) {
 
         int n = items.size();
@@ -45,8 +45,10 @@ public class MCKnapsack {
                 } else if (item.canonicalNumberMachines(d4div7) != -1) {
                     maxWork = item.canonicalNumberMachines(d4div7)
                             * item.getProcessingTime(item.canonicalNumberMachines(d4div7));
-                } else {
+                } else if (item.canonicalNumberMachines(d) != -1) {
                     maxWork = item.canonicalNumberMachines(d) * item.getProcessingTime(item.canonicalNumberMachines(d));
+                } else {
+                    return false; // this item cannot be executed in time d.
                 }
 
                 // for each choice of the item

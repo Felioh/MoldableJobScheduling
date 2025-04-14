@@ -96,7 +96,7 @@ public class App {
         Instance I = new Instance();
         if (rand == null) {
             try {
-                I = new ObjectMapper().readValue(Paths.get("TestInstances/failedInstance.json").toFile(),
+                I = new ObjectMapper().readValue(Paths.get("TestInstances/error.json").toFile(),
                         Instance.class);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -148,6 +148,7 @@ public class App {
         tr.setFptas(dF.getFPTASName());
         tr.setShelvesAlgo(dF.getShelvesAlgoName());
         tr.setAchivedMakespan(I.getMakespan());
+        tr.setApproximationRatio(I.getGuaranteedApproximationRatio());
         tr.setEstimatedOptimum(d);
         tr.setJobs(I.getN());
         tr.setMachines(I.getM());
@@ -156,6 +157,8 @@ public class App {
         tr.setSmallJobs(MyMath.findSmallJobs(I, d / 2).length);
         tr.setInstanceID(I.getId());
         // tr.setProcessingTimes(I.getJobs());
+
+        LOGGER.info("CSVResult: " + tr.getCSVResult());
 
         return tr;
     }

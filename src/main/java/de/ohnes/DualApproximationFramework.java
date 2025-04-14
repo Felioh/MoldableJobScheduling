@@ -1,5 +1,7 @@
 package de.ohnes;
 
+import java.util.Arrays;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -50,6 +52,8 @@ public class DualApproximationFramework {
         ApproximationRatio result;
         try {
             result = algo.solve(mid, epsilon);
+            I.setGuaranteedApproximationRatio(result);
+            assert (Arrays.asList(I.getJobs()).stream().noneMatch(j -> j.getAllotedMachines() < 0));
         } catch (Exception e) {
             LOGGER.error("Error while solving instance with makespan: {}", mid);
             LOGGER.error(e);
@@ -58,7 +62,7 @@ public class DualApproximationFramework {
         }
         if (!result.equals(ApproximationRatio.NONE)) { // a schedule of length "mid" exists
 
-            if (r - mid < epsilon) {
+            if (r / l <= 1 + epsilon) {
                 LOGGER.info("Found schedule with makespan: {}", mid);
                 LOGGER.info("Guaranteed approximation ratio: {}", result);
                 return mid;

@@ -33,7 +33,6 @@ public class OhnesorgeApproach implements Algorithm {
 
         // minimal work of small jobs
         int Ws = smallJobs.stream().mapToInt(j -> j.getProcessingTime(1)).sum();
-
         // solve the knapsack problem
         List<Job> shelf1 = new ArrayList<>();
         List<Job> shelf0 = new ArrayList<>();
@@ -41,6 +40,9 @@ public class OhnesorgeApproach implements Algorithm {
         MCKnapsack knapsack = new MCKnapsack();
         knapsack.solve(bigJobs, I.getM(), shelf1, shelf0, shelf2, d);
 
+        assert (shelf1.stream().noneMatch(j -> j.getAllotedMachines() == -1));
+        assert (shelf2.stream().noneMatch(j -> j.getAllotedMachines() == -1));
+        assert (shelf0.stream().noneMatch(j -> j.getAllotedMachines() == -1));
         assert (shelf1.stream().noneMatch(j -> shelf2.contains(j)));
 
         // check work constraint

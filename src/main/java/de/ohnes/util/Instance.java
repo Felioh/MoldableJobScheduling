@@ -36,6 +36,10 @@ public class Instance {
     @JsonIgnore
     private Machine[] machines;
 
+    @Setter
+    @JsonIgnore
+    private ApproximationRatio GuaranteedApproximationRatio;
+
     public Instance(int n, int m, Job[] jobs) {
         this.n = n;
         this.m = m;
