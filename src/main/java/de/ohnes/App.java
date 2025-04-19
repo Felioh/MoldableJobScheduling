@@ -96,7 +96,7 @@ public class App {
         Instance I = new Instance();
         if (rand == null) {
             try {
-                I = new ObjectMapper().readValue(Paths.get("TestInstances/TestInstance copy.json").toFile(),
+                I = new ObjectMapper().readValue(Paths.get("TestInstances/TestInstance copy 4.json").toFile(),
                         Instance.class);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -130,6 +130,7 @@ public class App {
         long endTime = System.currentTimeMillis();
         LOGGER.info("Ran instance with {} machines and {} jobs in {} milliseconds.", I.getM(), I.getN(),
                 (endTime - startTime));
+        I = dF.getI();
 
         // ############################################## DEBUG
         // ##################################################################################################################

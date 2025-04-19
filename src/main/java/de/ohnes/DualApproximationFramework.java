@@ -9,6 +9,7 @@ import de.ohnes.AlgorithmicComponents.Algorithm;
 import de.ohnes.AlgorithmicComponents.Approximation.Approximation;
 import de.ohnes.util.ApproximationRatio;
 import de.ohnes.util.Instance;
+import lombok.Getter;
 
 public class DualApproximationFramework {
 
@@ -17,7 +18,9 @@ public class DualApproximationFramework {
     // an fptas that is to be used for a large number of machines (>= 8*(n/epsilon))
     private Algorithm fptas;
     private Algorithm knapsack;
+    @Getter
     private Instance I;
+    private Instance origI;
     private Approximation approx;
 
     public DualApproximationFramework(Algorithm fptas, Algorithm knapsack, Approximation approx, Instance I) {
@@ -39,16 +42,26 @@ public class DualApproximationFramework {
             usedAlgo = this.knapsack;
             usedAlgo.setInstance(I);
         }
-        double lowerBound = this.approx.approximate(I) / 2; // TODO this bound could be thighter.
-        double upperBound = lowerBound * 8; // TODO add list scheduling. -> schedule twiari greedy and divide by 2.
 
+        // use a trivial bound
+        double upperBound = Arrays.asList(I.getJobs()).stream()
+                .mapToDouble(job -> job.getProcessingTime(1)).sum();
+        double lowerBound = upperBound / I.getM();
+
+        // double lowerBound = this.approx.approximate(I) / 2; // TODO this bound could
+        // be thighter.
+        // double upperBound = lowerBound * 8; // TODO add list scheduling. -> schedule
+        // twiari greedy and divide by 2.
+        origI = I.clone();
         return binarySearch(usedAlgo, epsilon, lowerBound, upperBound);
     }
 
     private double binarySearch(Algorithm algo, double epsilon, double l, double r) {
 
         double mid = l + (r - l) / 2;
+        I = origI.clone();
         I.resetInstance(); // reset the instance because it was altered in previous attempt.
+        algo.setInstance(I);
         ApproximationRatio result;
         try {
             result = algo.solve(mid, epsilon);

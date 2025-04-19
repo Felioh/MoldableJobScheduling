@@ -67,4 +67,15 @@ public class Job {
         this.allotedMachines = 0;
     }
 
+    public Job clone() {
+        int[] processingTimes = new int[this.processingTimes.length];
+        for (int i = 0; i < this.processingTimes.length; i++) {
+            processingTimes[i] = this.processingTimes[i];
+        }
+        Job j = new Job(this.id, processingTimes);
+        j.setStartingTime(this.startingTime);
+        j.setAllotedMachines(this.allotedMachines);
+        return j;
+    }
+
 }

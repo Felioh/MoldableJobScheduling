@@ -15,6 +15,7 @@ import lombok.Setter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Setter
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonDeserialize(using = InstanceDeserializer.class)
@@ -66,10 +67,10 @@ public class Instance {
                         + 1)) * processingTimes[j - 1]); // minimal
                 // processing time
                 processingTimes[j] = MyMath.getRandomNumber(Math.max(processingTimes[j], 1), processingTimes[j - 1]); // comment
-                                                                                                                      // in
-                                                                                                                      // for
-                                                                                                                      // random
-                                                                                                                      // processing
+                // in
+                // for
+                // random
+                // processing
                 // times.
             }
             this.jobs[i] = new Job(i, processingTimes);
@@ -135,6 +136,19 @@ public class Instance {
             }
         }
         return maxMakespan;
+    }
+
+    public Instance clone() {
+        Instance clone = new Instance();
+        clone.setId(this.id);
+        clone.setN(this.n);
+        clone.setM(this.m);
+        Job[] jobsClone = new Job[this.jobs.length];
+        for (int i = 0; i < this.jobs.length; i++) {
+            jobsClone[i] = this.jobs[i].clone();
+        }
+        clone.setJobs(jobsClone);
+        return clone;
     }
 
     public void resetInstance() {

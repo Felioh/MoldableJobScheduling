@@ -104,7 +104,7 @@ public class MCKnapsack {
                         // update the dp array
                         if (bestPrevious != Integer.MAX_VALUE) {
                             dp[i][j][k] = bestPrevious + cost;
-                            if (dp[i][j][k] <= minCost) {
+                            if (dp[i][j][k] < minCost) {
                                 minCost = dp[i][j][k];
                                 maxJ = j;
                                 maxK = k;
@@ -146,7 +146,8 @@ public class MCKnapsack {
             } else if (minCost - cost == dp[i - 1][maxJ - weight][2]) {
                 maxK = 2;
             } else {
-                throw new IllegalArgumentException("Invalid choice in Backtracking");
+                return false; // this should not happen.
+                // throw new IllegalArgumentException("Invalid choice in Backtracking");
             }
             // update the maxProfit
             maxJ = maxJ - weight;
