@@ -148,7 +148,7 @@ public class App {
         tr.setApproximation(dF.getApproximationName());
         tr.setFptas(dF.getFPTASName());
         tr.setShelvesAlgo(dF.getShelvesAlgoName());
-        tr.setAchivedMakespan(I.getMakespan());
+        tr.setAchivedMakespan(I.getMaxMachineLoad());
         tr.setApproximationRatio(I.getGuaranteedApproximationRatio());
         tr.setEstimatedOptimum(d);
         tr.setJobs(I.getN());

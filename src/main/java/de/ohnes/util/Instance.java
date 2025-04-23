@@ -112,6 +112,18 @@ public class Instance {
         return maxMakespan;
     }
 
+    @JsonIgnore
+    public double getMaxMachineLoad() {
+        double maxLoad = 0;
+        for (Machine machine : this.machines) {
+            double load = machine.getUsedTime();
+            if (load > maxLoad) {
+                maxLoad = load;
+            }
+        }
+        return maxLoad;
+    }
+
     /**
      * return a job for i in [0 .. n]
      * 

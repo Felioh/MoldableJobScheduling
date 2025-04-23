@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import de.ohnes.App;
 import de.ohnes.AlgorithmicComponents.Algorithm;
 import de.ohnes.AlgorithmicComponents.Knapsack.MCKnapsack;
 import de.ohnes.util.ApproximationRatio;
@@ -13,6 +17,8 @@ import de.ohnes.util.Machine;
 import de.ohnes.util.MyMath;
 
 public class OhnesorgeApproach implements Algorithm {
+
+    private static final Logger LOGGER = LogManager.getLogger(App.class);
 
     private Instance I;
 
@@ -191,6 +197,8 @@ public class OhnesorgeApproach implements Algorithm {
         }
 
         lambdad = 13 * d / 9;
+        LOGGER.info("lambdad: 13_9, with d={}", d);
+
         applyTransformationRules(lambdad, d, shelf0, shelf1, shelf2, I.getM() - m0 - m1);
 
         m2 = shelf2.stream().mapToInt(Job::getAllotedMachines).sum();
@@ -210,6 +218,7 @@ public class OhnesorgeApproach implements Algorithm {
         }
 
         lambdad = 73 * d / 50;
+        LOGGER.info("lambdad: 73_50, with d={}", d);
         applyTransformationRules(lambdad, d, shelf0, shelf1, shelf2, I.getM() - m0 - m1);
 
         m2 = shelf2.stream().mapToInt(Job::getAllotedMachines).sum();
