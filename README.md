@@ -48,11 +48,3 @@ The logs of each container should look something like this:
 19:33:04.141 [main] INFO  de.ohnes.App - Ran instance with 90 machines and 81 jobs in 2 seconds.
 19:33:04.142 [main] INFO  de.ohnes.DualApproximationFramework - Starting dual approximation Framework with shelvesAlgo: KilianApproach
 ```
-
-# Building docker images
-The docker image can be build with the following command.
-```
-docker build -t malleable .
-```
-With the current configuration of the `Dockerfile` the `target/bachelorarbeit-1.0-SNAPSHOT-jar-with-dependencies.jar` will be used, so make sure to call `mvn package` before.
-The other configuration in this file are only defaults and can be changed in the `docker-compose.yml`.
