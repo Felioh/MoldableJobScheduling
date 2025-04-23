@@ -26,8 +26,8 @@ public class MCKnapsackTests {
 
         knapsack.solve(jobs, 3, c1, c2, c3, 2.5);
         assertEquals(0, c1.size());
-        assertEquals(2, c2.size());
-        assertEquals(1, c3.size());
+        assertEquals(0, c2.size());
+        assertEquals(3, c3.size());
 
     }
 

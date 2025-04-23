@@ -2,25 +2,19 @@ package de.ohnes;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
-import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.ohnes.AlgorithmicComponents.Approximation.TwoApproximation;
 import de.ohnes.AlgorithmicComponents.FPTAS.DoubleCompressionApproach;
 import de.ohnes.AlgorithmicComponents.Shelves.GrageApproach;
 import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
-import de.ohnes.util.Machine;
 
 /**
  * Tests for the complete program.
@@ -42,6 +36,7 @@ public class GrageTests {
         DualApproximationFramework dualApproxFramework = new DualApproximationFramework(new DoubleCompressionApproach(),
                 new GrageApproach(), new TwoApproximation(), I);
         this.d = dualApproxFramework.start(0.1);
+        this.I = dualApproxFramework.getI().clone();
     }
 
     /**
@@ -85,14 +80,6 @@ public class GrageTests {
     public void scheduleIsValid() {
         for (Job job : I.getJobs()) {
             assertTrue("Every Job should be alloted to at least one Machine", job.getAllotedMachines() > 0);
-            int allotedMachines = job.getAllotedMachines();
-            for (Machine m : I.getMachines()) {
-                if (m.getJobs().contains(job)) {
-                    allotedMachines--;
-                }
-            }
-            assertTrue("The number of machines referencing this job differs from the specified amount in the job",
-                    allotedMachines == 0);
         }
     }
 

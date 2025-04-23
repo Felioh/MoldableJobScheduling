@@ -20,7 +20,6 @@ import de.ohnes.AlgorithmicComponents.FPTAS.DoubleCompressionApproach;
 import de.ohnes.AlgorithmicComponents.Shelves.OhnesorgeApproach;
 import de.ohnes.util.Instance;
 import de.ohnes.util.Job;
-import de.ohnes.util.Machine;
 
 /**
  * Tests for the complete program.
@@ -42,6 +41,7 @@ public class OhnesorgeTests {
         DualApproximationFramework dualApproxFramework = new DualApproximationFramework(new DoubleCompressionApproach(),
                 new OhnesorgeApproach(), new TwoApproximation(), I);
         this.d = dualApproxFramework.start(0.1);
+        this.I = dualApproxFramework.getI().clone();
     }
 
     /**
